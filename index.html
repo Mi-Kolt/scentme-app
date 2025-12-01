@@ -11,30 +11,10 @@
         <!-- Главный экран -->
         <div id="screen-welcome" class="screen active">
             <div class="welcome-content">
-                <!-- Заголовок -->
+                <!-- Название -->
                 <h1 class="main-title">СЕВЕРНЫЕ ЗВЕЗДЫ</h1>
                 
-                <!-- Ароматы в сетке -->
-                <div class="aroma-grid">
-                    <div class="aroma-card lavender">
-                        <div class="aroma-icon">🌸</div>
-                        <div class="aroma-name">ЛАВАНДА</div>
-                    </div>
-                    <div class="aroma-card orange">
-                        <div class="aroma-icon">🍊</div>
-                        <div class="aroma-name">АПЕЛЬСИН</div>
-                    </div>
-                    <div class="aroma-card bergamot">
-                        <div class="aroma-icon">🍋</div>
-                        <div class="aroma-name">БЕРГАМОТ</div>
-                    </div>
-                    <div class="aroma-card chamomile">
-                        <div class="aroma-icon">🌼</div>
-                        <div class="aroma-name">РОМАШКА</div>
-                    </div>
-                </div>
-                
-                <!-- Подзаголовок -->
+                <!-- Слоган -->
                 <p class="tagline">Найди аромат, который пахнет тобой</p>
                 
                 <!-- Кнопка -->
@@ -43,47 +23,11 @@
                 </button>
             </div>
         </div>
-
-        <!-- Экран выбора пола -->
-        <div id="screen-gender" class="screen">
-            <div class="gender-content">
-                <h2>Для кого подбираем?</h2>
-                
-                <div class="gender-options">
-                    <div class="gender-option" onclick="selectGender('male')">
-                        <div class="gender-icon">👨</div>
-                        <div class="gender-text">Мужчина</div>
-                    </div>
-                    
-                    <div class="gender-option" onclick="selectGender('female')">
-                        <div class="gender-icon">👩</div>
-                        <div class="gender-text">Женщина</div>
-                    </div>
-                    
-                    <div class="gender-option" onclick="selectGender('unisex')">
-                        <div class="gender-icon">🌈</div>
-                        <div class="gender-text">Унисекс</div>
-                    </div>
-                </div>
-                
-                <button onclick="showScreen('screen-welcome')" class="back-btn">
-                    ← Назад
-                </button>
-            </div>
-        </div>
     </div>
 
     <script>
         function showScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(screen => {
-                screen.classList.remove('active');
-            });
-            document.getElementById(screenId).classList.add('active');
-        }
-
-        function selectGender(gender) {
-            console.log('Выбран пол:', gender);
-            alert('Вы выбрали: ' + gender);
+            alert("Кнопка работает! Дальше будет экран выбора пола.");
         }
     </script>
 </body>
