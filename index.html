@@ -4,30 +4,113 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Северные Звезды - Парфюмерный гид</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ВСЁ В ОДНОМ ФАЙЛЕ - точно сработает! */
+        
+        /* Сброс стилей */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* Основные стили */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #FAF5FF 0%, #FFFFFF 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        /* Контейнер приложения */
+        .app {
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        /* Карточка главного экрана */
+        .welcome-card {
+            background: white;
+            border-radius: 24px;
+            padding: 60px 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(107, 70, 193, 0.1);
+            border: 1px solid #D6BCFA;
+        }
+        
+        /* Название */
+        .main-title {
+            color: #6B46C1;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        
+        /* Слоган */
+        .tagline {
+            color: #2D3748;
+            font-size: 18px;
+            line-height: 1.5;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+        
+        /* Кнопка */
+        .start-btn {
+            background: linear-gradient(135deg, #6B46C1 0%, #9F7AEA 100%);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(107, 70, 193, 0.2);
+        }
+        
+        /* Анимация для плавного появления */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .welcome-card {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
 </head>
 <body>
     <div class="app">
-        <!-- Главный экран -->
-        <div id="screen-welcome" class="screen active">
-            <div class="welcome-content">
-                <!-- Название -->
-                <h1 class="main-title">СЕВЕРНЫЕ ЗВЕЗДЫ</h1>
-                
-                <!-- Слоган -->
-                <p class="tagline">Найди аромат, который пахнет тобой</p>
-                
-                <!-- Кнопка -->
-                <button onclick="showScreen('screen-gender')" class="start-btn">
-                    НАЧАТЬ ПУТЕШЕСТВИЕ
-                </button>
-            </div>
+        <div class="welcome-card">
+            <!-- Название -->
+            <h1 class="main-title">СЕВЕРНЫЕ ЗВЕЗДЫ</h1>
+            
+            <!-- Слоган -->
+            <p class="tagline">Найди аромат, который пахнет тобой</p>
+            
+            <!-- Кнопка -->
+            <button class="start-btn" onclick="startJourney()">
+                НАЧАТЬ ПУТЕШЕСТВИЕ
+            </button>
         </div>
     </div>
 
     <script>
-        function showScreen(screenId) {
-            alert("Кнопка работает! Дальше будет экран выбора пола.");
+        function startJourney() {
+            alert("🎉 Отлично! Приложение работает!\n\nСледующий шаг: экран выбора пола.\n(Пока просто тестовое сообщение)");
         }
     </script>
 </body>
