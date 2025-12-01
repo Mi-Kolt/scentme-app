@@ -8,12 +8,68 @@
 </head>
 <body>
     <div class="app">
-        <div class="screen active">
-            <h1>👃 ScentMe</h1>
-            <p>Найди аромат, который пахнет тобой!</p>
-            <button>Начать подбор</button>
+        <!-- Главный экран приветствия -->
+        <div id="screen-welcome" class="screen active">
+            <!-- Фон с градиентом -->
+            <div class="stars-bg"></div>
+            
+            <!-- Основной контент -->
+            <div class="welcome-content">
+                <!-- Логотип -->
+                <div class="logo-circle">
+                    <div class="logo-icon">👃</div>
+                </div>
+                
+                <!-- Заголовок -->
+                <h1 class="main-title">СЕВЕРНЫЕ ЗВЕЗДЫ</h1>
+                <div class="title-line"></div>
+                
+                <!-- Элементы ароматов -->
+                <div class="aroma-elements">
+                    <div class="aroma-item lavender">ЛАВАНДА</div>
+                    <div class="aroma-item orange">АПЕЛЬСИН</div>
+                    <div class="aroma-item bergamot">БЕРГАМОТ</div>
+                    <div class="aroma-item chamomile">РОМАШКА</div>
+                </div>
+                
+                <!-- Подзаголовок -->
+                <p class="tagline">Найди аромат, который пахнет тобой</p>
+                
+                <!-- Кнопка -->
+                <button onclick="showScreen('screen-gender')" class="start-btn">
+                    НАЧАТЬ ПУТЕШЕСТВИЕ
+                </button>
+            </div>
+        </div>
+
+        <!-- Экран выбора пола (скрыт, показывается после нажатия кнопки) -->
+        <div id="screen-gender" class="screen">
+            <h2>Для кого подбираем?</h2>
+            <button onclick="selectGender('male')">👨 Мужчина</button>
+            <button onclick="selectGender('female')">👩 Женщина</button>
+            <button onclick="selectGender('unisex')">🌈 Унисекс</button>
+            <button onclick="showScreen('screen-welcome')" class="back-btn">← Назад</button>
         </div>
     </div>
-    <script src="script.js"></script>
+
+    <script>
+        // Функция для переключения экранов
+        function showScreen(screenId) {
+            // Скрываем все экраны
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            // Показываем нужный экран
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        // Функция выбора пола
+        function selectGender(gender) {
+            // Здесь будет логика сохранения выбора
+            console.log('Выбран пол:', gender);
+            // В будущем здесь переход к следующему экрану
+            alert('Вы выбрали: ' + gender + '\nСледующий шаг - выбор типа продукта!');
+        }
+    </script>
 </body>
 </html>
