@@ -15,6 +15,8 @@
             --pure-white: #FFFFFF;
             --gold: #D4AF37;
             --light-gold: #F4E4A6;
+            --dark-beige: #D8C9B0;
+            --warm-gray: #A99E8B;
         }
         
         * {
@@ -35,7 +37,7 @@
             overflow: hidden;
         }
         
-        /* МРАМОРНЫЙ ФОН С ЗОЛОТЫМИ ПРОЖИЛКАМИ */
+        /* ТЁМНЫЙ МРАМОРНЫЙ ФОН С ПЕРЕТЕКАЮЩИМИ ЦВЕТАМИ */
         .marble-bg {
             position: fixed;
             top: 0;
@@ -43,53 +45,37 @@
             right: 0;
             bottom: 0;
             background: 
-                /* Мраморная основа */
+                /* Основной градиент с несколькими цветами */
                 linear-gradient(135deg, 
-                    rgba(241, 234, 218, 0.95) 0%,
-                    rgba(249, 245, 237, 0.98) 50%,
-                    rgba(241, 234, 218, 0.95) 100%),
+                    #2A1A0F 0%,     /* Тёмный шоколад */
+                    #3D2A1B 25%,    /* Коричнево-серый */
+                    #584738 50%,    /* Ореховый */
+                    #3D2A1B 75%,    /* Коричнево-серый */
+                    #2A1A0F 100%),  /* Тёмный шоколад */
                 
-                /* Мраморные узоры */
-                radial-gradient(circle at 20% 30%, 
-                    rgba(255, 255, 255, 0.8) 2%, 
-                    transparent 10%),
-                radial-gradient(circle at 80% 70%, 
-                    rgba(255, 255, 255, 0.7) 2%, 
-                    transparent 10%),
-                radial-gradient(circle at 40% 80%, 
-                    rgba(255, 255, 255, 0.6) 1%, 
+                /* Тонкие текстуры мрамора */
+                radial-gradient(circle at 15% 25%, 
+                    rgba(168, 152, 128, 0.3) 1%, 
                     transparent 8%),
-                
-                /* Золотые прожилки */
-                linear-gradient(45deg, 
-                    transparent 45%,
-                    rgba(212, 175, 55, 0.1) 46%,
-                    rgba(212, 175, 55, 0.3) 49%,
-                    rgba(244, 228, 166, 0.4) 50%,
-                    rgba(212, 175, 55, 0.3) 51%,
-                    rgba(212, 175, 55, 0.1) 54%,
-                    transparent 55%),
-                linear-gradient(-45deg, 
-                    transparent 65%,
-                    rgba(212, 175, 55, 0.1) 66%,
-                    rgba(212, 175, 55, 0.2) 69%,
-                    rgba(244, 228, 166, 0.3) 70%,
-                    rgba(212, 175, 55, 0.2) 71%,
-                    rgba(212, 175, 55, 0.1) 74%,
-                    transparent 75%),
-                linear-gradient(90deg, 
-                    transparent 25%,
-                    rgba(212, 175, 55, 0.05) 26%,
-                    rgba(244, 228, 166, 0.1) 27%,
-                    rgba(212, 175, 55, 0.05) 28%,
-                    transparent 29%);
+                radial-gradient(circle at 85% 75%, 
+                    rgba(152, 117, 91, 0.4) 2%, 
+                    transparent 10%),
+                radial-gradient(circle at 35% 65%, 
+                    rgba(216, 201, 176, 0.2) 3%, 
+                    transparent 12%),
+                radial-gradient(circle at 65% 35%, 
+                    rgba(169, 158, 139, 0.3) 2%, 
+                    transparent 9%),
+                radial-gradient(circle at 50% 50%, 
+                    rgba(120, 100, 80, 0.2) 5%, 
+                    transparent 15%);
             
-            /* Текстура мрамора */
-            background-blend-mode: overlay, overlay, overlay, normal, normal, normal;
+            /* Дымчатый эффект поверх */
+            background-blend-mode: multiply, overlay, overlay, overlay, overlay, overlay;
             z-index: -1;
         }
         
-        /* Тонкая текстура поверх мрамора */
+        /* ВЕТВИСТЫЕ ЗОЛОТЫЕ ПРОЖИЛКИ */
         .marble-bg::before {
             content: '';
             position: absolute;
@@ -98,20 +84,98 @@
             right: 0;
             bottom: 0;
             background-image: 
-                repeating-linear-gradient(
-                    0deg,
+                /* Тонкие ветвистые прожилки (основные) */
+                linear-gradient(65deg, 
+                    transparent 28%,
+                    rgba(212, 175, 55, 0.08) 29%,
+                    rgba(244, 228, 166, 0.15) 32%,
+                    rgba(212, 175, 55, 0.08) 35%,
+                    transparent 36%,
+                    transparent 48%,
+                    rgba(212, 175, 55, 0.1) 49%,
+                    rgba(244, 228, 166, 0.2) 51%,
+                    rgba(212, 175, 55, 0.1) 53%,
+                    transparent 54%),
+                
+                /* Ветвящиеся линии под углом */
+                linear-gradient(-75deg, 
+                    transparent 62%,
+                    rgba(212, 175, 55, 0.05) 63%,
+                    rgba(244, 228, 166, 0.12) 65%,
+                    rgba(212, 175, 55, 0.05) 67%,
+                    transparent 68%,
+                    transparent 82%,
+                    rgba(212, 175, 55, 0.07) 83%,
+                    rgba(244, 228, 166, 0.15) 85%,
+                    rgba(212, 175, 55, 0.07) 87%,
+                    transparent 88%),
+                
+                /* Очень тонкие разветвления */
+                linear-gradient(40deg, 
+                    transparent 15%,
+                    rgba(244, 228, 166, 0.03) 16%,
+                    transparent 17%,
+                    transparent 45%,
+                    rgba(212, 175, 55, 0.04) 46%,
+                    transparent 47%),
+                
+                /* Вертикальные тонкие линии */
+                linear-gradient(90deg, 
+                    transparent 10%,
+                    rgba(212, 175, 55, 0.02) 11%,
+                    transparent 12%,
+                    transparent 30%,
+                    rgba(244, 228, 166, 0.03) 31%,
+                    transparent 32%,
+                    transparent 70%,
+                    rgba(212, 175, 55, 0.02) 71%,
+                    transparent 72%),
+                
+                /* Разветвляющаяся сетка */
+                repeating-linear-gradient(0deg,
                     transparent,
-                    rgba(255, 255, 255, 0.1) 1px,
-                    transparent 2px
-                ),
-                repeating-linear-gradient(
-                    90deg,
+                    transparent 98px,
+                    rgba(212, 175, 55, 0.01) 98px,
+                    rgba(212, 175, 55, 0.01) 100px),
+                repeating-linear-gradient(90deg,
                     transparent,
-                    rgba(152, 117, 91, 0.05) 1px,
-                    transparent 2px
-                );
-            opacity: 0.3;
+                    transparent 98px,
+                    rgba(244, 228, 166, 0.01) 98px,
+                    rgba(244, 228, 166, 0.01) 100px);
+            
+            opacity: 0.6;
+            mix-blend-mode: screen;
+        }
+        
+        /* Мраморные вены и пятна */
+        .marble-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 40%, 
+                    rgba(152, 117, 91, 0.1) 0%,
+                    transparent 70%),
+                radial-gradient(circle at 80% 60%, 
+                    rgba(88, 71, 56, 0.15) 0%,
+                    transparent 80%),
+                radial-gradient(circle at 40% 80%, 
+                    rgba(42, 26, 15, 0.2) 0%,
+                    transparent 60%),
+                radial-gradient(circle at 60% 20%, 
+                    rgba(120, 100, 80, 0.1) 0%,
+                    transparent 75%);
+            
             mix-blend-mode: overlay;
+            opacity: 0.4;
+        }
+        
+        /* Эффект глубины с лёгким размытием */
+        .marble-bg {
+            filter: blur(0.3px);
         }
         
         .app {
@@ -123,70 +187,86 @@
         
         /* Главная карточка */
         .welcome-card {
-            background: rgba(255, 255, 255, 0.92);
+            background: rgba(30, 23, 18, 0.85);
             border-radius: 28px;
             padding: 60px 35px;
             text-align: center;
             box-shadow: 
-                0 20px 50px rgba(61, 31, 18, 0.15),
-                0 0 0 1px rgba(212, 175, 55, 0.1),
-                0 0 30px rgba(212, 175, 55, 0.05) inset;
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            backdrop-filter: blur(10px);
+                0 25px 60px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(212, 175, 55, 0.15),
+                0 0 40px rgba(212, 175, 55, 0.1) inset;
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            backdrop-filter: blur(15px) saturate(180%);
             position: relative;
             overflow: hidden;
         }
         
-        /* Золотая кайма */
+        /* Золотая кайма с градиентом */
         .welcome-card::before {
             content: '';
             position: absolute;
-            top: 2px;
-            left: 2px;
-            right: 2px;
-            bottom: 2px;
-            border-radius: 26px;
-            border: 1px solid rgba(212, 175, 55, 0.3);
+            top: 1px;
+            left: 1px;
+            right: 1px;
+            bottom: 1px;
+            border-radius: 27px;
+            border: 1px solid transparent;
+            background: linear-gradient(135deg, 
+                rgba(212, 175, 55, 0.4), 
+                rgba(244, 228, 166, 0.2),
+                rgba(212, 175, 55, 0.4)) border-box;
+            mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
             pointer-events: none;
         }
         
-        /* Логотип с золотым акцентом */
+        /* Логотип */
         .logo {
             font-size: 52px;
             margin-bottom: 25px;
-            color: var(--dark-chocolate);
-            text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+            color: var(--light-gold);
+            text-shadow: 
+                0 0 25px rgba(212, 175, 55, 0.5),
+                0 0 50px rgba(212, 175, 55, 0.2);
             position: relative;
             display: inline-block;
         }
         
+        /* Золотая линия под логотипом */
         .logo::after {
             content: '';
             position: absolute;
-            bottom: -5px;
+            bottom: -8px;
             left: 50%;
             transform: translateX(-50%);
-            width: 40px;
-            height: 2px;
+            width: 50px;
+            height: 1px;
             background: linear-gradient(90deg, 
                 transparent, 
                 var(--gold), 
+                var(--light-gold), 
+                var(--gold), 
                 transparent);
+            opacity: 0.8;
         }
         
-        /* Заголовок с акцентом на "mé" */
+        /* Заголовок */
         .main-title {
-            color: var(--dark-chocolate);
+            color: var(--light-gold);
             font-size: 36px;
-            font-weight: 800;
+            font-weight: 300;
             margin-bottom: 15px;
-            letter-spacing: 1.5px;
+            letter-spacing: 3px;
             position: relative;
+            text-transform: uppercase;
+            font-family: 'Georgia', serif;
         }
         
+        /* Акцент на "mé" */
         .accent {
-            color: var(--sand-beige);
+            color: var(--pure-white);
             font-style: italic;
+            font-weight: 400;
             position: relative;
             display: inline-block;
         }
@@ -194,71 +274,72 @@
         .accent::after {
             content: 'é';
             position: absolute;
-            font-size: 18px;
-            top: -12px;
-            right: -14px;
+            font-size: 20px;
+            top: -14px;
+            right: -16px;
             color: var(--gold);
-            text-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+            text-shadow: 0 0 8px rgba(212, 175, 55, 0.7);
             font-weight: normal;
+            font-family: 'Times New Roman', serif;
         }
         
         /* Слоган */
         .tagline {
-            color: var(--walnut-brown);
-            font-size: 18px;
+            color: rgba(244, 228, 166, 0.9);
+            font-size: 17px;
             line-height: 1.6;
             margin-bottom: 50px;
-            font-weight: 400;
-            padding: 0 10px;
+            font-weight: 300;
+            padding: 0 15px;
             position: relative;
+            letter-spacing: 0.5px;
+            font-family: 'Georgia', serif;
+        }
+        
+        /* Декоративные элементы слогана */
+        .tagline::before,
+        .tagline::after {
+            content: '❖';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(212, 175, 55, 0.4);
+            font-size: 10px;
         }
         
         .tagline::before {
-            content: '✦';
-            position: absolute;
-            left: -5px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--gold);
-            font-size: 12px;
-            opacity: 0.5;
+            left: 0;
         }
         
         .tagline::after {
-            content: '✦';
-            position: absolute;
-            right: -5px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--gold);
-            font-size: 12px;
-            opacity: 0.5;
+            right: 0;
         }
         
         /* Основная кнопка */
         .primary-btn {
             background: linear-gradient(135deg, 
-                var(--dark-chocolate) 0%, 
-                var(--walnut-brown) 100%);
-            color: var(--pure-white);
+                rgba(61, 31, 18, 0.9) 0%, 
+                rgba(88, 71, 56, 0.9) 100%);
+            color: var(--light-gold);
             border: none;
             padding: 20px 45px;
             border-radius: 30px;
-            font-size: 16px;
-            font-weight: 600;
+            font-size: 15px;
+            font-weight: 500;
             width: 100%;
             cursor: pointer;
             transition: all 0.4s ease;
-            letter-spacing: 1.5px;
+            letter-spacing: 2px;
             text-transform: uppercase;
             position: relative;
             overflow: hidden;
             box-shadow: 
-                0 8px 25px rgba(61, 31, 18, 0.2),
-                0 0 0 1px rgba(212, 175, 55, 0.2);
+                0 10px 30px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(212, 175, 55, 0.3);
+            font-family: 'Georgia', serif;
         }
         
-        /* Золотое свечение кнопки */
+        /* Золотая подсветка кнопки */
         .primary-btn::before {
             content: '';
             position: absolute;
@@ -268,9 +349,11 @@
             height: 100%;
             background: linear-gradient(90deg,
                 transparent,
-                rgba(212, 175, 55, 0.2),
+                rgba(212, 175, 55, 0.15),
+                rgba(244, 228, 166, 0.25),
+                rgba(212, 175, 55, 0.15),
                 transparent);
-            transition: left 0.7s ease;
+            transition: left 0.8s ease;
         }
         
         .primary-btn:hover::before {
@@ -280,9 +363,10 @@
         .primary-btn:hover {
             transform: translateY(-3px);
             box-shadow: 
-                0 15px 35px rgba(61, 31, 18, 0.25),
-                0 0 0 1px rgba(212, 175, 55, 0.3),
-                0 0 20px rgba(212, 175, 55, 0.1);
+                0 15px 40px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(212, 175, 55, 0.5),
+                0 0 30px rgba(212, 175, 55, 0.2);
+            color: var(--pure-white);
         }
         
         .primary-btn:active {
@@ -301,25 +385,35 @@
             }
         }
         
-        .welcome-card {
-            animation: fadeInUp 0.8s ease-out;
+        /* Медленное мерцание прожилок */
+        @keyframes marbleGlow {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 0.7; }
         }
         
-        /* Плавное появление элементов */
-        .logo { animation: fadeInUp 0.8s ease-out 0.1s both; }
-        .main-title { animation: fadeInUp 0.8s ease-out 0.2s both; }
-        .tagline { animation: fadeInUp 0.8s ease-out 0.3s both; }
-        .primary-btn { animation: fadeInUp 0.8s ease-out 0.4s both; }
+        .marble-bg::before {
+            animation: marbleGlow 8s ease-in-out infinite;
+        }
+        
+        .welcome-card {
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        /* Последовательное появление элементов */
+        .logo { animation: fadeInUp 1s ease-out 0.2s both; }
+        .main-title { animation: fadeInUp 1s ease-out 0.4s both; }
+        .tagline { animation: fadeInUp 1s ease-out 0.6s both; }
+        .primary-btn { animation: fadeInUp 1s ease-out 0.8s both; }
     </style>
 </head>
 <body>
-    <!-- Мраморный фон с золотыми прожилками -->
+    <!-- Тёмный мраморный фон с ветвистыми прожилками -->
     <div class="marble-bg"></div>
     
     <div class="app">
         <div class="welcome-card">
             <h1 class="main-title">Scentmé</h1>
-            <p class="tagline">Найди свой аромат</p>
+            <p class="tagline">Найди аромат, который пахнет тобой</p>
             <button class="primary-btn" onclick="startJourney()">
                 НАЧАТЬ ПУТЕШЕСТВИЕ
             </button>
@@ -332,21 +426,19 @@
         if (tg) {
             tg.expand();
             tg.setHeaderColor('#3D1F12');
-            tg.setBackgroundColor('#F1EADA');
+            tg.setBackgroundColor('#2A1A0F');
         }
         
         function startJourney() {
             if (tg) {
-                // В Telegram - отправляем данные
                 tg.sendData(JSON.stringify({action: 'start'}));
-                tg.showAlert("🚀 Отлично! Скоро добавим экран выбора пола и типа аромата!");
+                tg.showAlert("✨ Scentmé готов к работе! Скоро добавим выбор ароматов.");
             } else {
-                // В браузере - сообщение
-                alert("🎉 Приложение Scentmé запущено!\n\nСледующие шаги:\n1. Выбор пола\n2. Выбор типа продукта\n3. Вопросы о предпочтениях\n4. Персональные рекомендации");
+                alert("🎭 Scentmé\n\nЭлегантный поиск вашего уникального аромата начинается здесь...");
             }
         }
         
-        // Автоматический HTTPS для GitHub Pages
+        // Автоматический HTTPS
         if (location.protocol === 'http:' && location.hostname.includes('github.io')) {
             location.href = location.href.replace('http:', 'https:');
         }
