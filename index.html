@@ -37,46 +37,35 @@
             overflow: hidden;
         }
         
-        /* ТЁМНЫЙ МРАМОРНЫЙ ФОН С ПЕРЕТЕКАЮЩИМИ ЦВЕТАМИ */
+        /* ФОНОВОЕ ИЗОБРАЖЕНИЕ МРАМОРА */
         .marble-bg {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: 
-                /* Основной градиент с несколькими цветами */
-                linear-gradient(135deg, 
-                    #2A1A0F 0%,     /* Тёмный шоколад */
-                    #3D2A1B 25%,    /* Коричнево-серый */
-                    #584738 50%,    /* Ореховый */
-                    #3D2A1B 75%,    /* Коричнево-серый */
-                    #2A1A0F 100%),  /* Тёмный шоколад */
-                
-                /* Тонкие текстуры мрамора */
-                radial-gradient(circle at 15% 25%, 
-                    rgba(168, 152, 128, 0.3) 1%, 
-                    transparent 8%),
-                radial-gradient(circle at 85% 75%, 
-                    rgba(152, 117, 91, 0.4) 2%, 
-                    transparent 10%),
-                radial-gradient(circle at 35% 65%, 
-                    rgba(216, 201, 176, 0.2) 3%, 
-                    transparent 12%),
-                radial-gradient(circle at 65% 35%, 
-                    rgba(169, 158, 139, 0.3) 2%, 
-                    transparent 9%),
-                radial-gradient(circle at 50% 50%, 
-                    rgba(120, 100, 80, 0.2) 5%, 
-                    transparent 15%);
-            
-            /* Дымчатый эффект поверх */
-            background-blend-mode: multiply, overlay, overlay, overlay, overlay, overlay;
             z-index: -1;
         }
         
-        /* ВЕТВИСТЫЕ ЗОЛОТЫЕ ПРОЖИЛКИ */
+        /* Фоновое изображение */
         .marble-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            /* Вставьте URL вашего изображения мрамора */
+            background-image: url('background-image: url('https://raw.githubusercontent.com/Mi-Kolt/scentme-app/main/marble.svg');');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            /* Затемнение изображения для лучшей читаемости текста */
+            filter: brightness(0.5) contrast(1.1) saturate(1.2);
+        }
+        
+        /* ВЕТВИСТЫЕ ЗОЛОТЫЕ ПРОЖИЛКИ поверх изображения */
+        .marble-bg::after {
             content: '';
             position: absolute;
             top: 0;
@@ -141,21 +130,9 @@
                     transparent,
                     transparent 98px,
                     rgba(244, 228, 166, 0.01) 98px,
-                    rgba(244, 228, 166, 0.01) 100px);
-            
-            opacity: 0.6;
-            mix-blend-mode: screen;
-        }
-        
-        /* Мраморные вены и пятна */
-        .marble-bg::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: 
+                    rgba(244, 228, 166, 0.01) 100px),
+                
+                /* Мраморные вены и пятна (поверхностный эффект) */
                 radial-gradient(circle at 20% 40%, 
                     rgba(152, 117, 91, 0.1) 0%,
                     transparent 70%),
@@ -167,13 +144,18 @@
                     transparent 60%),
                 radial-gradient(circle at 60% 20%, 
                     rgba(120, 100, 80, 0.1) 0%,
-                    transparent 75%);
+                    transparent 75%),
+                
+                /* Затемнение краёв для фокуса на центре */
+                radial-gradient(circle at center, 
+                    transparent 40%,
+                    rgba(30, 23, 18, 0.4) 100%);
             
             mix-blend-mode: overlay;
-            opacity: 0.4;
+            opacity: 0.7;
         }
         
-        /* Эффект глубины с лёгким размытием */
+        /* Эффект глубины */
         .marble-bg {
             filter: blur(0.3px);
         }
@@ -387,11 +369,11 @@
         
         /* Медленное мерцание прожилок */
         @keyframes marbleGlow {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 0.7; }
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 0.8; }
         }
         
-        .marble-bg::before {
+        .marble-bg::after {
             animation: marbleGlow 8s ease-in-out infinite;
         }
         
@@ -407,7 +389,7 @@
     </style>
 </head>
 <body>
-    <!-- Тёмный мраморный фон с ветвистыми прожилками -->
+    <!-- Фон с изображением мрамора и прожилками -->
     <div class="marble-bg"></div>
     
     <div class="app">
