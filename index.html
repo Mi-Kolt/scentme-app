@@ -6,17 +6,21 @@
     <title>Scentmé - ваш парфюмерный гид</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* ЦВЕТОВАЯ ПАЛИТРА SCENTMÉ */
+        /* ЦВЕТОВАЯ ПАЛИТРА SCENTMÉ - СВЕТЛАЯ ТЕМА */
         :root {
-            --dark-chocolate: #3D1F12;
-            --walnut-brown: #584738;
-            --sand-beige: #98755B;
-            --cream-ivory: #F1EADA;
-            --pure-white: #FFFFFF;
+            /* Основная палитра из изображения */
+            --earthen: #9C8A7A;      /* Терракотовый/земляной */
+            --luxe: #D8C9B0;         /* Роскошный золотистый */
+            --alabaster: #F5F1E8;    /* Белый алебастр */
+            --silken: #E8DFD0;       /* Шелковый бежевый */
+            --moss: #8A9B8C;         /* Мшистый зеленый */
+            --smoked-taupe: #7A6D64; /* Дымчатый серо-коричневый */
+            --dark-juniper: #5A6D5E; /* Темный можжевельник (прожилки) */
+            
+            /* Акцентные цвета */
             --gold: #D4AF37;
             --light-gold: #F4E4A6;
-            --dark-beige: #D8C9B0;
-            --warm-gray: #A99E8B;
+            --pure-white: #FFFFFF;
         }
         
         * {
@@ -35,9 +39,10 @@
             margin: 0;
             position: relative;
             overflow: hidden;
+            background: var(--alabaster);
         }
         
-        /* ТЁМНЫЙ МРАМОРНЫЙ ФОН С ПЕРЕТЕКАЮЩИМИ ЦВЕТАМИ */
+        /* СВЕТЛЫЙ МРАМОРНЫЙ ФОН */
         .marble-bg {
             position: fixed;
             top: 0;
@@ -45,37 +50,31 @@
             right: 0;
             bottom: 0;
             background: 
-                /* Основной градиент с несколькими цветами */
+                /* Основной светлый градиент */
                 linear-gradient(135deg, 
-                    #2A1A0F 0%,     /* Тёмный шоколад */
-                    #3D2A1B 25%,    /* Коричнево-серый */
-                    #584738 50%,    /* Ореховый */
-                    #3D2A1B 75%,    /* Коричнево-серый */
-                    #2A1A0F 100%),  /* Тёмный шоколад */
+                    var(--alabaster) 0%,      /* Alabaster */
+                    var(--silken) 25%,        /* Silken */
+                    var(--luxe) 50%,          /* Luxe */
+                    var(--silken) 75%,        /* Silken */
+                    var(--alabaster) 100%),   /* Alabaster */
                 
-                /* Тонкие текстуры мрамора */
+                /* Тонкие текстуры светлого мрамора */
                 radial-gradient(circle at 15% 25%, 
-                    rgba(168, 152, 128, 0.3) 1%, 
+                    rgba(232, 223, 208, 0.3) 1%, /* Silken оттенок */
                     transparent 8%),
                 radial-gradient(circle at 85% 75%, 
-                    rgba(152, 117, 91, 0.4) 2%, 
+                    rgba(216, 201, 176, 0.4) 2%, /* Luxe оттенок */
                     transparent 10%),
                 radial-gradient(circle at 35% 65%, 
-                    rgba(216, 201, 176, 0.2) 3%, 
-                    transparent 12%),
-                radial-gradient(circle at 65% 35%, 
-                    rgba(169, 158, 139, 0.3) 2%, 
-                    transparent 9%),
-                radial-gradient(circle at 50% 50%, 
-                    rgba(120, 100, 80, 0.2) 5%, 
-                    transparent 15%);
+                    rgba(245, 241, 232, 0.2) 3%, /* Alabaster оттенок */
+                    transparent 12%);
             
-            /* Дымчатый эффект поверх */
-            background-blend-mode: multiply, overlay, overlay, overlay, overlay, overlay;
+            /* Смешивание слоев */
+            background-blend-mode: multiply, overlay, overlay;
             z-index: -1;
         }
         
-        /* ВЕТВИСТЫЕ ЗОЛОТЫЕ ПРОЖИЛКИ */
+        /* ПРОЖИЛКИ DARK JUNIPER - БОЛЬШЕ И БЕЗ БЛЮРА */
         .marble-bg::before {
             content: '';
             position: absolute;
@@ -84,70 +83,144 @@
             right: 0;
             bottom: 0;
             background-image: 
-                /* Тонкие ветвистые прожилки (основные) */
-                linear-gradient(65deg, 
-                    transparent 28%,
-                    rgba(212, 175, 55, 0.08) 29%,
-                    rgba(244, 228, 166, 0.15) 32%,
-                    rgba(212, 175, 55, 0.08) 35%,
-                    transparent 36%,
-                    transparent 48%,
-                    rgba(212, 175, 55, 0.1) 49%,
-                    rgba(244, 228, 166, 0.2) 51%,
-                    rgba(212, 175, 55, 0.1) 53%,
-                    transparent 54%),
-                
-                /* Ветвящиеся линии под углом */
-                linear-gradient(-75deg, 
-                    transparent 62%,
-                    rgba(212, 175, 55, 0.05) 63%,
-                    rgba(244, 228, 166, 0.12) 65%,
-                    rgba(212, 175, 55, 0.05) 67%,
-                    transparent 68%,
-                    transparent 82%,
-                    rgba(212, 175, 55, 0.07) 83%,
-                    rgba(244, 228, 166, 0.15) 85%,
-                    rgba(212, 175, 55, 0.07) 87%,
-                    transparent 88%),
-                
-                /* Очень тонкие разветвления */
-                linear-gradient(40deg, 
-                    transparent 15%,
-                    rgba(244, 228, 166, 0.03) 16%,
-                    transparent 17%,
-                    transparent 45%,
-                    rgba(212, 175, 55, 0.04) 46%,
-                    transparent 47%),
-                
-                /* Вертикальные тонкие линии */
-                linear-gradient(90deg, 
+                /* Горизонтальные линии - основные толстые */
+                linear-gradient(0deg, 
                     transparent 10%,
-                    rgba(212, 175, 55, 0.02) 11%,
-                    transparent 12%,
-                    transparent 30%,
-                    rgba(244, 228, 166, 0.03) 31%,
-                    transparent 32%,
+                    var(--dark-juniper) 10%,
+                    var(--dark-juniper) 11%,
+                    transparent 11%,
+                    transparent 25%,
+                    var(--dark-juniper) 25%,
+                    var(--dark-juniper) 26%,
+                    transparent 26%,
+                    transparent 40%,
+                    var(--dark-juniper) 40%,
+                    var(--dark-juniper) 41%,
+                    transparent 41%,
+                    transparent 55%,
+                    var(--dark-juniper) 55%,
+                    var(--dark-juniper) 56%,
+                    transparent 56%,
                     transparent 70%,
-                    rgba(212, 175, 55, 0.02) 71%,
-                    transparent 72%),
+                    var(--dark-juniper) 70%,
+                    var(--dark-juniper) 71%,
+                    transparent 71%,
+                    transparent 85%,
+                    var(--dark-juniper) 85%,
+                    var(--dark-juniper) 86%,
+                    transparent 86%),
                 
-                /* Разветвляющаяся сетка */
+                /* Вертикальные линии */
+                linear-gradient(90deg, 
+                    transparent 15%,
+                    var(--dark-juniper) 15%,
+                    var(--dark-juniper) 16%,
+                    transparent 16%,
+                    transparent 30%,
+                    var(--dark-juniper) 30%,
+                    var(--dark-juniper) 31%,
+                    transparent 31%,
+                    transparent 45%,
+                    var(--dark-juniper) 45%,
+                    var(--dark-juniper) 46%,
+                    transparent 46%,
+                    transparent 60%,
+                    var(--dark-juniper) 60%,
+                    var(--dark-juniper) 61%,
+                    transparent 61%,
+                    transparent 75%,
+                    var(--dark-juniper) 75%,
+                    var(--dark-juniper) 76%,
+                    transparent 76%),
+                
+                /* Диагональные линии (45 градусов) */
+                linear-gradient(45deg, 
+                    transparent 20%,
+                    var(--dark-juniper) 20%,
+                    var(--dark-juniper) 21%,
+                    transparent 21%,
+                    transparent 40%,
+                    var(--dark-juniper) 40%,
+                    var(--dark-juniper) 41%,
+                    transparent 41%,
+                    transparent 60%,
+                    var(--dark-juniper) 60%,
+                    var(--dark-juniper) 61%,
+                    transparent 61%,
+                    transparent 80%,
+                    var(--dark-juniper) 80%,
+                    var(--dark-juniper) 81%,
+                    transparent 81%),
+                
+                /* Диагональные линии (135 градусов) */
+                linear-gradient(135deg, 
+                    transparent 15%,
+                    var(--dark-juniper) 15%,
+                    var(--dark-juniper) 16%,
+                    transparent 16%,
+                    transparent 35%,
+                    var(--dark-juniper) 35%,
+                    var(--dark-juniper) 36%,
+                    transparent 36%,
+                    transparent 55%,
+                    var(--dark-juniper) 55%,
+                    var(--dark-juniper) 56%,
+                    transparent 56%,
+                    transparent 75%,
+                    var(--dark-juniper) 75%,
+                    var(--dark-juniper) 76%,
+                    transparent 76%),
+                
+                /* Тонкая сетка (горизонтальная) */
                 repeating-linear-gradient(0deg,
                     transparent,
-                    transparent 98px,
-                    rgba(212, 175, 55, 0.01) 98px,
-                    rgba(212, 175, 55, 0.01) 100px),
+                    transparent 24px,
+                    var(--dark-juniper) 24px,
+                    var(--dark-juniper) 25px),
+                
+                /* Тонкая сетка (вертикальная) */
                 repeating-linear-gradient(90deg,
                     transparent,
-                    transparent 98px,
-                    rgba(244, 228, 166, 0.01) 98px,
-                    rgba(244, 228, 166, 0.01) 100px);
+                    transparent 24px,
+                    var(--dark-juniper) 24px,
+                    var(--dark-juniper) 25px),
+                
+                /* Очень тонкие дополнительные линии */
+                linear-gradient(30deg, 
+                    transparent 5%,
+                    rgba(90, 109, 94, 0.4) 5%,
+                    rgba(90, 109, 94, 0.4) 5.5%,
+                    transparent 5.5%,
+                    transparent 20%,
+                    rgba(90, 109, 94, 0.4) 20%,
+                    rgba(90, 109, 94, 0.4) 20.5%,
+                    transparent 20.5%,
+                    transparent 35%,
+                    rgba(90, 109, 94, 0.4) 35%,
+                    rgba(90, 109, 94, 0.4) 35.5%,
+                    transparent 35.5%),
+                
+                /* Вертикальные тонкие */
+                linear-gradient(90deg, 
+                    transparent 8%,
+                    rgba(90, 109, 94, 0.3) 8%,
+                    rgba(90, 109, 94, 0.3) 8.3%,
+                    transparent 8.3%,
+                    transparent 23%,
+                    rgba(90, 109, 94, 0.3) 23%,
+                    rgba(90, 109, 94, 0.3) 23.3%,
+                    transparent 23.3%,
+                    transparent 38%,
+                    rgba(90, 109, 94, 0.3) 38%,
+                    rgba(90, 109, 94, 0.3) 38.3%,
+                    transparent 38.3%);
             
-            opacity: 0.6;
-            mix-blend-mode: screen;
+            opacity: 0.15;
+            mix-blend-mode: multiply;
+            /* БЕЗ РАЗМЫТИЯ */
         }
         
-        /* Мраморные вены и пятна */
+        /* ДОПОЛНИТЕЛЬНЫЕ ПРОЖИЛКИ */
         .marble-bg::after {
             content: '';
             position: absolute;
@@ -156,26 +229,44 @@
             right: 0;
             bottom: 0;
             background-image: 
-                radial-gradient(circle at 20% 40%, 
-                    rgba(152, 117, 91, 0.1) 0%,
-                    transparent 70%),
-                radial-gradient(circle at 80% 60%, 
-                    rgba(88, 71, 56, 0.15) 0%,
-                    transparent 80%),
-                radial-gradient(circle at 40% 80%, 
-                    rgba(42, 26, 15, 0.2) 0%,
-                    transparent 60%),
-                radial-gradient(circle at 60% 20%, 
-                    rgba(120, 100, 80, 0.1) 0%,
-                    transparent 75%);
+                /* Волнистые линии */
+                repeating-linear-gradient(0deg,
+                    transparent,
+                    transparent 18px,
+                    rgba(90, 109, 94, 0.2) 18px,
+                    rgba(90, 109, 94, 0.2) 19px,
+                    transparent 19px,
+                    transparent 36px),
+                
+                /* Зигзагообразные линии */
+                repeating-linear-gradient(45deg,
+                    transparent,
+                    transparent 12px,
+                    rgba(90, 109, 94, 0.15) 12px,
+                    rgba(90, 109, 94, 0.15) 13px,
+                    transparent 13px,
+                    transparent 24px),
+                
+                /* Точки и прерывистые линии */
+                radial-gradient(circle at 10% 10%, 
+                    var(--dark-juniper) 1px, 
+                    transparent 1px),
+                radial-gradient(circle at 30% 30%, 
+                    var(--dark-juniper) 1px, 
+                    transparent 1px),
+                radial-gradient(circle at 50% 50%, 
+                    var(--dark-juniper) 1px, 
+                    transparent 1px),
+                radial-gradient(circle at 70% 70%, 
+                    var(--dark-juniper) 1px, 
+                    transparent 1px),
+                radial-gradient(circle at 90% 90%, 
+                    var(--dark-juniper) 1px, 
+                    transparent 1px);
             
-            mix-blend-mode: overlay;
-            opacity: 0.4;
-        }
-        
-        /* Эффект глубины с лёгким размытием */
-        .marble-bg {
-            filter: blur(0.3px);
+            background-size: 50px 50px, 30px 30px, 100px 100px, 100px 100px, 100px 100px;
+            mix-blend-mode: multiply;
+            opacity: 0.1;
         }
         
         .app {
@@ -187,72 +278,42 @@
         
         /* Главная карточка */
         .welcome-card {
-            background: rgba(30, 23, 18, 0.85);
+            background: rgba(245, 241, 232, 0.95); /* Alabaster с прозрачностью */
             border-radius: 28px;
             padding: 60px 35px;
             text-align: center;
             box-shadow: 
-                0 25px 60px rgba(0, 0, 0, 0.4),
-                0 0 0 1px rgba(212, 175, 55, 0.15),
-                0 0 40px rgba(212, 175, 55, 0.1) inset;
-            border: 1px solid rgba(212, 175, 55, 0.25);
+                0 25px 60px rgba(122, 109, 100, 0.15), /* Smoked Taupe тень */
+                0 0 0 2px var(--dark-juniper),         /* Dark Juniper граница - толще */
+                0 0 40px rgba(138, 155, 140, 0.1) inset; /* Moss подсветка */
+            border: 2px solid var(--dark-juniper); /* Dark Juniper - толще */
             backdrop-filter: blur(15px) saturate(180%);
             position: relative;
             overflow: hidden;
         }
         
-        /* Золотая кайма с градиентом */
+        /* Кайма с градиентом Dark Juniper */
         .welcome-card::before {
             content: '';
             position: absolute;
-            top: 1px;
-            left: 1px;
-            right: 1px;
-            bottom: 1px;
-            border-radius: 27px;
+            top: 2px;
+            left: 2px;
+            right: 2px;
+            bottom: 2px;
+            border-radius: 26px;
             border: 1px solid transparent;
             background: linear-gradient(135deg, 
-                rgba(212, 175, 55, 0.4), 
-                rgba(244, 228, 166, 0.2),
-                rgba(212, 175, 55, 0.4)) border-box;
+                rgba(90, 109, 94, 0.4),    /* Dark Juniper */
+                rgba(138, 155, 140, 0.3),  /* Moss */
+                rgba(90, 109, 94, 0.4)) border-box; /* Dark Juniper */
             mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
             mask-composite: exclude;
             pointer-events: none;
         }
         
-        /* Логотип */
-        .logo {
-            font-size: 52px;
-            margin-bottom: 25px;
-            color: var(--light-gold);
-            text-shadow: 
-                0 0 25px rgba(212, 175, 55, 0.5),
-                0 0 50px rgba(212, 175, 55, 0.2);
-            position: relative;
-            display: inline-block;
-        }
-        
-        /* Золотая линия под логотипом */
-        .logo::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 50px;
-            height: 1px;
-            background: linear-gradient(90deg, 
-                transparent, 
-                var(--gold), 
-                var(--light-gold), 
-                var(--gold), 
-                transparent);
-            opacity: 0.8;
-        }
-        
         /* Заголовок */
         .main-title {
-            color: var(--light-gold);
+            color: var(--dark-juniper); /* Dark Juniper для текста */
             font-size: 36px;
             font-weight: 300;
             margin-bottom: 15px;
@@ -264,7 +325,7 @@
         
         /* Акцент на "mé" */
         .accent {
-            color: var(--pure-white);
+            color: var(--moss); /* Moss для акцента */
             font-style: italic;
             font-weight: 400;
             position: relative;
@@ -277,15 +338,32 @@
             font-size: 20px;
             top: -14px;
             right: -16px;
-            color: var(--gold);
-            text-shadow: 0 0 8px rgba(212, 175, 55, 0.7);
+            color: var(--smoked-taupe); /* Smoked Taupe для декора */
             font-weight: normal;
             font-family: 'Times New Roman', serif;
         }
         
+        /* Линия под заголовком */
+        .main-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px; /* Толще */
+            background: linear-gradient(90deg, 
+                transparent, 
+                var(--dark-juniper), 
+                var(--moss), 
+                var(--dark-juniper), 
+                transparent);
+            opacity: 0.8;
+        }
+        
         /* Слоган */
         .tagline {
-            color: rgba(244, 228, 166, 0.9);
+            color: var(--smoked-taupe); /* Smoked Taupe для вторичного текста */
             font-size: 17px;
             line-height: 1.6;
             margin-bottom: 50px;
@@ -303,8 +381,9 @@
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            color: rgba(212, 175, 55, 0.4);
-            font-size: 10px;
+            color: var(--moss); /* Moss для декора */
+            opacity: 0.6;
+            font-size: 12px;
         }
         
         .tagline::before {
@@ -318,9 +397,10 @@
         /* Основная кнопка */
         .primary-btn {
             background: linear-gradient(135deg, 
-                rgba(61, 31, 18, 0.9) 0%, 
-                rgba(88, 71, 56, 0.9) 100%);
-            color: var(--light-gold);
+                var(--luxe) 0%,     /* Luxe */
+                var(--earthen) 100% /* Earthen */
+            );
+            color: var(--dark-juniper); /* Dark Juniper для текста */
             border: none;
             padding: 20px 45px;
             border-radius: 30px;
@@ -334,12 +414,12 @@
             position: relative;
             overflow: hidden;
             box-shadow: 
-                0 10px 30px rgba(0, 0, 0, 0.3),
-                0 0 0 1px rgba(212, 175, 55, 0.3);
+                0 10px 30px rgba(122, 109, 100, 0.2),
+                0 0 0 2px var(--dark-juniper); /* Dark Juniper граница - толще */
             font-family: 'Georgia', serif;
         }
         
-        /* Золотая подсветка кнопки */
+        /* Подсветка кнопки */
         .primary-btn::before {
             content: '';
             position: absolute;
@@ -349,9 +429,9 @@
             height: 100%;
             background: linear-gradient(90deg,
                 transparent,
-                rgba(212, 175, 55, 0.15),
-                rgba(244, 228, 166, 0.25),
-                rgba(212, 175, 55, 0.15),
+                rgba(90, 109, 94, 0.2),     /* Dark Juniper */
+                rgba(138, 155, 140, 0.3),   /* Moss */
+                rgba(90, 109, 94, 0.2),     /* Dark Juniper */
                 transparent);
             transition: left 0.8s ease;
         }
@@ -363,10 +443,10 @@
         .primary-btn:hover {
             transform: translateY(-3px);
             box-shadow: 
-                0 15px 40px rgba(0, 0, 0, 0.4),
-                0 0 0 1px rgba(212, 175, 55, 0.5),
-                0 0 30px rgba(212, 175, 55, 0.2);
-            color: var(--pure-white);
+                0 15px 40px rgba(122, 109, 100, 0.3),
+                0 0 0 2px var(--moss), /* Moss при наведении */
+                0 0 30px rgba(138, 155, 140, 0.2);
+            color: var(--smoked-taupe); /* Smoked Taupe при наведении */
         }
         
         .primary-btn:active {
@@ -385,14 +465,23 @@
             }
         }
         
-        /* Медленное мерцание прожилок */
-        @keyframes marbleGlow {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 0.7; }
+        /* Анимация движения линий */
+        @keyframes linesMove {
+            0% {
+                background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
+            }
+            100% {
+                background-position: 100px 100px, 50px 50px, 80px 80px, 30px 30px, 0 100px, 100px 0, 40px 60px, 60px 40px;
+            }
         }
         
         .marble-bg::before {
-            animation: marbleGlow 8s ease-in-out infinite;
+            animation: linesMove 20s linear infinite;
+            background-size: 200% 200%, 150% 150%, 180% 180%, 120% 120%, 50px 50px, 50px 50px, 200% 200%, 200% 200%;
+        }
+        
+        .marble-bg::after {
+            animation: linesMove 30s linear infinite reverse;
         }
         
         .welcome-card {
@@ -400,19 +489,18 @@
         }
         
         /* Последовательное появление элементов */
-        .logo { animation: fadeInUp 1s ease-out 0.2s both; }
-        .main-title { animation: fadeInUp 1s ease-out 0.4s both; }
-        .tagline { animation: fadeInUp 1s ease-out 0.6s both; }
-        .primary-btn { animation: fadeInUp 1s ease-out 0.8s both; }
+        .main-title { animation: fadeInUp 1s ease-out 0.2s both; }
+        .tagline { animation: fadeInUp 1s ease-out 0.4s both; }
+        .primary-btn { animation: fadeInUp 1s ease-out 0.6s both; }
     </style>
 </head>
 <body>
-    <!-- Тёмный мраморный фон с ветвистыми прожилками -->
+    <!-- Светлый мраморный фон с прожилками Dark Juniper -->
     <div class="marble-bg"></div>
     
     <div class="app">
         <div class="welcome-card">
-            <h1 class="main-title">Scentmé</h1>
+            <h1 class="main-title">Scent<span class="accent">mé</span></h1>
             <p class="tagline">Найди аромат, который пахнет тобой</p>
             <button class="primary-btn" onclick="startJourney()">
                 НАЧАТЬ ПУТЕШЕСТВИЕ
@@ -425,8 +513,8 @@
         let tg = window.Telegram?.WebApp;
         if (tg) {
             tg.expand();
-            tg.setHeaderColor('#3D1F12');
-            tg.setBackgroundColor('#2A1A0F');
+            tg.setHeaderColor('#F5F1E8'); /* Alabaster для светлой темы */
+            tg.setBackgroundColor('#F5F1E8'); /* Alabaster для фона */
         }
         
         function startJourney() {
@@ -444,4 +532,5 @@
         }
     </script>
 </body>
-</html>
+    </html>
+
