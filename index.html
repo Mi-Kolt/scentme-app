@@ -58,6 +58,7 @@
                 transparent);
             --veins-gold: rgba(212, 175, 55, 0.08);
             --veins-light-gold: rgba(244, 228, 166, 0.15);
+            --icon-color: var(--light-gold);
         }
         
         /* СВЕТЛАЯ ТЕМА */
@@ -87,6 +88,7 @@
                 var(--milky-coffee));
             --veins-chocolate: rgba(104, 70, 39, 0.15);
             --veins-coffee: rgba(181, 146, 114, 0.12);
+            --icon-color: #5C4A36;
         }
         
         body {
@@ -125,7 +127,6 @@
             bottom: 0;
             /* ЛЕВАЯ ЧАСТЬ */
             background-image: 
-                /* Левая часть - основные прожилки */
                 linear-gradient(65deg, 
                     transparent 28%,
                     var(--veins-gold) 29%,
@@ -148,7 +149,6 @@
                     var(--veins-gold) 46%,
                     transparent 47%),
                 
-                /* Левая часть - дополнительные */
                 linear-gradient(85deg, 
                     transparent 5%,
                     var(--veins-gold) 6%,
@@ -175,7 +175,6 @@
             bottom: 0;
             /* ПРАВАЯ ЧАСТЬ */
             background-image: 
-                /* Правая часть - основные прожилки */
                 linear-gradient(115deg, 
                     transparent 28%,
                     var(--veins-gold) 29%,
@@ -198,7 +197,6 @@
                     var(--veins-gold) 46%,
                     transparent 47%),
                 
-                /* Правая часть - дополнительные */
                 linear-gradient(95deg, 
                     transparent 75%,
                     var(--veins-gold) 76%,
@@ -231,7 +229,6 @@
             bottom: 0;
             /* ЛЕВАЯ ЧАСТЬ */
             background-image: 
-                /* Левая часть - Chocolate прожилки */
                 linear-gradient(65deg, 
                     transparent 28%,
                     var(--veins-chocolate) 29%,
@@ -246,7 +243,6 @@
                     var(--veins-chocolate) 67%,
                     transparent 68%),
                 
-                /* Левая часть - Milky Coffee прожилки */
                 linear-gradient(40deg, 
                     transparent 15%,
                     var(--veins-coffee) 16%,
@@ -255,7 +251,6 @@
                     rgba(181, 146, 114, 0.14) 46%,
                     transparent 47%),
                 
-                /* Левая часть - дополнительные */
                 linear-gradient(85deg, 
                     transparent 5%,
                     var(--veins-chocolate) 6%,
@@ -283,7 +278,6 @@
             bottom: 0;
             /* ПРАВАЯ ЧАСТЬ */
             background-image: 
-                /* Правая часть - Chocolate прожилки */
                 linear-gradient(115deg, 
                     transparent 28%,
                     var(--veins-chocolate) 29%,
@@ -298,7 +292,6 @@
                     var(--veins-chocolate) 67%,
                     transparent 68%),
                 
-                /* Правая часть - Milky Coffee прожилки */
                 linear-gradient(140deg, 
                     transparent 15%,
                     var(--veins-coffee) 16%,
@@ -307,7 +300,6 @@
                     rgba(181, 146, 114, 0.14) 46%,
                     transparent 47%),
                 
-                /* Правая часть - дополнительные */
                 linear-gradient(95deg, 
                     transparent 75%,
                     var(--veins-chocolate) 76%,
@@ -326,7 +318,7 @@
             filter: blur(0.4px);
         }
         
-        /* ТУМБЛЕР ПЕРЕКЛЮЧЕНИЯ ТЕМ */
+        /* ТУМБЛЕР ПЕРЕКЛЮЧЕНИЯ ТЕМ С ИКОНКАМИ-КОНТУРАМИ */
         .theme-toggle {
             position: fixed;
             top: 25px;
@@ -337,12 +329,29 @@
             gap: 12px;
         }
         
-        .theme-label {
-            font-size: 12px;
-            font-weight: 500;
-            letter-spacing: 1px;
-            color: var(--text-primary);
+        /* Иконки-контуры */
+        .theme-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+        
+        .theme-icon:hover {
+            opacity: 1;
+        }
+        
+        .theme-icon svg {
+            width: 100%;
+            height: 100%;
+            stroke: var(--icon-color);
+            stroke-width: 1.5;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
         
         /* Стили переключателя */
@@ -366,7 +375,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0, 0, 0, 0.2);
+            background-color: rgba(0, 0, 0, 0.1);
             transition: none;
             border-radius: 34px;
             border: 1px solid var(--border-color);
@@ -386,7 +395,7 @@
         }
         
         input:checked + .toggle-slider {
-            background-color: rgba(255, 255, 255, 0.2);
+            background-color: rgba(255, 255, 255, 0.1);
         }
         
         input:checked + .toggle-slider:before {
@@ -602,14 +611,30 @@
     <div class="theme-bg dark active"></div>
     <div class="theme-bg light"></div>
     
-    <!-- Тумблер переключения темы -->
+    <!-- Тумблер переключения темы с иконками-контурами -->
     <div class="theme-toggle">
-        <span class="theme-label">ТЕМНАЯ</span>
+        <div class="theme-icon" title="Тёмная тема">
+            <svg viewBox="0 0 24 24">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+        </div>
         <label class="toggle-switch">
             <input type="checkbox" id="themeToggle">
             <span class="toggle-slider"></span>
         </label>
-        <span class="theme-label">СВЕТЛАЯ</span>
+        <div class="theme-icon" title="Светлая тема">
+            <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/>
+                <line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+        </div>
     </div>
     
     <div class="app">
