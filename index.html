@@ -6,27 +6,12 @@
     <title>Scentmé - ваш парфюмерный гид</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* ЦВЕТОВАЯ ПАЛИТРА SCENTMÉ - СВЕТЛАЯ ТЕМА */
-        :root {
-            /* Основная палитра из изображения */
-            --earthen: #9C8A7A;      /* Терракотовый/земляной */
-            --luxe: #D8C9B0;         /* Роскошный золотистый */
-            --alabaster: #F5F1E8;    /* Белый алебастр */
-            --silken: #E8DFD0;       /* Шелковый бежевый */
-            --moss: #8A9B8C;         /* Мшистый зеленый */
-            --smoked-taupe: #7A6D64; /* Дымчатый серо-коричневый */
-            --dark-juniper: #5A6D5E; /* Темный можжевельник (прожилки) */
-            
-            /* Акцентные цвета */
-            --gold: #D4AF37;
-            --light-gold: #F4E4A6;
-            --pure-white: #FFFFFF;
-        }
-        
+        /* ОБЩИЕ СТИЛИ */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, opacity 0.3s ease;
         }
         
         body {
@@ -39,189 +24,126 @@
             margin: 0;
             position: relative;
             overflow: hidden;
-            background: var(--alabaster);
         }
         
-        /* СВЕТЛЫЙ МРАМОРНЫЙ ФОН */
+        /* ТЁМНАЯ ТЕМА (по умолчанию) */
+        :root {
+            /* Тёмная палитра */
+            --dark-chocolate: #3D1F12;
+            --walnut-brown: #584738;
+            --sand-beige: #98755B;
+            --cream-ivory: #F1EADA;
+            --pure-white: #FFFFFF;
+            --gold: #D4AF37;
+            --light-gold: #F4E4A6;
+            --dark-beige: #D8C9B0;
+            --warm-gray: #A99E8B;
+            
+            /* Переменные для тёмной темы */
+            --bg-primary: #2A1A0F;
+            --bg-card: rgba(30, 23, 18, 0.85);
+            --text-primary: var(--light-gold);
+            --text-secondary: rgba(244, 228, 166, 0.9);
+            --border-color: rgba(212, 175, 55, 0.25);
+            --button-bg: linear-gradient(135deg, 
+                rgba(61, 31, 18, 0.9) 0%, 
+                rgba(88, 71, 56, 0.9) 100%);
+            --button-text: var(--light-gold);
+            --accent-color: var(--pure-white);
+            --title-color: var(--light-gold);
+            --line-color: linear-gradient(90deg, 
+                transparent, 
+                var(--gold), 
+                var(--light-gold), 
+                var(--gold), 
+                transparent);
+            --veins-color-1: rgba(212, 175, 55, 0.08);
+            --veins-color-2: rgba(244, 228, 166, 0.15);
+        }
+        
+        /* СВЕТЛАЯ ТЕМА */
+        .light-theme {
+            /* Яркая тёплая палитра */
+            --chocolate: #684627;
+            --roasted-peach: #E8A895;
+            --whole-wheat: #EFD2B0;
+            --milky-coffee: #B59272;
+            --cream: #FFE4B8;
+            
+            /* Переменные для светлой темы */
+            --bg-primary: #FFF8ED;
+            --bg-card: rgba(255, 252, 245, 0.95);
+            --text-primary: #5C4A36;
+            --text-secondary: #7D6B57;
+            --border-color: #684627;
+            --button-bg: linear-gradient(135deg, 
+                var(--roasted-peach) 0%,     
+                var(--whole-wheat) 100%);
+            --button-text: #684627;
+            --accent-color: #7D6B57;
+            --title-color: #684627;
+            --line-color: linear-gradient(90deg, 
+                var(--milky-coffee), 
+                var(--chocolate), 
+                var(--milky-coffee));
+            --veins-color-1: rgba(104, 70, 39, 0.15);
+            --veins-color-2: rgba(181, 146, 114, 0.12);
+        }
+        
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        /* ФОН ДЛЯ ТЁМНОЙ ТЕМЫ */
         .marble-bg {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: 
-                /* Основной светлый градиент */
-                linear-gradient(135deg, 
-                    var(--alabaster) 0%,      /* Alabaster */
-                    var(--silken) 25%,        /* Silken */
-                    var(--luxe) 50%,          /* Luxe */
-                    var(--silken) 75%,        /* Silken */
-                    var(--alabaster) 100%),   /* Alabaster */
-                
-                /* Тонкие текстуры светлого мрамора */
-                radial-gradient(circle at 15% 25%, 
-                    rgba(232, 223, 208, 0.3) 1%, /* Silken оттенок */
-                    transparent 8%),
-                radial-gradient(circle at 85% 75%, 
-                    rgba(216, 201, 176, 0.4) 2%, /* Luxe оттенок */
-                    transparent 10%),
-                radial-gradient(circle at 35% 65%, 
-                    rgba(245, 241, 232, 0.2) 3%, /* Alabaster оттенок */
-                    transparent 12%);
-            
-            /* Смешивание слоев */
-            background-blend-mode: multiply, overlay, overlay;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
             z-index: -1;
         }
         
-        /* ПРОЖИЛКИ DARK JUNIPER - БОЛЬШЕ И БЕЗ БЛЮРА */
-        .marble-bg::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: 
-                /* Горизонтальные линии - основные толстые */
-                linear-gradient(0deg, 
-                    transparent 10%,
-                    var(--dark-juniper) 10%,
-                    var(--dark-juniper) 11%,
-                    transparent 11%,
-                    transparent 25%,
-                    var(--dark-juniper) 25%,
-                    var(--dark-juniper) 26%,
-                    transparent 26%,
-                    transparent 40%,
-                    var(--dark-juniper) 40%,
-                    var(--dark-juniper) 41%,
-                    transparent 41%,
-                    transparent 55%,
-                    var(--dark-juniper) 55%,
-                    var(--dark-juniper) 56%,
-                    transparent 56%,
-                    transparent 70%,
-                    var(--dark-juniper) 70%,
-                    var(--dark-juniper) 71%,
-                    transparent 71%,
-                    transparent 85%,
-                    var(--dark-juniper) 85%,
-                    var(--dark-juniper) 86%,
-                    transparent 86%),
-                
-                /* Вертикальные линии */
-                linear-gradient(90deg, 
-                    transparent 15%,
-                    var(--dark-juniper) 15%,
-                    var(--dark-juniper) 16%,
-                    transparent 16%,
-                    transparent 30%,
-                    var(--dark-juniper) 30%,
-                    var(--dark-juniper) 31%,
-                    transparent 31%,
-                    transparent 45%,
-                    var(--dark-juniper) 45%,
-                    var(--dark-juniper) 46%,
-                    transparent 46%,
-                    transparent 60%,
-                    var(--dark-juniper) 60%,
-                    var(--dark-juniper) 61%,
-                    transparent 61%,
-                    transparent 75%,
-                    var(--dark-juniper) 75%,
-                    var(--dark-juniper) 76%,
-                    transparent 76%),
-                
-                /* Диагональные линии (45 градусов) */
-                linear-gradient(45deg, 
-                    transparent 20%,
-                    var(--dark-juniper) 20%,
-                    var(--dark-juniper) 21%,
-                    transparent 21%,
-                    transparent 40%,
-                    var(--dark-juniper) 40%,
-                    var(--dark-juniper) 41%,
-                    transparent 41%,
-                    transparent 60%,
-                    var(--dark-juniper) 60%,
-                    var(--dark-juniper) 61%,
-                    transparent 61%,
-                    transparent 80%,
-                    var(--dark-juniper) 80%,
-                    var(--dark-juniper) 81%,
-                    transparent 81%),
-                
-                /* Диагональные линии (135 градусов) */
-                linear-gradient(135deg, 
-                    transparent 15%,
-                    var(--dark-juniper) 15%,
-                    var(--dark-juniper) 16%,
-                    transparent 16%,
-                    transparent 35%,
-                    var(--dark-juniper) 35%,
-                    var(--dark-juniper) 36%,
-                    transparent 36%,
-                    transparent 55%,
-                    var(--dark-juniper) 55%,
-                    var(--dark-juniper) 56%,
-                    transparent 56%,
-                    transparent 75%,
-                    var(--dark-juniper) 75%,
-                    var(--dark-juniper) 76%,
-                    transparent 76%),
-                
-                /* Тонкая сетка (горизонтальная) */
-                repeating-linear-gradient(0deg,
-                    transparent,
-                    transparent 24px,
-                    var(--dark-juniper) 24px,
-                    var(--dark-juniper) 25px),
-                
-                /* Тонкая сетка (вертикальная) */
-                repeating-linear-gradient(90deg,
-                    transparent,
-                    transparent 24px,
-                    var(--dark-juniper) 24px,
-                    var(--dark-juniper) 25px),
-                
-                /* Очень тонкие дополнительные линии */
-                linear-gradient(30deg, 
-                    transparent 5%,
-                    rgba(90, 109, 94, 0.4) 5%,
-                    rgba(90, 109, 94, 0.4) 5.5%,
-                    transparent 5.5%,
-                    transparent 20%,
-                    rgba(90, 109, 94, 0.4) 20%,
-                    rgba(90, 109, 94, 0.4) 20.5%,
-                    transparent 20.5%,
-                    transparent 35%,
-                    rgba(90, 109, 94, 0.4) 35%,
-                    rgba(90, 109, 94, 0.4) 35.5%,
-                    transparent 35.5%),
-                
-                /* Вертикальные тонкие */
-                linear-gradient(90deg, 
-                    transparent 8%,
-                    rgba(90, 109, 94, 0.3) 8%,
-                    rgba(90, 109, 94, 0.3) 8.3%,
-                    transparent 8.3%,
-                    transparent 23%,
-                    rgba(90, 109, 94, 0.3) 23%,
-                    rgba(90, 109, 94, 0.3) 23.3%,
-                    transparent 23.3%,
-                    transparent 38%,
-                    rgba(90, 109, 94, 0.3) 38%,
-                    rgba(90, 109, 94, 0.3) 38.3%,
-                    transparent 38.3%);
-            
-            opacity: 0.15;
-            mix-blend-mode: multiply;
-            /* БЕЗ РАЗМЫТИЯ */
+        .marble-bg.active {
+            opacity: 1;
         }
         
-        /* ДОПОЛНИТЕЛЬНЫЕ ПРОЖИЛКИ */
-        .marble-bg::after {
+        /* Фон тёмной темы */
+        .marble-bg.dark {
+            background: 
+                linear-gradient(135deg, 
+                    #2A1A0F 0%,
+                    #3D2A1B 25%,
+                    #584738 50%,
+                    #3D2A1B 75%,
+                    #2A1A0F 100%),
+                
+                radial-gradient(circle at 15% 25%, 
+                    rgba(168, 152, 128, 0.3) 1%, 
+                    transparent 8%),
+                radial-gradient(circle at 85% 75%, 
+                    rgba(152, 117, 91, 0.4) 2%, 
+                    transparent 10%),
+                radial-gradient(circle at 35% 65%, 
+                    rgba(216, 201, 176, 0.2) 3%, 
+                    transparent 12%),
+                radial-gradient(circle at 65% 35%, 
+                    rgba(169, 158, 139, 0.3) 2%, 
+                    transparent 9%),
+                radial-gradient(circle at 50% 50%, 
+                    rgba(120, 100, 80, 0.2) 5%, 
+                    transparent 15%);
+            
+            background-blend-mode: multiply, overlay, overlay, overlay, overlay, overlay;
+        }
+        
+        /* Прожилки для тёмной темы */
+        .marble-bg.dark::before {
             content: '';
             position: absolute;
             top: 0;
@@ -229,44 +151,249 @@
             right: 0;
             bottom: 0;
             background-image: 
-                /* Волнистые линии */
-                repeating-linear-gradient(0deg,
-                    transparent,
-                    transparent 18px,
-                    rgba(90, 109, 94, 0.2) 18px,
-                    rgba(90, 109, 94, 0.2) 19px,
-                    transparent 19px,
-                    transparent 36px),
+                linear-gradient(65deg, 
+                    transparent 28%,
+                    rgba(212, 175, 55, 0.08) 29%,
+                    rgba(244, 228, 166, 0.15) 32%,
+                    rgba(212, 175, 55, 0.08) 35%,
+                    transparent 36%,
+                    transparent 48%,
+                    rgba(212, 175, 55, 0.1) 49%,
+                    rgba(244, 228, 166, 0.2) 51%,
+                    rgba(212, 175, 55, 0.1) 53%,
+                    transparent 54%),
                 
-                /* Зигзагообразные линии */
-                repeating-linear-gradient(45deg,
-                    transparent,
-                    transparent 12px,
-                    rgba(90, 109, 94, 0.15) 12px,
-                    rgba(90, 109, 94, 0.15) 13px,
-                    transparent 13px,
-                    transparent 24px),
+                linear-gradient(-75deg, 
+                    transparent 62%,
+                    rgba(212, 175, 55, 0.05) 63%,
+                    rgba(244, 228, 166, 0.12) 65%,
+                    rgba(212, 175, 55, 0.05) 67%,
+                    transparent 68%,
+                    transparent 82%,
+                    rgba(212, 175, 55, 0.07) 83%,
+                    rgba(244, 228, 166, 0.15) 85%,
+                    rgba(212, 175, 55, 0.07) 87%,
+                    transparent 88%),
                 
-                /* Точки и прерывистые линии */
-                radial-gradient(circle at 10% 10%, 
-                    var(--dark-juniper) 1px, 
-                    transparent 1px),
-                radial-gradient(circle at 30% 30%, 
-                    var(--dark-juniper) 1px, 
-                    transparent 1px),
-                radial-gradient(circle at 50% 50%, 
-                    var(--dark-juniper) 1px, 
-                    transparent 1px),
-                radial-gradient(circle at 70% 70%, 
-                    var(--dark-juniper) 1px, 
-                    transparent 1px),
-                radial-gradient(circle at 90% 90%, 
-                    var(--dark-juniper) 1px, 
-                    transparent 1px);
+                linear-gradient(40deg, 
+                    transparent 15%,
+                    rgba(244, 228, 166, 0.03) 16%,
+                    transparent 17%,
+                    transparent 45%,
+                    rgba(212, 175, 55, 0.04) 46%,
+                    transparent 47%),
+                
+                linear-gradient(90deg, 
+                    transparent 10%,
+                    rgba(212, 175, 55, 0.02) 11%,
+                    transparent 12%,
+                    transparent 30%,
+                    rgba(244, 228, 166, 0.03) 31%,
+                    transparent 32%,
+                    transparent 70%,
+                    rgba(212, 175, 55, 0.02) 71%,
+                    transparent 72%);
             
-            background-size: 50px 50px, 30px 30px, 100px 100px, 100px 100px, 100px 100px;
+            opacity: 0.6;
+            mix-blend-mode: screen;
+        }
+        
+        .marble-bg.dark::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 40%, 
+                    rgba(152, 117, 91, 0.1) 0%,
+                    transparent 70%),
+                radial-gradient(circle at 80% 60%, 
+                    rgba(88, 71, 56, 0.15) 0%,
+                    transparent 80%),
+                radial-gradient(circle at 40% 80%, 
+                    rgba(42, 26, 15, 0.2) 0%,
+                    transparent 60%),
+                radial-gradient(circle at 60% 20%, 
+                    rgba(120, 100, 80, 0.1) 0%,
+                    transparent 75%);
+            
+            mix-blend-mode: overlay;
+            opacity: 0.4;
+        }
+        
+        /* ФОН ДЛЯ СВЕТЛОЙ ТЕМЫ */
+        .marble-bg.light {
+            background: 
+                linear-gradient(135deg, 
+                    #FFF8ED 0%,
+                    #FFF5E5 25%,
+                    #FFF2DE 50%,
+                    #FFF5E5 75%,
+                    #FFF8ED 100%),
+                
+                radial-gradient(circle at 20% 30%, 
+                    rgba(239, 210, 176, 0.25) 0%,
+                    transparent 20%),
+                radial-gradient(circle at 80% 70%, 
+                    rgba(255, 228, 184, 0.22) 0%,
+                    transparent 25%),
+                radial-gradient(circle at 40% 80%, 
+                    rgba(232, 168, 149, 0.18) 0%,
+                    transparent 18%);
+            
+            background-blend-mode: multiply, overlay, overlay;
+        }
+        
+        /* Прожилки для светлой темы */
+        .marble-bg.light::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(65deg, 
+                    transparent 28%,
+                    rgba(104, 70, 39, 0.15) 29%,
+                    rgba(104, 70, 39, 0.25) 32%,
+                    rgba(104, 70, 39, 0.15) 35%,
+                    transparent 36%,
+                    transparent 48%,
+                    rgba(104, 70, 39, 0.18) 49%,
+                    rgba(104, 70, 39, 0.28) 51%,
+                    rgba(104, 70, 39, 0.18) 53%,
+                    transparent 54%),
+                
+                linear-gradient(-75deg, 
+                    transparent 62%,
+                    rgba(104, 70, 39, 0.12) 63%,
+                    rgba(104, 70, 39, 0.22) 65%,
+                    rgba(104, 70, 39, 0.12) 67%,
+                    transparent 68%),
+                
+                linear-gradient(40deg, 
+                    transparent 15%,
+                    rgba(181, 146, 114, 0.1) 16%,
+                    transparent 17%,
+                    transparent 45%,
+                    rgba(181, 146, 114, 0.14) 46%,
+                    transparent 47%),
+                
+                linear-gradient(90deg, 
+                    transparent 10%,
+                    rgba(181, 146, 114, 0.08) 11%,
+                    transparent 12%,
+                    transparent 30%,
+                    rgba(181, 146, 114, 0.12) 31%,
+                    transparent 32%);
+            
+            opacity: 0.8;
             mix-blend-mode: multiply;
-            opacity: 0.1;
+            filter: blur(0.4px);
+        }
+        
+        .marble-bg.light::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 15% 25%, 
+                    rgba(239, 210, 176, 0.35) 0%,
+                    transparent 65%),
+                radial-gradient(circle at 85% 75%, 
+                    rgba(255, 228, 184, 0.3) 0%,
+                    transparent 70%),
+                radial-gradient(circle at 35% 65%, 
+                    rgba(232, 168, 149, 0.28) 0%,
+                    transparent 60%),
+                radial-gradient(circle at 65% 35%, 
+                    rgba(181, 146, 114, 0.32) 0%,
+                    transparent 55%);
+            
+            mix-blend-mode: overlay;
+            opacity: 0.25;
+        }
+        
+        .marble-bg {
+            filter: blur(0.3px);
+        }
+        
+        /* ТУМБЛЕР ПЕРЕКЛЮЧЕНИЯ ТЕМ */
+        .theme-toggle {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .theme-label {
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            color: var(--text-primary);
+            opacity: 0.7;
+            transition: opacity 0.2s ease, color 0.2s ease;
+        }
+        
+        .theme-label:hover {
+            opacity: 1;
+        }
+        
+        /* Стили переключателя */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.2);
+            transition: .3s;
+            border-radius: 34px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 3px;
+            background-color: var(--button-text);
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(30px);
         }
         
         .app {
@@ -278,42 +405,44 @@
         
         /* Главная карточка */
         .welcome-card {
-            background: rgba(245, 241, 232, 0.95); /* Alabaster с прозрачностью */
+            background: var(--bg-card);
             border-radius: 28px;
             padding: 60px 35px;
             text-align: center;
             box-shadow: 
-                0 25px 60px rgba(122, 109, 100, 0.15), /* Smoked Taupe тень */
-                0 0 0 2px var(--dark-juniper),         /* Dark Juniper граница - толще */
-                0 0 40px rgba(138, 155, 140, 0.1) inset; /* Moss подсветка */
-            border: 2px solid var(--dark-juniper); /* Dark Juniper - толще */
+                0 25px 60px rgba(0, 0, 0, 0.15),
+                0 0 0 2px var(--border-color),
+                0 0 40px rgba(255, 228, 184, 0.1) inset;
+            border: 2px solid var(--border-color);
             backdrop-filter: blur(15px) saturate(180%);
             position: relative;
             overflow: hidden;
+            transition: all 0.3s ease;
         }
         
-        /* Кайма с градиентом Dark Juniper */
+        /* Внутренняя рамка */
         .welcome-card::before {
             content: '';
             position: absolute;
-            top: 2px;
-            left: 2px;
-            right: 2px;
-            bottom: 2px;
-            border-radius: 26px;
+            top: 4px;
+            left: 4px;
+            right: 4px;
+            bottom: 4px;
+            border-radius: 24px;
             border: 1px solid transparent;
             background: linear-gradient(135deg, 
-                rgba(90, 109, 94, 0.4),    /* Dark Juniper */
-                rgba(138, 155, 140, 0.3),  /* Moss */
-                rgba(90, 109, 94, 0.4)) border-box; /* Dark Juniper */
+                var(--veins-color-1), 
+                var(--veins-color-2),
+                var(--veins-color-1)) border-box;
             mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
             mask-composite: exclude;
             pointer-events: none;
+            transition: all 0.3s ease;
         }
         
         /* Заголовок */
         .main-title {
-            color: var(--dark-juniper); /* Dark Juniper для текста */
+            color: var(--title-color);
             font-size: 36px;
             font-weight: 300;
             margin-bottom: 15px;
@@ -321,15 +450,17 @@
             position: relative;
             text-transform: uppercase;
             font-family: 'Georgia', serif;
+            transition: color 0.3s ease;
         }
         
         /* Акцент на "mé" */
         .accent {
-            color: var(--moss); /* Moss для акцента */
+            color: var(--accent-color);
             font-style: italic;
             font-weight: 400;
             position: relative;
             display: inline-block;
+            transition: color 0.3s ease;
         }
         
         .accent::after {
@@ -338,9 +469,10 @@
             font-size: 20px;
             top: -14px;
             right: -16px;
-            color: var(--smoked-taupe); /* Smoked Taupe для декора */
+            color: var(--border-color);
             font-weight: normal;
             font-family: 'Times New Roman', serif;
+            transition: color 0.3s ease;
         }
         
         /* Линия под заголовком */
@@ -351,19 +483,16 @@
             left: 50%;
             transform: translateX(-50%);
             width: 50px;
-            height: 2px; /* Толще */
-            background: linear-gradient(90deg, 
-                transparent, 
-                var(--dark-juniper), 
-                var(--moss), 
-                var(--dark-juniper), 
-                transparent);
+            height: 2px;
+            background: var(--line-color);
+            border-radius: 1px;
             opacity: 0.8;
+            transition: background 0.3s ease;
         }
         
         /* Слоган */
         .tagline {
-            color: var(--smoked-taupe); /* Smoked Taupe для вторичного текста */
+            color: var(--text-secondary);
             font-size: 17px;
             line-height: 1.6;
             margin-bottom: 50px;
@@ -372,18 +501,20 @@
             position: relative;
             letter-spacing: 0.5px;
             font-family: 'Georgia', serif;
+            transition: color 0.3s ease;
         }
         
         /* Декоративные элементы слогана */
         .tagline::before,
         .tagline::after {
-            content: '❖';
+            content: '✦';
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--moss); /* Moss для декора */
-            opacity: 0.6;
+            color: var(--border-color);
+            opacity: 0.4;
             font-size: 12px;
+            transition: color 0.3s ease;
         }
         
         .tagline::before {
@@ -396,11 +527,8 @@
         
         /* Основная кнопка */
         .primary-btn {
-            background: linear-gradient(135deg, 
-                var(--luxe) 0%,     /* Luxe */
-                var(--earthen) 100% /* Earthen */
-            );
-            color: var(--dark-juniper); /* Dark Juniper для текста */
+            background: var(--button-bg);
+            color: var(--button-text);
             border: none;
             padding: 20px 45px;
             border-radius: 30px;
@@ -408,14 +536,14 @@
             font-weight: 500;
             width: 100%;
             cursor: pointer;
-            transition: all 0.4s ease;
+            transition: all 0.3s ease;
             letter-spacing: 2px;
             text-transform: uppercase;
             position: relative;
             overflow: hidden;
             box-shadow: 
-                0 10px 30px rgba(122, 109, 100, 0.2),
-                0 0 0 2px var(--dark-juniper); /* Dark Juniper граница - толще */
+                0 10px 30px rgba(0, 0, 0, 0.15),
+                0 0 0 1px var(--border-color);
             font-family: 'Georgia', serif;
         }
         
@@ -429,11 +557,11 @@
             height: 100%;
             background: linear-gradient(90deg,
                 transparent,
-                rgba(90, 109, 94, 0.2),     /* Dark Juniper */
-                rgba(138, 155, 140, 0.3),   /* Moss */
-                rgba(90, 109, 94, 0.2),     /* Dark Juniper */
+                rgba(255, 255, 255, 0.1),
+                rgba(255, 255, 255, 0.2),
+                rgba(255, 255, 255, 0.1),
                 transparent);
-            transition: left 0.8s ease;
+            transition: left 0.6s ease;
         }
         
         .primary-btn:hover::before {
@@ -443,17 +571,16 @@
         .primary-btn:hover {
             transform: translateY(-3px);
             box-shadow: 
-                0 15px 40px rgba(122, 109, 100, 0.3),
-                0 0 0 2px var(--moss), /* Moss при наведении */
-                0 0 30px rgba(138, 155, 140, 0.2);
-            color: var(--smoked-taupe); /* Smoked Taupe при наведении */
+                0 15px 40px rgba(0, 0, 0, 0.2),
+                0 0 0 2px var(--border-color),
+                0 0 25px rgba(255, 228, 184, 0.1);
         }
         
         .primary-btn:active {
             transform: translateY(-1px);
         }
         
-        /* Анимация появления */
+        /* Анимации */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -465,42 +592,58 @@
             }
         }
         
-        /* Анимация движения линий */
-        @keyframes linesMove {
-            0% {
-                background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
+        @keyframes marbleGlow {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 0.7; }
+        }
+        
+        @keyframes warmShift {
+            0%, 100% {
+                background-position: 0% 0%, 0% 0%, 0% 0%;
             }
-            100% {
-                background-position: 100px 100px, 50px 50px, 80px 80px, 30px 30px, 0 100px, 100px 0, 40px 60px, 60px 40px;
+            50% {
+                background-position: 40px 25px, -25px 50px, 50px -20px;
             }
         }
         
-        .marble-bg::before {
-            animation: linesMove 20s linear infinite;
-            background-size: 200% 200%, 150% 150%, 180% 180%, 120% 120%, 50px 50px, 50px 50px, 200% 200%, 200% 200%;
+        /* Только активные анимации фона */
+        .marble-bg.dark.active::before {
+            animation: marbleGlow 8s ease-in-out infinite;
         }
         
-        .marble-bg::after {
-            animation: linesMove 30s linear infinite reverse;
+        .marble-bg.light.active {
+            animation: warmShift 20s ease-in-out infinite;
+            background-size: 300% 300%, 250% 250%, 200% 200%;
         }
         
+        /* Ускоряем анимацию появления */
         .welcome-card {
-            animation: fadeInUp 1s ease-out;
+            animation: fadeInUp 0.6s ease-out;
         }
         
-        /* Последовательное появление элементов */
-        .main-title { animation: fadeInUp 1s ease-out 0.2s both; }
-        .tagline { animation: fadeInUp 1s ease-out 0.4s both; }
-        .primary-btn { animation: fadeInUp 1s ease-out 0.6s both; }
+        .main-title { animation: fadeInUp 0.6s ease-out 0.1s both; }
+        .tagline { animation: fadeInUp 0.6s ease-out 0.2s both; }
+        .primary-btn { animation: fadeInUp 0.6s ease-out 0.3s both; }
     </style>
 </head>
-<body>
-    <!-- Светлый мраморный фон с прожилками Dark Juniper -->
-    <div class="marble-bg"></div>
+<body class="dark-theme">
+    <!-- Фоны для обеих тем -->
+    <div class="marble-bg dark active"></div>
+    <div class="marble-bg light"></div>
+    
+    <!-- Тумблер переключения темы -->
+    <div class="theme-toggle">
+        <span class="theme-label">☽️</span>
+        <label class="toggle-switch">
+            <input type="checkbox" id="themeToggle">
+            <span class="toggle-slider"></span>
+        </label>
+        <span class="theme-label">🌞︎</span>
+    </div>
     
     <div class="app">
         <div class="welcome-card">
-            <h1 class="main-title">Scent<span class="accent">mé</span></h1>
+            <h1 class="main-title">Scentmé</h1>
             <p class="tagline">Найди аромат, который пахнет тобой</p>
             <button class="primary-btn" onclick="startJourney()">
                 НАЧАТЬ ПУТЕШЕСТВИЕ
@@ -509,13 +652,70 @@
     </div>
 
     <script>
-        // Telegram Web App инициализация
+        // Инициализация Telegram Web App
         let tg = window.Telegram?.WebApp;
+        
+        // Определение текущей темы
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+        const themeToggle = document.getElementById('themeToggle');
+        
+        // Установка начальной темы
+        if (currentTheme === 'light') {
+            document.body.classList.add('light-theme');
+            document.querySelector('.marble-bg.dark').classList.remove('active');
+            document.querySelector('.marble-bg.light').classList.add('active');
+            themeToggle.checked = true;
+            
+            if (tg) {
+                tg.setHeaderColor('#FFF8ED');
+                tg.setBackgroundColor('#FFF8ED');
+            }
+        } else {
+            if (tg) {
+                tg.setHeaderColor('#3D1F12');
+                tg.setBackgroundColor('#2A1A0F');
+            }
+        }
+        
         if (tg) {
             tg.expand();
-            tg.setHeaderColor('#F5F1E8'); /* Alabaster для светлой темы */
-            tg.setBackgroundColor('#F5F1E8'); /* Alabaster для фона */
         }
+        
+        // Оптимизированное переключение темы
+        themeToggle.addEventListener('change', function() {
+            // Немедленное изменение тумблера
+            if (this.checked) {
+                // Быстрое переключение на светлую тему
+                document.body.classList.add('light-theme');
+                document.querySelector('.marble-bg.dark').classList.remove('active');
+                setTimeout(() => {
+                    document.querySelector('.marble-bg.light').classList.add('active');
+                }, 10);
+                localStorage.setItem('theme', 'light');
+                
+                if (tg) {
+                    setTimeout(() => {
+                        tg.setHeaderColor('#FFF8ED');
+                        tg.setBackgroundColor('#FFF8ED');
+                    }, 50);
+                }
+            } else {
+                // Быстрое переключение на тёмную тему
+                document.body.classList.remove('light-theme');
+                document.querySelector('.marble-bg.light').classList.remove('active');
+                setTimeout(() => {
+                    document.querySelector('.marble-bg.dark').classList.add('active');
+                }, 10);
+                localStorage.setItem('theme', 'dark');
+                
+                if (tg) {
+                    setTimeout(() => {
+                        tg.setHeaderColor('#3D1F12');
+                        tg.setBackgroundColor('#2A1A0F');
+                    }, 50);
+                }
+            }
+        });
         
         function startJourney() {
             if (tg) {
@@ -532,5 +732,4 @@
         }
     </script>
 </body>
-    </html>
-
+</html>
