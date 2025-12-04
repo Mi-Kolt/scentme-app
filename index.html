@@ -69,6 +69,8 @@
             --whole-wheat: #EFD2B0;
             --milky-coffee: #B59272;
             --cream: #FFE4B8;
+            --peony-pink: #E8A8B8; /* Розовый для пиона */
+            --peony-dark-pink: #C97A8D; /* Тёмно-розовый для окантовки */
             
             /* Переменные для светлой темы */
             --bg-primary: #FFF8ED;
@@ -323,7 +325,7 @@
             position: fixed;
             top: 25px;
             right: 25px;
-            z-index: 100;
+            z-index: 1000;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -402,14 +404,30 @@
             transform: translateX(30px);
         }
         
-        .app {
+        /* ОБЩИЕ СТИЛИ ДЛЯ ВСЕХ ЭКРАНОВ */
+        .app-container {
             width: 100%;
             max-width: 400px;
+            height: 90vh;
+            max-height: 700px;
+            display: flex;
+            flex-direction: column;
             position: relative;
-            z-index: 1;
         }
         
-        /* Главная карточка */
+        /* СКРЫТЫЕ ЭКРАНЫ */
+        .screen {
+            display: none;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+        }
+        
+        .screen.active {
+            display: flex;
+        }
+        
+        /* ЭКРАН 1: НАЧАЛЬНЫЙ ЭКРАН - ИСПРАВЛЕННЫЕ СТИЛИ */
         .welcome-card {
             background: var(--bg-card);
             border-radius: 28px;
@@ -422,9 +440,15 @@
             backdrop-filter: blur(15px) saturate(180%);
             position: relative;
             overflow: hidden;
+            width: 100%;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
         
-        /* Внутренняя рамка */
+        /* Внутренняя рамка для начального экрана */
         .welcome-card::before {
             content: '';
             position: absolute;
@@ -441,6 +465,7 @@
             mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
             mask-composite: exclude;
             pointer-events: none;
+            z-index: 1;
         }
         
         .light-theme .welcome-card::before {
@@ -450,7 +475,7 @@
                 var(--veins-chocolate)) border-box;
         }
         
-        /* Заголовок */
+        /* Заголовок начального экрана */
         .main-title {
             color: var(--title-color);
             font-size: 36px;
@@ -460,6 +485,7 @@
             position: relative;
             text-transform: uppercase;
             font-family: 'Georgia', serif;
+            z-index: 2;
         }
         
         /* Акцент на "mé" */
@@ -496,7 +522,7 @@
             opacity: 0.8;
         }
         
-        /* Слоган */
+        /* Слоган начального экрана */
         .tagline {
             color: var(--text-secondary);
             font-size: 17px;
@@ -507,6 +533,7 @@
             position: relative;
             letter-spacing: 0.5px;
             font-family: 'Georgia', serif;
+            z-index: 2;
         }
         
         /* Декоративные элементы слогана */
@@ -529,7 +556,7 @@
             right: 0;
         }
         
-        /* Основная кнопка */
+        /* Основная кнопка начального экрана */
         .primary-btn {
             background: var(--button-bg);
             color: var(--button-text);
@@ -549,6 +576,7 @@
                 0 10px 30px rgba(0, 0, 0, 0.15),
                 0 0 0 1px var(--border-color);
             font-family: 'Georgia', serif;
+            z-index: 2;
         }
         
         /* Подсветка кнопки */
@@ -584,26 +612,558 @@
             transform: translateY(-1px);
         }
         
-        /* Анимации только для появления */
-        @keyframes fadeInUp {
+        /* ЭКРАН 2-6: ВИКТОРИНА */
+        /* ПРОГРЕСС БАР */
+        .progress-container {
+            flex-shrink: 0;
+            width: 100%;
+            margin-bottom: 20px;
+            padding: 0 10px;
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .progress-title {
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+        
+        .progress-count {
+            font-size: 13px;
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 3px;
+            background: var(--veins-gold);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .light-theme .progress-bar {
+            background: var(--veins-chocolate);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--line-color);
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        /* КАРТОЧКА ВОПРОСА С ПРОКРУТКОЙ */
+        .question-card {
+            flex: 1;
+            background: var(--bg-card);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 
+                0 25px 60px rgba(0, 0, 0, 0.15),
+                0 0 0 1px var(--border-color),
+                0 0 40px rgba(212, 175, 55, 0.1) inset;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(15px) saturate(180%);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .question-card::before {
+            content: '';
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            right: 1px;
+            bottom: 1px;
+            border-radius: 23px;
+            border: 1px solid transparent;
+            background: linear-gradient(135deg, 
+                var(--veins-gold), 
+                var(--veins-light-gold),
+                var(--veins-gold)) border-box;
+            mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        
+        .light-theme .question-card::before {
+            background: linear-gradient(135deg, 
+                var(--veins-chocolate), 
+                var(--veins-coffee),
+                var(--veins-chocolate)) border-box;
+        }
+        
+        /* СКРОЛЛ-КОНТЕЙНЕР */
+        .scroll-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px 25px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: var(--gold) transparent;
+        }
+        
+        .scroll-container::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .scroll-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .scroll-container::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 2px;
+        }
+        
+        /* ВОПРОС */
+        .question-number {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+        
+        .question-text {
+            font-size: 22px;
+            line-height: 1.4;
+            margin-bottom: 35px;
+            color: var(--text-primary);
+            font-weight: 300;
+            font-family: 'Georgia', serif;
+        }
+        
+        /* ВАРИАНТЫ ОТВЕТОВ */
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+        
+        .option-btn {
+            background: var(--button-bg);
+            color: var(--button-text);
+            border: 1px solid var(--border-color);
+            padding: 16px 20px;
+            border-radius: 18px;
+            font-size: 15px;
+            font-weight: 400;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Georgia', serif;
+            line-height: 1.5;
+        }
+        
+        .option-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .option-btn.selected {
+            box-shadow: 
+                0 0 0 2px var(--border-color),
+                inset 0 0 20px rgba(212, 175, 55, 0.1);
+        }
+        
+        .option-btn.selected::after {
+            content: '✓';
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gold);
+            font-size: 16px;
+        }
+        
+        /* КНОПКИ НАВИГАЦИИ */
+        .nav-container {
+            flex-shrink: 0;
+            padding: 20px 25px 25px;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-card);
+            border-radius: 0 0 24px 24px;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+        
+        .nav-btn {
+            flex: 1;
+            padding: 16px;
+            border-radius: 22px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border: none;
+            font-family: 'Georgia', serif;
+        }
+        
+        .nav-btn.prev {
+            background: var(--button-bg);
+            color: var(--button-text);
+            border: 1px solid var(--border-color);
+            opacity: 0.7;
+        }
+        
+        .nav-btn.prev:hover:not(:disabled) {
+            opacity: 1;
+        }
+        
+        .nav-btn.prev:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .nav-btn.next {
+            background: var(--button-bg);
+            color: var(--button-text);
+            border: 1px solid var(--border-color);
+        }
+        
+        .nav-btn.next:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .nav-btn.next:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* ЭКРАН 7: ЗАГРУЗКА */
+        .loading-card {
+            flex: 1;
+            background: var(--bg-card);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 
+                0 25px 60px rgba(0, 0, 0, 0.4),
+                0 0 0 1px var(--border-color),
+                0 0 40px rgba(212, 175, 55, 0.1) inset;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(15px) saturate(180%);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 30px 25px;
+        }
+        
+        .loading-card::before {
+            content: '';
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            right: 1px;
+            bottom: 1px;
+            border-radius: 23px;
+            border: 1px solid transparent;
+            background: linear-gradient(135deg, 
+                var(--veins-gold), 
+                var(--veins-light-gold),
+                var(--veins-gold)) border-box;
+            mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        
+        .light-theme .loading-card::before {
+            background: linear-gradient(135deg, 
+                var(--veins-chocolate), 
+                var(--veins-coffee),
+                var(--veins-chocolate)) border-box;
+        }
+        
+        /* ЦВЕТОК В ВЕРХНЕЙ ЧАСТИ */
+        .flower-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            width: 100%;
+            padding-top: 40px;
+        }
+        
+        /* АНИМАЦИЯ ПИОНА */
+        .peony-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .peony {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .peony-petal {
+            position: absolute;
+            width: 32px;
+            height: 55px;
+            background: var(--gold);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            transform-origin: center 1px;
+            opacity: 0;
+            box-shadow: 
+                inset 0 0 10px var(--light-gold),
+                0 2px 8px rgba(0, 0, 0, 0.2),
+                0 0 0 1px rgba(42, 26, 15, 0.4);
+            border: 1px solid rgba(30, 23, 18, 0.6);
+        }
+        
+        .light-theme .peony-petal {
+            background: var(--peony-pink);
+            box-shadow: 
+                inset 0 0 10px rgba(255, 255, 255, 0.6),
+                0 2px 8px rgba(0, 0, 0, 0.1),
+                0 0 0 1px var(--peony-dark-pink);
+            border: 1px solid var(--peony-dark-pink);
+        }
+        
+        .peony-center {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: radial-gradient(circle at 30% 30%, var(--light-gold), var(--gold));
+            border-radius: 50%;
+            z-index: 10;
+            box-shadow: 
+                inset 0 0 5px var(--light-gold),
+                0 0 8px var(--gold);
+            top: 37%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+        }
+        
+        .light-theme .peony-center {
+            background: radial-gradient(circle at 30% 30%, var(--cream), var(--chocolate));
+            box-shadow: 
+                inset 0 0 5px var(--cream),
+                0 0 8px var(--chocolate);
+        }
+        
+        /* НИЖНЯЯ ЧАСТЬ С ТЕКСТОМ И ПРОГРЕССОМ */
+        .progress-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            width: 100%;
+            padding-bottom: 30px;
+        }
+        
+        /* НАДПИСИ В ЗАГРУЗКЕ */
+        .loading-text {
+            text-align: center;
+            width: 100%;
+            height: 60px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .loading-phrase {
+            font-size: 20px;
+            color: var(--text-primary);
+            font-weight: 300;
+            font-family: 'Georgia', serif;
+            line-height: 1.4;
+            text-align: center;
+            opacity: 0;
+            position: absolute;
+            width: 100%;
+            top: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+        
+        /* СТАТУС ЗАГРУЗКИ */
+        .loading-progress {
+            width: calc(100% - 50px);
+            height: 2px;
+            background: var(--veins-gold);
+            border-radius: 1px;
+            overflow: hidden;
+            position: absolute;
+            bottom: 50px;
+            left: 25px;
+            right: 25px;
+        }
+        
+        .light-theme .loading-progress {
+            background: var(--veins-chocolate);
+        }
+        
+        .loading-progress-fill {
+            position: absolute;
+            height: 100%;
+            width: 0%;
+            background: var(--line-color);
+            border-radius: 1px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            width: 100%;
+            padding: 0 25px;
+        }
+        
+        .progress-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--veins-gold);
+            transition: all 0.3s ease;
+        }
+        
+        .light-theme .progress-dot {
+            background: var(--veins-chocolate);
+        }
+        
+        .progress-dot.active {
+            background: var(--gold);
+            transform: scale(1.2);
+        }
+        
+        .light-theme .progress-dot.active {
+            background: var(--chocolate);
+        }
+        
+        /* АНИМАЦИИ ДЛЯ ЗАГРУЗКИ */
+        @keyframes petalOpen {
+            0% {
+                opacity: 0;
+                transform: rotate(var(--rotate-start)) translateY(20px) scale(0.3);
+            }
+            70% {
+                opacity: 1;
+                transform: rotate(var(--rotate-end)) translateY(0) scale(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: rotate(var(--rotate-end)) translateY(0) scale(1);
+            }
+        }
+        
+        @keyframes petalClose {
+            0% {
+                opacity: 1;
+                transform: rotate(var(--rotate-end)) translateY(0) scale(1);
+            }
+            30% {
+                opacity: 1;
+                transform: rotate(calc(var(--rotate-end) + 5deg)) translateY(-10px) scale(1.05);
+            }
+            100% {
+                opacity: 0;
+                transform: rotate(calc(var(--rotate-end) + 10deg)) translateY(20px) scale(0.3);
+            }
+        }
+        
+        /* Серединка появляется быстро */
+        @keyframes centerOpen {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.2);
+            }
+            50% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+        
+        @keyframes centerPulse {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                box-shadow: 
+                    inset 0 0 5px var(--light-gold),
+                    0 0 8px var(--gold);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+                box-shadow: 
+                    inset 0 0 8px var(--light-gold),
+                    0 0 12px var(--gold);
+            }
+        }
+        
+        @keyframes phraseFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes phraseFadeOut {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+        }
+        
+        /* АНИМАЦИИ ДЛЯ ПОЯВЛЕНИЯ */
+        @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(10px);
             }
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-        
-        /* Только анимация появления элементов */
-        .welcome-card {
-            animation: fadeInUp 0.4s ease-out;
-        }
-        
-        .main-title { animation: fadeInUp 0.4s ease-out 0.1s both; }
-        .tagline { animation: fadeInUp 0.4s ease-out 0.2s both; }
-        .primary-btn { animation: fadeInUp 0.4s ease-out 0.3s both; }
     </style>
 </head>
 <body class="dark-theme">
@@ -637,13 +1197,205 @@
         </div>
     </div>
     
-    <div class="app">
-        <div class="welcome-card">
-            <h1 class="main-title">Scentmé</h1>
-            <p class="tagline">Найди аромат, который пахнет тобой</p>
-            <button class="primary-btn" onclick="startJourney()">
-                НАЧАТЬ ПУТЕШЕСТВИЕ
-            </button>
+    <!-- ОСНОВНОЙ КОНТЕЙНЕР ДЛЯ ВСЕХ ЭКРАНОВ -->
+    <div class="app-container">
+        <!-- ЭКРАН 1: НАЧАЛЬНЫЙ ЭКРАН -->
+        <div class="screen active" id="screen-welcome">
+            <div class="welcome-card">
+                <h1 class="main-title">Scentmé</h1>
+                <p class="tagline">Найди аромат, который пахнет тобой</p>
+                <button class="primary-btn" onclick="goToScreen('quiz1')">
+                    НАЧАТЬ ПУТЕШЕСТВИЕ
+                </button>
+            </div>
+        </div>
+        
+        <!-- ЭКРАН 2: ВЫБОР ПОЛА (викторина, вопрос 1) -->
+        <div class="screen" id="screen-quiz1">
+            <div class="progress-container">
+                <div class="progress-header">
+                    <div class="progress-title">Ваш парфюмерный профиль</div>
+                    <div class="progress-count">1/5</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+            
+            <div class="question-card">
+                <div class="scroll-container">
+                    <div class="question-number">Вопрос 1</div>
+                    <h2 class="question-text">Для кого подбираем аромат?</h2>
+                    
+                    <div class="options-container">
+                        <button class="option-btn" data-value="male">
+                            Мужчина
+                        </button>
+                        <button class="option-btn" data-value="female">
+                            Женщина
+                        </button>
+                        <button class="option-btn" data-value="unisex">
+                            Унисекс
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="nav-container">
+                    <div class="nav-buttons">
+                        <button class="nav-btn prev" onclick="goToScreen('welcome')">
+                            Назад
+                        </button>
+                        <button class="nav-btn next" onclick="goToScreen('quiz2')" disabled>
+                            Далее
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ЭКРАН 3: ТИП ПРОДУКТА (викторина, вопрос 2) -->
+        <div class="screen" id="screen-quiz2">
+            <div class="progress-container">
+                <div class="progress-header">
+                    <div class="progress-title">Ваш парфюмерный профиль</div>
+                    <div class="progress-count">2/5</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+            
+            <div class="question-card">
+                <div class="scroll-container">
+                    <div class="question-number">Вопрос 2</div>
+                    <h2 class="question-text">Что вас интересует?</h2>
+                    
+                    <div class="options-container">
+                        <button class="option-btn" data-value="perfume">
+                            Парфюм
+                        </button>
+                        <button class="option-btn" data-value="oil">
+                            Аромамасло
+                        </button>
+                        <button class="option-btn" data-value="all">
+                            Посмотреть всё
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="nav-container">
+                    <div class="nav-buttons">
+                        <button class="nav-btn prev" onclick="goToScreen('quiz1')">
+                            Назад
+                        </button>
+                        <button class="nav-btn next" onclick="goToScreen('quiz3')" disabled>
+                            Далее
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ЭКРАН 4: АДАПТИВНЫЙ ВОПРОС 1 (викторина, вопрос 3) -->
+        <div class="screen" id="screen-quiz3">
+            <div class="progress-container">
+                <div class="progress-header">
+                    <div class="progress-title">Ваш парфюмерный профиль</div>
+                    <div class="progress-count">3/5</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+            
+            <div class="question-card">
+                <div class="scroll-container">
+                    <div class="question-number">Вопрос 3</div>
+                    <h2 class="question-text" id="quiz3Question"></h2>
+                    
+                    <div class="options-container" id="quiz3Options">
+                        <!-- Заполняется динамически -->
+                    </div>
+                </div>
+                
+                <div class="nav-container">
+                    <div class="nav-buttons">
+                        <button class="nav-btn prev" onclick="goToScreen('quiz2')">
+                            Назад
+                        </button>
+                        <button class="nav-btn next" onclick="goToScreen('quiz4')" disabled>
+                            Далее
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ЭКРАН 5: АДАПТИВНЫЙ ВОПРОС 2 (викторина, вопрос 4) -->
+        <div class="screen" id="screen-quiz4">
+            <div class="progress-container">
+                <div class="progress-header">
+                    <div class="progress-title">Ваш парфюмерный профиль</div>
+                    <div class="progress-count">4/5</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+            
+            <div class="question-card">
+                <div class="scroll-container">
+                    <div class="question-number">Вопрос 4</div>
+                    <h2 class="question-text" id="quiz4Question"></h2>
+                    
+                    <div class="options-container" id="quiz4Options">
+                        <!-- Заполняется динамически -->
+                    </div>
+                </div>
+                
+                <div class="nav-container">
+                    <div class="nav-buttons">
+                        <button class="nav-btn prev" onclick="goToScreen('quiz3')">
+                            Назад
+                        </button>
+                        <button class="nav-btn next" onclick="goToScreen('loading')" disabled>
+                            Завершить
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ЭКРАН 6: ЗАГРУЗКА -->
+        <div class="screen" id="screen-loading">
+            <div class="loading-card">
+                <!-- ВЕРХНЯЯ ЧАСТЬ С ЦВЕТКОМ -->
+                <div class="flower-section">
+                    <div class="peony-container">
+                        <div class="peony">
+                            <div class="peony-center"></div>
+                            <!-- Лепестки будут добавлены через JavaScript -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- НИЖНЯЯ ЧАСТЬ С ТЕКСТОМ И ПРОГРЕССОМ -->
+                <div class="progress-section">
+                    <div class="loading-text">
+                        <div class="loading-phrases-container">
+                            <!-- Фразы будут добавлены через JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="loading-progress">
+                        <div class="loading-progress-fill" id="loadingProgressFill"></div>
+                    </div>
+                    
+                    <div class="progress-dots" id="loadingProgressDots">
+                        <!-- Точки прогресса будут добавлены через JavaScript -->
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -680,7 +1432,6 @@
         // СУПЕР БЫСТРОЕ ПЕРЕКЛЮЧЕНИЕ ТЕМЫ
         themeToggle.addEventListener('change', function() {
             if (this.checked) {
-                // МГНОВЕННОЕ переключение на светлую тему
                 document.body.classList.add('light-theme');
                 document.querySelector('.theme-bg.dark').classList.remove('active');
                 document.querySelector('.theme-bg.light').classList.add('active');
@@ -693,7 +1444,6 @@
                     });
                 }
             } else {
-                // МГНОВЕННОЕ переключение на тёмную тему
                 document.body.classList.remove('light-theme');
                 document.querySelector('.theme-bg.light').classList.remove('active');
                 document.querySelector('.theme-bg.dark').classList.add('active');
@@ -708,13 +1458,523 @@
             }
         });
         
-        function startJourney() {
-            if (tg) {
-                tg.sendData(JSON.stringify({action: 'start'}));
-                tg.showAlert("✨ Scentmé готов к работе! Скоро добавим выбор ароматов.");
-            } else {
-                alert("🎭 Scentmé\n\nЭлегантный поиск вашего уникального аромата начинается здесь...");
+        // ДАННЫЕ ВИКТОРИНЫ
+        const quizData = {
+            currentScreen: 'welcome',
+            totalQuestions: 5,
+            answers: {},
+            currentBranch: null,
+            
+            branches: {
+                perfume: {
+                    name: "Парфюм",
+                    questions: [
+                        {
+                            text: "Какой аромат отражает ваш стиль?",
+                            options: [
+                                { value: "fresh", text: "Свежий и чистый" },
+                                { value: "floral", text: "Цветочный и нежный" },
+                                { value: "sweet", text: "Сладкий и чувственный" },
+                                { value: "woody", text: "Древесный и основательный" }
+                            ]
+                        },
+                        {
+                            text: "Насколько заметным должен быть ваш аромат?",
+                            options: [
+                                { value: "light", text: "Лёгкий шлейф" },
+                                { value: "medium", text: "Уверенное присутствие" },
+                                { value: "strong", text: "Яркое заявление" }
+                            ]
+                        }
+                    ]
+                },
+                
+                oil: {
+                    name: "Аромамасло",
+                    questions: [
+                        {
+                            text: "Для чего вам нужно масло?",
+                            options: [
+                                { value: "relax", text: "Для релаксации" },
+                                { value: "energy", text: "Для бодрости" },
+                                { value: "space", text: "Для пространства" },
+                                { value: "care", text: "Для ухода" }
+                            ]
+                        },
+                        {
+                            text: "Какие запахи вам приятнее?",
+                            options: [
+                                { value: "citrus", text: "Цитрусовые и травяные" },
+                                { value: "floral", text: "Цветочные" },
+                                { value: "woody", text: "Древесные и землистые" },
+                                { value: "spicy", text: "Пряные и согревающие" }
+                            ]
+                        }
+                    ]
+                },
+                
+                all: {
+                    name: "Универсальные предпочтения",
+                    questions: [
+                        {
+                            text: "Что для вас важно в аромате?",
+                            options: [
+                                { value: "natural", text: "Натуральность и безопасность" },
+                                { value: "lasting", text: "Долговечность и стойкость" },
+                                { value: "relaxing", text: "Расслабляющий эффект" },
+                                { value: "energy", text: "Энергия и бодрость" },
+                                { value: "atmosphere", text: "Создание атмосферы" }
+                            ]
+                        },
+                        {
+                            text: "Какие ноты вам ближе?",
+                            options: [
+                                { value: "fresh", text: "Свежие (цитрусовые, травяные)" },
+                                { value: "floral", text: "Цветочные (роза, жасмин, лаванда)" },
+                                { value: "woody", text: "Древесные (сандал, кедр, пачули)" },
+                                { value: "sweet", text: "Сладкие (ваниль, амбра, корица)" },
+                                { value: "clean", text: "Чистые (минеральные, водные, воздушные)" }
+                            ]
+                        }
+                    ]
+                }
             }
+        };
+        
+        // ДАННЫЕ ДЛЯ АНИМАЦИИ ЗАГРУЗКИ
+        const loadingData = {
+            phrases: [
+                "Расшифровываем ваш ароматический код...",
+                "Собираем парфюмерную мозаику...",  
+                "Настраиваемся на вашу частоту...",
+                "Подбираем идеальное сочетание нот...",
+                "Создаём ваш ароматный портрет..."
+            ],
+            currentPhase: 0,
+            totalPhases: 5,
+            isAnimating: false
+        };
+        
+        // ПЕРЕХОД К ЭКРАНУ
+        function goToScreen(screenId) {
+            // Скрываем все экраны
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // Обновляем текущий экран
+            quizData.currentScreen = screenId;
+            
+            // Скрываем переключатель темы на всех экранах кроме начального
+            const themeToggleElement = document.querySelector('.theme-toggle');
+            if (screenId === 'welcome') {
+                if (themeToggleElement) themeToggleElement.style.display = 'flex';
+            } else {
+                if (themeToggleElement) themeToggleElement.style.display = 'none';
+            }
+            
+            // Если переходим на адаптивные экраны
+            if (screenId === 'quiz3' || screenId === 'quiz4') {
+                loadAdaptiveScreen(screenId);
+            }
+            
+            // Если переходим на загрузку
+            if (screenId === 'loading') {
+                startLoadingAnimation();
+            }
+            
+            // Показываем нужный экран
+            const targetScreen = document.getElementById(`screen-${screenId}`);
+            if (targetScreen) {
+                targetScreen.classList.add('active');
+                updateProgress();
+                
+                // НЕ ВОССТАНАВЛИВАЕМ выбор - убираем предустановленные ответы
+                // Оставляем только чистые кнопки без выбора
+            }
+        }
+        
+        // ОБНОВЛЕНИЕ ПРОГРЕССА
+        function updateProgress() {
+            const progressFill = document.querySelectorAll('.progress-fill');
+            const progressCounts = document.querySelectorAll('.progress-count');
+            
+            let progress = 0;
+            let currentCount = 0;
+            let totalCount = 5;
+            
+            switch(quizData.currentScreen) {
+                case 'welcome':
+                    progress = 0;
+                    break;
+                case 'quiz1':
+                    progress = 20;
+                    currentCount = 1;
+                    break;
+                case 'quiz2':
+                    progress = 40;
+                    currentCount = 2;
+                    break;
+                case 'quiz3':
+                    progress = 60;
+                    currentCount = 3;
+                    break;
+                case 'quiz4':
+                    progress = 80;
+                    currentCount = 4;
+                    break;
+                case 'loading':
+                    progress = 100;
+                    currentCount = 5;
+                    break;
+            }
+            
+            progressFill.forEach(fill => {
+                fill.style.width = `${progress}%`;
+            });
+            
+            progressCounts.forEach(count => {
+                if (currentCount > 0 && currentCount <= totalCount) {
+                    count.textContent = `${currentCount}/${totalCount}`;
+                } else if (quizData.currentScreen === 'loading') {
+                    count.textContent = `5/5`;
+                }
+            });
+        }
+        
+        // НАСТРОЙКА КНОПОК ВАРИАНТОВ В ВИКТОРИНЕ
+        function setupQuizButtons() {
+            document.querySelectorAll('.option-btn').forEach(button => {
+                button.removeEventListener('click', handleOptionClick);
+                button.addEventListener('click', handleOptionClick);
+            });
+        }
+        
+        function handleOptionClick() {
+            const screenId = this.closest('.screen').id.replace('screen-', '');
+            const screenNumber = screenId.replace('quiz', '');
+            
+            // Снимаем выделение с других кнопок на этом экране
+            const allButtons = this.closest('.screen').querySelectorAll('.option-btn');
+            allButtons.forEach(btn => btn.classList.remove('selected'));
+            
+            // Выделяем текущую кнопку
+            this.classList.add('selected');
+            
+            // Сохраняем ответ
+            quizData.answers[screenId] = this.getAttribute('data-value');
+            
+            // Активируем кнопку "Далее"
+            const nextBtn = this.closest('.screen').querySelector('.nav-btn.next');
+            if (nextBtn) {
+                nextBtn.disabled = false;
+            }
+            
+            // Если это экран quiz2 (тип продукта), определяем ветку
+            if (screenId === 'quiz2') {
+                const productType = this.getAttribute('data-value');
+                quizData.currentBranch = quizData.branches[productType];
+            }
+            
+            // Сохраняем в localStorage
+            saveToLocalStorage();
+        }
+        
+        // ЗАГРУЗКА АДАПТИВНОГО ЭКРАНА
+        function loadAdaptiveScreen(screenId) {
+            if (!quizData.currentBranch) return;
+            
+            const screenNumber = screenId.replace('quiz', '');
+            const questionIndex = parseInt(screenNumber) - 3; // 0 для экрана 3, 1 для экрана 4
+            const question = quizData.currentBranch.questions[questionIndex];
+            
+            if (!question) return;
+            
+            const screen = document.getElementById(`screen-${screenId}`);
+            const questionElement = screen.querySelector('.question-text');
+            const optionsContainer = screen.querySelector('.options-container');
+            
+            // Устанавливаем вопрос
+            questionElement.textContent = question.text;
+            
+            // Очищаем и добавляем варианты ответов
+            optionsContainer.innerHTML = '';
+            question.options.forEach(option => {
+                const button = document.createElement('button');
+                button.className = 'option-btn';
+                button.setAttribute('data-value', option.value);
+                button.textContent = option.text;
+                optionsContainer.appendChild(button);
+            });
+            
+            // Настраиваем кнопки заново
+            setTimeout(() => setupQuizButtons(), 10);
+        }
+        
+        // СОХРАНЕНИЕ В LOCALSTORAGE
+        function saveToLocalStorage() {
+            localStorage.setItem('scentme_quiz_data', JSON.stringify({
+                answers: quizData.answers,
+                currentBranch: quizData.currentBranch?.name,
+                currentScreen: quizData.currentScreen
+            }));
+        }
+        
+        // ЗАГРУЗКА ИЗ LOCALSTORAGE
+        function loadSavedData() {
+            const saved = localStorage.getItem('scentme_quiz_data');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    quizData.answers = data.answers || {};
+                    quizData.currentScreen = data.currentScreen || 'welcome';
+                    
+                    // Определяем ветку по ответу на экран quiz2
+                    const productType = quizData.answers.quiz2;
+                    if (productType && quizData.branches[productType]) {
+                        quizData.currentBranch = quizData.branches[productType];
+                    }
+                } catch (e) {
+                    console.log('Ошибка загрузки сохраненных данных');
+                }
+            }
+        }
+        
+        // ИНИЦИАЛИЗАЦИЯ ВИКТОРИНЫ
+        document.addEventListener('DOMContentLoaded', function() {
+            // Устанавливаем начальный экран
+            quizData.currentScreen = 'welcome';
+            
+            updateProgress();
+            setupQuizButtons();
+            // НЕ загружаем сохраненные данные - начинаем всегда с чистого опроса
+            // loadSavedData(); - ЗАКОММЕНТИРОВАНО
+            
+            // Показываем начальный экран
+            goToScreen('welcome');
+        });
+        
+        // ===== ФУНКЦИИ ДЛЯ АНИМАЦИИ ЗАГРУЗКИ =====
+        
+        // СОЗДАНИЕ ПИОНА
+        function createPeony() {
+            const peony = document.querySelector('.peony');
+            const petalCount = 25;
+            
+            // Очищаем предыдущие лепестки
+            peony.innerHTML = '<div class="peony-center"></div>';
+            
+            // Создаем лепестки
+            for (let i = 0; i < petalCount; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'peony-petal';
+                const startAngle = i * 60;
+                const endAngle = i * 30;
+                petal.style.setProperty('--rotate-start', `${startAngle}deg`);
+                petal.style.setProperty('--rotate-end', `${endAngle}deg`);
+                petal.style.setProperty('--delay', `${i * 0.05}s`);
+                peony.appendChild(petal);
+            }
+        }
+        
+        // СОЗДАНИЕ ФРАЗ ДЛЯ ЗАГРУЗКИ
+        function createLoadingPhrases() {
+            const container = document.querySelector('.loading-phrases-container');
+            container.innerHTML = '';
+            
+            loadingData.phrases.forEach((phrase, index) => {
+                const phraseElement = document.createElement('div');
+                phraseElement.className = 'loading-phrase';
+                phraseElement.id = `loading-phrase-${index}`;
+                phraseElement.textContent = phrase;
+                phraseElement.style.display = index === 0 ? 'flex' : 'none';
+                phraseElement.style.opacity = index === 0 ? '1' : '0';
+                container.appendChild(phraseElement);
+            });
+        }
+        
+        // СОЗДАНИЕ ТОЧЕК ПРОГРЕССА ДЛЯ ЗАГРУЗКИ
+        function createLoadingProgressDots() {
+            const container = document.getElementById('loadingProgressDots');
+            container.innerHTML = '';
+            
+            for (let i = 0; i < loadingData.totalPhases; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'progress-dot';
+                if (i === 0) dot.classList.add('active');
+                container.appendChild(dot);
+            }
+        }
+        
+        // АНИМАЦИЯ РАСКРЫТИЯ ПИОНА (серединка ВСЕГДА видна)
+        function animatePeonyOpen() {
+            const petals = document.querySelectorAll('.peony-petal');
+            const center = document.querySelector('.peony-center');
+            
+            // Сначала появляется серединка (быстро - за 0.6s)
+            center.style.animation = `centerOpen 0.6s ease-out both`;
+            
+            // Сразу начинаем пульсацию серединки
+            setTimeout(() => {
+                center.style.animation = 'centerPulse 2s ease-in-out infinite';
+            }, 600);
+            
+            // Лепестки появляются с небольшим отставанием (200ms)
+            setTimeout(() => {
+                petals.forEach((petal, index) => {
+                    petal.style.animation = `petalOpen 1.2s ease-out ${index * 0.05}s both`;
+                });
+            }, 200);
+            
+            return new Promise(resolve => {
+                setTimeout(resolve, 1800);
+            });
+        }
+        
+        // АНИМАЦИЯ ЗАКРЫТИЯ ПИОНА (серединка остается видимой ВСЁ ВРЕМЯ)
+        function animatePeonyClose() {
+            const petals = document.querySelectorAll('.peony-petal');
+            const center = document.querySelector('.peony-center');
+            
+            // Останавливаем пульсацию серединки
+            center.style.animation = '';
+            // Серединка остается видимой, просто прекращает пульсировать
+            
+            // Исчезают только лепестки
+            Array.from(petals).reverse().forEach((petal, index) => {
+                petal.style.animation = `petalClose 1s ease-in ${index * 0.03}s both`;
+            });
+            
+            return new Promise(resolve => {
+                setTimeout(resolve, 1200);
+            });
+        }
+        
+        // СМЕНА ФРАЗЫ В ЗАГРУЗКЕ
+        function changeLoadingPhrase() {
+            const currentPhrase = document.getElementById(`loading-phrase-${loadingData.currentPhase}`);
+            const nextPhase = (loadingData.currentPhase + 1) % loadingData.totalPhases;
+            const nextPhrase = document.getElementById(`loading-phrase-${nextPhase}`);
+            
+            // Анимация исчезновения текущей фразы
+            currentPhrase.style.animation = 'phraseFadeOut 0.5s ease-out both';
+            
+            // Показываем следующую фразу
+            setTimeout(() => {
+                currentPhrase.style.display = 'none';
+                currentPhrase.style.animation = '';
+                
+                nextPhrase.style.display = 'flex';
+                nextPhrase.style.animation = 'phraseFadeIn 0.5s ease-out both';
+                
+                // Обновляем точку прогресса
+                updateLoadingProgressDots(nextPhase);
+                
+                loadingData.currentPhase = nextPhase;
+            }, 500);
+            
+            return new Promise(resolve => {
+                setTimeout(resolve, 1000);
+            });
+        }
+        
+        // ОБНОВЛЕНИЕ ТОЧЕК ПРОГРЕССА В ЗАГРУЗКЕ
+        function updateLoadingProgressDots(phaseIndex) {
+            const dots = document.querySelectorAll('#loadingProgressDots .progress-dot');
+            const progressFill = document.getElementById('loadingProgressFill');
+            
+            // Обновляем активную точку
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === phaseIndex);
+            });
+            
+            // Обновляем полосу прогресса
+            const progress = ((phaseIndex + 1) / loadingData.totalPhases) * 100;
+            progressFill.style.width = `${progress}%`;
+        }
+        
+        // ОСНОВНАЯ АНИМАЦИЯ ЗАГРУЗКИ
+        async function startLoadingAnimation() {
+            if (loadingData.isAnimating) return;
+            loadingData.isAnimating = true;
+            
+            // Инициализация элементов загрузки
+            createPeony();
+            createLoadingPhrases();
+            createLoadingProgressDots();
+            
+            // Сбрасываем фазу
+            loadingData.currentPhase = 0;
+            
+            // 1. Начальное раскрытие пиона (серединка появляется сразу)
+            await animatePeonyOpen();
+            
+            // 2. Цикл смены фраз (4 раза)
+            for (let i = 0; i < loadingData.totalPhases - 1; i++) {
+                // Закрываем пион (только лепестки, серединка остается видимой)
+                await animatePeonyClose();
+                
+                // Меняем фразу
+                await changeLoadingPhrase();
+                
+                // Снова раскрываем пион (лепестки появляются, серединка уже видна)
+                // Сначала снова запускаем пульсацию серединки
+                const center = document.querySelector('.peony-center');
+                center.style.animation = 'centerPulse 2s ease-in-out infinite';
+                
+                // Затем лепестки
+                const petals = document.querySelectorAll('.peony-petal');
+                petals.forEach((petal, index) => {
+                    petal.style.animation = `petalOpen 1.2s ease-out ${index * 0.05}s both`;
+                });
+                
+                await new Promise(resolve => setTimeout(resolve, 1200));
+                
+                // Пауза между циклами
+                await new Promise(resolve => setTimeout(resolve, 800));
+            }
+            
+            // 3. Финальное закрытие (только лепестки)
+            await animatePeonyClose();
+            
+            // Серединка остается видимой до самого конца
+            // Через секунду переходим к результатам
+            setTimeout(() => {
+                completeLoading();
+            }, 1000);
+        }
+        
+        // ЗАВЕРШЕНИЕ ЗАГРУЗКИ
+        function completeLoading() {
+            const container = document.querySelector('.loading-phrases-container');
+            const phraseElement = document.createElement('div');
+            phraseElement.className = 'loading-phrase';
+            phraseElement.textContent = "Готово! Переходим к результатам...";
+            phraseElement.style.display = 'flex';
+            phraseElement.style.animation = 'phraseFadeIn 0.5s ease-out both';
+            
+            // Очищаем и добавляем новую фразу
+            container.innerHTML = '';
+            container.appendChild(phraseElement);
+            
+            // Через 1.5 секунды перенаправляем (в реальном приложении)
+            setTimeout(() => {
+                if (tg) {
+                    // Формируем результаты
+                    const results = {
+                        profile: quizData.currentBranch?.name || 'Не определен',
+                        gender: quizData.answers.quiz1 || 'Не указан',
+                        productType: quizData.answers.quiz2 || 'Не выбран',
+                        answers: quizData.answers,
+                        timestamp: new Date().toISOString()
+                    };
+                    
+                    tg.sendData(JSON.stringify(results));
+                    tg.showAlert("🎉 Анализ завершён! Ваши результаты готовы.");
+                } else {
+                    alert("🎉 Анализ завершён! Переходим к вашим персонализированным рекомендациям.");
+                }
+            }, 1500);
         }
         
         // Автоматический HTTPS
