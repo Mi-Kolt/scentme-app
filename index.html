@@ -737,6 +737,42 @@
         console.log('Текущий режим:', userManager.getMode());
         console.log('Тест пройден?', userManager.isQuizCompleted());
     });
+       // ВРЕМЕННЫЙ FIX: Если user-manager не загрузился
+if (typeof userManager === 'undefined') {
+    console.warn('⚠️ user-manager.js не загружен, создаю временную версию');
+    
+    window.userManager = {
+        setMode: function(mode, save = true) {
+            console.log('Временный userManager: режим', mode);
+            if (save) {
+                localStorage.setItem('userMode', mode);
+            }
+            return true;
+        },
+        
+        isRegistered: function() {
+            return localStorage.getItem('isRegistered') === 'true';
+        },
+        
+        isQuizCompleted: function() {
+            return localStorage.getItem('quiz_completed') === 'true';
+        },
+        
+        getMode: function() {
+            return localStorage.getItem('userMode') || 'guest';
+        },
+        
+        markAsNewUser: function() {
+            localStorage.setItem('isNewUser', 'true');
+        },
+        
+        markQuizAsCompleted: function() {
+            localStorage.setItem('quiz_completed', 'true');
+        }
+    };
+    
+    console.log('✅ Временный userManager создан');
+}
 </script>
 </body>
 </html>
