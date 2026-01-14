@@ -1090,6 +1090,19 @@
     </div>
 
     <script>
+         // Переименовываем UserManager, если он уже объявлен
+    if (typeof UserManager !== 'undefined') {
+        window.quizManager = UserManager;
+        delete window.UserManager;
+    }
+    
+    // Создаем selectLevel, если его нет
+    if (typeof selectLevel === 'undefined') {
+        function selectLevel(level) {
+            alert('Выбран уровень: ' + level);
+            // Ваш код здесь
+        }
+    }
     // ===== ДАННЫЕ ВИКТОРИНЫ =====
     const quizData = {
         level: null, // quick | standard | detailed
