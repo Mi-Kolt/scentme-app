@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scentmé - Викторина по подбору ароматов</title>
+    <!-- Удаляем дублирующий скрипт user-manager.js -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
         /* Все стили остаются без изменений */
@@ -882,7 +883,7 @@
                 <h2 class="level-title">Выберите уровень точности</h2>
                 
                 <div class="level-options">
-                    <div class="level-card" onclick="selectLevel('quick')">
+                    <div class="level-card" onclick="selectLevelHandler('quick')">
                         <div class="level-card-header">
                             <i class="bi bi-lightning level-card-icon"></i>
                             <h3>Быстрый подбор</h3>
@@ -892,7 +893,7 @@
                         <div class="level-description">Для знакомства или срочного выбора</div>
                     </div>
                     
-                    <div class="level-card" onclick="selectLevel('standard')">
+                    <div class="level-card" onclick="selectLevelHandler('standard')">
                         <div class="level-card-header">
                             <i class="bi bi-bullseye level-card-icon"></i>
                             <h3>Стандартный (рекомендуем)</h3>
@@ -902,7 +903,7 @@
                         <div class="level-description">Идеально для первого точного подбора</div>
                     </div>
                     
-                    <div class="level-card" onclick="selectLevel('detailed')">
+                    <div class="level-card" onclick="selectLevelHandler('detailed')">
                         <div class="level-card-header">
                             <i class="bi bi-search level-card-icon"></i>
                             <h3>Детальный анализ</h3>
@@ -1081,622 +1082,559 @@
                             Назад
                         </button>
                         <button class="nav-btn next" onclick="validateAndContinue()" id="budgetNextBtn">
-    Продолжить
-</button></div>
+                            Продолжить
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Игнорируем дублирующий UserManager
-delete window.UserManager;
-
-// Создаем функцию selectLevel
-window.selectLevel = function(level) {
-    localStorage.setItem('quizLevel', level);
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById('screen-questions').classList.add('active');
-    
-    // Если есть функция startQuiz - вызываем
-    if (typeof startQuiz === 'function') {
-        startQuiz();
-    }
-};
-         // Переименовываем UserManager, если он уже объявлен
-    if (typeof UserManager !== 'undefined') {
-        window.quizManager = UserManager;
-        delete window.UserManager;
-    }
-    
-    // Создаем selectLevel, если его нет
-    if (typeof selectLevel === 'undefined') {
-        function selectLevel(level) {
-            alert('Выбран уровень: ' + level);
-            // Ваш код здесь
-        }
-    }
-    // ===== ДАННЫЕ ВИКТОРИНЫ =====
-    const quizData = {
-        level: null, // quick | standard | detailed
-        answers: {
-            q1: null,
-            q2: null,
-            q3: [] // бюджет - массив для множественного выбора
-        },
-        accuracy: 0,
-        answeredQuestions: 0,
-        totalBaseQuestions: 3
-    };
-    
-    // ===== ИНИЦИАЛИЗАЦИЯ ТЕМЫ =====
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    
-    if (savedTheme === 'dark') {
-        document.body.classList.add('dark-theme');
-        document.querySelector('.theme-bg.light').classList.remove('active');
-        document.querySelector('.theme-bg.dark').classList.add('active');
-    } else {
-        document.body.classList.remove('dark-theme');
-        document.querySelector('.theme-bg.dark').classList.remove('active');
-        document.querySelector('.theme-bg.light').classList.add('active');
-    }
-    
-    // ===== ОСНОВНЫЕ ФУНКЦИИ =====
-    function selectLevel(level) {
-        quizData.level = level;
-        
-        // Сохраняем данные для передачи в ветки
-        const transferData = JSON.parse(localStorage.getItem('quizTransferData') || '{}');
-        transferData.level = level;
-        localStorage.setItem('quizTransferData', JSON.stringify(transferData));
-        
-        // Убираем выделение со всех карточек
-        document.querySelectorAll('.level-card').forEach(card => {
-            card.classList.remove('selected');
-        });
-        
-        // Выделяем выбранную карточку
-        event.currentTarget.classList.add('selected');
-        
-        // Активируем кнопку "Начать тест"
-        document.getElementById('startQuizBtn').disabled = false;
-    }
-    
-    function startQuiz() {
-        // Сброс данных
-        quizData.answers = {
-            q1: null,
-            q2: null,
-            q3: []
-        };
-        quizData.accuracy = 0;
-        quizData.answeredQuestions = 0;
-        
-        // Переходим к первому вопросу
-        goToScreen('q1');
-        
-        // Инициализируем точки точности
-        setTimeout(() => {
-            updateAccuracyDots();
-            updateAccuracyText();
-        }, 100);
-    }
-    
-    function goToScreen(screenId) {
-        // Скрываем все экраны
-        document.querySelectorAll('.screen').forEach(screen => {
-            screen.classList.remove('active');
-        });
-        
-        // Показываем нужный экран
-        const targetScreen = document.getElementById(`screen-${screenId}`);
-        if (targetScreen) {
-            targetScreen.classList.add('active');
-            
-            // Обновляем прогресс
-            updateProgress(screenId);
-            
-            // Если переходим на Q2, загружаем адаптивные варианты
-            if (screenId === 'q2') {
-                loadQuestion2();
-            }
-        }
-    }
-    
-    function updateProgress(screenId) {
-        let questionNum = 0;
-        const totalQuestions = 3;
-        
-        // Определяем номер вопроса по экрану
-        const screenToQuestion = {
-            'level': 0,
-            'q1': 1,
-            'q2': 2,
-            'budget': 3
+        // ===== ГЛОБАЛЬНЫЙ ОБЪЕКТ ДЛЯ УПРАВЛЕНИЯ =====
+        window.quizData = {
+            level: null, // quick | standard | detailed
+            answers: {
+                q1: null,
+                q2: null,
+                q3: [] // бюджет - массив для множественного выбора
+            },
+            accuracy: 0,
+            answeredQuestions: 0,
+            totalBaseQuestions: 3
         };
         
-        questionNum = screenToQuestion[screenId] || 0;
-        
-        const progress = (questionNum / totalQuestions) * 100;
-        document.querySelectorAll('.progress-fill').forEach(fill => {
-            fill.style.width = `${progress}%`;
-        });
-        
-        // Обновляем счетчики
-        document.querySelectorAll('.progress-count').forEach(count => {
-            if (questionNum > 0) {
-                count.textContent = `${questionNum}/${totalQuestions}`;
-            }
-        });
-        
-        // Обновляем точность
-        updateAccuracy();
-    }
-    
-    function loadQuestion2() {
-        const q1Answer = quizData.answers.q1;
-        if (!q1Answer) return;
-        
-        let questionText = "";
-        let options = [];
-        
-        if (q1Answer === 'self') {
-            questionText = "Что вас интересует?";
-            options = [
-                { value: "perfume", text: "Парфюмерия" },
-                { value: "oils", text: "Эфирные масла" },
-            ];
-        } else if (q1Answer === 'gift') {
-            questionText = "Для кого подарок?";
-            options = [
-                { value: "close", text: "Близкий человек" },
-                { value: "colleague", text: "Коллега / деловой партнёр" },
-                { value: "boss", text: "Начальник / руководитель" },
-                { value: "unknown", text: "Не знаю / сложно определить" }
-            ];
-        } else if (q1Answer === 'browse') {
-            questionText = "Что вам интересно?";
-            options = [
-                { value: "perfume", text: "Парфюмерия" },
-                { value: "oils", text: "Эфирные масла" },
-            ];
-        }
-        
-        document.getElementById('q2Question').textContent = questionText;
-        const container = document.getElementById('q2Options');
-        container.innerHTML = '';
-        
-        options.forEach(option => {
-            const div = document.createElement('div');
-            div.className = 'option-radio';
-            div.onclick = () => selectRadioOption(div, 'q2', option.value);
-            div.innerHTML = `
-                <div class="radio-custom"></div>
-                <div class="radio-text">${option.text}</div>
-            `;
-            container.appendChild(div);
-        });
-        
-        // Восстанавливаем выбор если есть
-        if (quizData.answers.q2) {
-            setTimeout(() => {
-                const selectedOption = Array.from(container.children).find(
-                    opt => opt.onclick && opt.onclick.toString().includes(`'${quizData.answers.q2}'`)
-                );
-                if (selectedOption) {
-                    selectRadioOption(selectedOption, 'q2', quizData.answers.q2, true);
+        // ===== USER MANAGER =====
+        const UserManager = {
+            currentMode: 'guest',
+            
+            init() {
+                const savedMode = localStorage.getItem('scentme_user_mode');
+                if (savedMode) this.currentMode = savedMode;
+                return this;
+            },
+            
+            getMode() {
+                return this.currentMode;
+            },
+            
+            setMode(mode) {
+                this.currentMode = mode;
+                localStorage.setItem('scentme_user_mode', mode);
+                return this;
+            },
+            
+            isRegistered() {
+                return this.currentMode === 'registered';
+            },
+            
+            isQuizCompleted() {
+                if (!this.isRegistered()) return false;
+                const userData = this.getUserData();
+                return userData?.quizCompleted || false;
+            },
+            
+            markQuizCompleted() {
+                if (this.isRegistered()) {
+                    const userData = this.getUserData();
+                    userData.quizCompleted = true;
+                    userData.quizCompletedDate = new Date().toISOString();
+                    this.saveUserData(userData);
                 }
-            }, 10);
-        }
-    }
-    
-    function selectRadioOption(element, questionId, value, silent = false) {
-        const container = element.closest('.options-container');
+                return this;
+            },
+            
+            getUserData() {
+                const data = localStorage.getItem('scentme_user_data');
+                return data ? JSON.parse(data) : {
+                    quizCompleted: false,
+                    registrationDate: new Date().toISOString(),
+                    preferences: {},
+                    quizHistory: [],
+                    collections: {
+                        perfumes: [],
+                        oils: [],
+                        articles: []
+                    }
+                };
+            },
+            
+            saveUserData(data) {
+                localStorage.setItem('scentme_user_data', JSON.stringify(data));
+                return this;
+            },
+            
+            register(email, name) {
+                const userData = {
+                    email: email,
+                    name: name,
+                    registrationDate: new Date().toISOString(),
+                    quizCompleted: false,
+                    preferences: {},
+                    quizHistory: [],
+                    collections: {
+                        perfumes: [],
+                        oils: [],
+                        articles: []
+                    }
+                };
+                
+                this.saveUserData(userData);
+                this.setMode('registered');
+                return userData;
+            },
+            
+            logout() {
+                this.setMode('guest');
+                return this;
+            }
+        };
         
-        // Снимаем выделение со всех вариантов
-        if (container) {
-            container.querySelectorAll('.option-radio').forEach(option => {
-                option.classList.remove('selected');
+        // Инициализируем UserManager
+        window.userManager = UserManager.init();
+        
+        // ===== ОСНОВНЫЕ ФУНКЦИИ ВИКТОРИНЫ =====
+        
+        function selectLevelHandler(level) {
+            quizData.level = level;
+            
+            // Убираем выделение со всех карточек
+            document.querySelectorAll('.level-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Выделяем выбранную карточку
+            event.currentTarget.classList.add('selected');
+            
+            // Активируем кнопку "Начать тест"
+            document.getElementById('startQuizBtn').disabled = false;
+        }
+        
+        function startQuiz() {
+            // Проверяем, выбран ли уровень
+            if (!quizData.level) {
+                alert('Пожалуйста, выберите уровень точности');
+                return;
+            }
+            
+            // Сбрасываем данные
+            quizData.answers = {
+                q1: null,
+                q2: null,
+                q3: []
+            };
+            quizData.accuracy = 0;
+            quizData.answeredQuestions = 0;
+            
+            // Переходим к первому вопросу
+            goToScreen('q1');
+        }
+        
+        function goToScreen(screenId) {
+            // Скрываем все экраны
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // Показываем нужный экран
+            const targetScreen = document.getElementById(`screen-${screenId}`);
+            if (targetScreen) {
+                targetScreen.classList.add('active');
+                
+                // Обновляем прогресс
+                updateProgress(screenId);
+                
+                // Если переходим на Q2, загружаем адаптивные варианты
+                if (screenId === 'q2') {
+                    loadQuestion2();
+                }
+                
+                // Если возвращаемся назад, обновляем состояние кнопок
+                if (screenId === 'q1') {
+                    document.getElementById('q1NextBtn').disabled = !quizData.answers.q1;
+                } else if (screenId === 'q2') {
+                    document.getElementById('q2NextBtn').disabled = !quizData.answers.q2;
+                }
+            }
+        }
+        
+        function updateProgress(screenId) {
+            let questionNum = 0;
+            const totalQuestions = 3;
+            
+            // Определяем номер вопроса по экрану
+            const screenToQuestion = {
+                'level': 0,
+                'q1': 1,
+                'q2': 2,
+                'budget': 3
+            };
+            
+            questionNum = screenToQuestion[screenId] || 0;
+            
+            const progress = (questionNum / totalQuestions) * 100;
+            document.querySelectorAll('.progress-fill').forEach(fill => {
+                fill.style.width = `${progress}%`;
+            });
+            
+            // Обновляем счетчики
+            document.querySelectorAll('.progress-count').forEach(count => {
+                if (questionNum > 0) {
+                    count.textContent = `${questionNum}/${totalQuestions}`;
+                }
             });
         }
         
-        // Выделяем выбранный вариант
-        element.classList.add('selected');
-        
-        // Сохраняем ответ
-        quizData.answers[questionId] = value;
-        
-        // Увеличиваем счетчик отвеченных вопросов
-        if (!silent) {
-            updateAnsweredQuestions();
+        function loadQuestion2() {
+            const q1Answer = quizData.answers.q1;
+            if (!q1Answer) return;
+            
+            let questionText = "";
+            let options = [];
+            
+            if (q1Answer === 'self') {
+                questionText = "Что вас интересует?";
+                options = [
+                    { value: "perfume", text: "Парфюмерия" },
+                    { value: "oils", text: "Эфирные масла" },
+                ];
+            } else if (q1Answer === 'gift') {
+                questionText = "Для кого подарок?";
+                options = [
+                    { value: "close", text: "Близкий человек" },
+                    { value: "colleague", text: "Коллега / деловой партнёр" },
+                    { value: "boss", text: "Начальник / руководитель" },
+                    { value: "unknown", text: "Не знаю / сложно определить" }
+                ];
+            } else if (q1Answer === 'browse') {
+                questionText = "Что вам интересно?";
+                options = [
+                    { value: "perfume", text: "Парфюмерия" },
+                    { value: "oils", text: "Эфирные масла" },
+                ];
+            }
+            
+            document.getElementById('q2Question').textContent = questionText;
+            const container = document.getElementById('q2Options');
+            container.innerHTML = '';
+            
+            options.forEach(option => {
+                const div = document.createElement('div');
+                div.className = 'option-radio';
+                div.onclick = () => selectRadioOption(div, 'q2', option.value);
+                div.innerHTML = `
+                    <div class="radio-custom"></div>
+                    <div class="radio-text">${option.text}</div>
+                `;
+                container.appendChild(div);
+            });
+            
+            // Восстанавливаем выбор если есть
+            if (quizData.answers.q2) {
+                setTimeout(() => {
+                    const selectedOption = Array.from(container.children).find(
+                        opt => opt.onclick && opt.onclick.toString().includes(`'${quizData.answers.q2}'`)
+                    );
+                    if (selectedOption) {
+                        selectRadioOption(selectedOption, 'q2', quizData.answers.q2, true);
+                    }
+                }, 10);
+            }
         }
         
-        // Активируем кнопку "Далее"
-        if (!silent) {
-            const nextBtn = element.closest('.question-card').querySelector('.nav-btn.next');
-            if (nextBtn) {
-                nextBtn.disabled = false;
+        function selectRadioOption(element, questionId, value, silent = false) {
+            const container = element.closest('.options-container');
+            
+            // Снимаем выделение со всех вариантов
+            if (container) {
+                container.querySelectorAll('.option-radio').forEach(option => {
+                    option.classList.remove('selected');
+                });
+            }
+            
+            // Выделяем выбранный вариант
+            element.classList.add('selected');
+            
+            // Сохраняем ответ
+            quizData.answers[questionId] = value;
+            
+            // Обновляем точность
+            if (!silent) {
+                updateAccuracy();
+                
+                // Активируем кнопку "Далее"
+                const nextBtn = element.closest('.question-card').querySelector('.nav-btn.next');
+                if (nextBtn) {
+                    nextBtn.disabled = false;
+                }
+            }
+        }
+        
+        function toggleBudgetOption(element, value) {
+            // Переключаем выделение
+            element.classList.toggle('selected');
+            
+            // Обновляем массив ответов
+            const index = quizData.answers.q3.indexOf(value);
+            if (index === -1) {
+                quizData.answers.q3.push(value);
+            } else {
+                quizData.answers.q3.splice(index, 1);
             }
             
             // Обновляем точность
             updateAccuracy();
         }
-    }
-    
-   function toggleBudgetOption(element, value) {
-    // Переключаем выделение
-    element.classList.toggle('selected');
-    
-    // Обновляем массив ответов
-    const index = quizData.answers.q3.indexOf(value);
-    if (index === -1) {
-        quizData.answers.q3.push(value);
-    } else {
-        quizData.answers.q3.splice(index, 1);
-    }
-    
-    // Обновляем точность (даже если массив пустой)
-    updateAccuracy();
-    
-    // Кнопка всегда активна (бюджет не обязателен)
-    document.getElementById('budgetNextBtn').disabled = false;
-}
-    
-    function updateAnsweredQuestions(increment = 1) {
-        // Проверяем, был ли уже учтен этот вопрос
-        const currentAnswers = calculateAnsweredQuestions();
-        quizData.answeredQuestions = currentAnswers;
-    }
-    
-    function calculateAnsweredQuestions() {
-    let answered = 0;
-    if (quizData.answers.q1) answered++;
-    if (quizData.answers.q2) answered++;
-    
-    // Бюджет считается отвеченным если есть хотя бы один выбор
-    // Но это НЕ обязательно! Можно оставить пустым
-    if (quizData.answers.q3 && quizData.answers.q3.length > 0) {
-        answered++;
-    }
-    return answered;
-}
-    
-   function updateAccuracy() {
-    // Считаем количество отвеченных вопросов
-    const answered = calculateAnsweredQuestions();
-    quizData.answeredQuestions = answered;
-    
-    // Максимальная точность для уровня (НИКОГДА 5!)
-    const maxForLevel = {
-        quick: 3.0,      // Быстрый: максимум 3.0 (не 5!)
-        standard: 3.8,   // Стандартный: максимум 3.8 (не 5!)
-        detailed: 4.2    // Детальный: максимум 4.2 (не 5!)
-    }[quizData.level] || 3.0;
-    
-    // Рассчитываем точность
-    let accuracy = 0;
-    if (quizData.level) {
-        // Базовые вопросы дают 60% от максимальной точности
-        // Веточные вопросы дадут оставшиеся 40%
-        const baseWeight = 0.6; // 60% от общей точности за базовые вопросы
         
-        // За каждый базовый вопрос даём часть от baseWeight
-        const pointsPerQuestion = (maxForLevel * baseWeight) / 3;
-        accuracy = answered * pointsPerQuestion;
-    }
-    
-    // Ограничиваем максимумом для уровня
-    accuracy = Math.min(accuracy, maxForLevel * 0.6);
-    
-    // Округляем до десятых, но не выше maxForLevel
-    quizData.accuracy = parseFloat(accuracy.toFixed(1));
-    
-    updateAccuracyDots();
-    updateAccuracyText();
-    
-    // Сохраняем данные для передачи в ветки
-    saveDataForBranch();
-}
-    
-    function updateAccuracyDots() {
-        const maxDots = 5;
-        const accuracy = quizData.accuracy;
-        
-        // Создаем или обновляем точки для всех экранов
-        const dotContainers = document.querySelectorAll('.accuracy-dots');
-        
-        dotContainers.forEach(container => {
-            // Если контейнер пустой, заполняем его
-            if (container.children.length === 0) {
-                container.innerHTML = '';
-                for (let i = 0; i < maxDots; i++) {
-                    const dot = document.createElement('div');
-                    dot.className = 'accuracy-dot';
-                    container.appendChild(dot);
-                }
+        function updateAccuracy() {
+            // Считаем количество отвеченных обязательных вопросов
+            let answered = 0;
+            if (quizData.answers.q1) answered++;
+            if (quizData.answers.q2) answered++;
+            
+            // Максимальная точность для уровня
+            const maxForLevel = {
+                quick: 3.0,
+                standard: 3.8,
+                detailed: 4.2
+            }[quizData.level] || 3.0;
+            
+            // Рассчитываем точность
+            let accuracy = 0;
+            if (quizData.level) {
+                // Базовые вопросы дают 60% от максимальной точности
+                const baseWeight = 0.6;
+                const pointsPerQuestion = (maxForLevel * baseWeight) / 3;
+                accuracy = answered * pointsPerQuestion;
             }
             
-            // Обновляем точки
-            const dots = container.children;
-            for (let i = 0; i < dots.length; i++) {
-                const dot = dots[i];
-                dot.classList.remove('active');
+            // Ограничиваем максимумом для уровня
+            accuracy = Math.min(accuracy, maxForLevel * 0.6);
+            
+            // Округляем до десятых
+            quizData.accuracy = parseFloat(accuracy.toFixed(1));
+            
+            updateAccuracyDots();
+            updateAccuracyText();
+        }
+        
+        function updateAccuracyDots() {
+            const maxDots = 5;
+            const accuracy = quizData.accuracy;
+            
+            // Создаем или обновляем точки для всех экранов
+            const dotContainers = document.querySelectorAll('.accuracy-dots');
+            
+            dotContainers.forEach(container => {
+                // Если контейнер пустой, заполняем его
+                if (container.children.length === 0) {
+                    container.innerHTML = '';
+                    for (let i = 0; i < maxDots; i++) {
+                        const dot = document.createElement('div');
+                        dot.className = 'accuracy-dot';
+                        container.appendChild(dot);
+                    }
+                }
                 
-                if (accuracy >= (i + 1)) {
-                    dot.classList.add('active');
-                } else if (accuracy > i && accuracy < (i + 1)) {
-                    dot.classList.add('active');
-                    dot.style.opacity = '0.6';
-                } else {
-                    dot.style.opacity = '';
+                // Обновляем точки
+                const dots = container.children;
+                for (let i = 0; i < dots.length; i++) {
+                    const dot = dots[i];
+                    dot.classList.remove('active');
+                    
+                    if (accuracy >= (i + 1)) {
+                        dot.classList.add('active');
+                    } else if (accuracy > i && accuracy < (i + 1)) {
+                        dot.classList.add('active');
+                        dot.style.opacity = '0.6';
+                    } else {
+                        dot.style.opacity = '';
+                    }
+                }
+            });
+        }
+        
+        function updateAccuracyText() {
+            const accuracy = quizData.accuracy;
+            
+            document.querySelectorAll('.accuracy-percent').forEach(element => {
+                element.textContent = `Точность: ${accuracy}/5`;
+            });
+        }
+        
+        function validateAndContinue() {
+            const q1 = quizData.answers.q1;
+            const q2 = quizData.answers.q2;
+            
+            if (!q1 || !q2) {
+                alert('Пожалуйста, ответьте на вопросы 1 и 2');
+                return false;
+            }
+            
+            // Сохраняем данные для передачи
+            saveDataForBranch();
+            
+            // Переходим в ветку
+            continueToBranch();
+            return true;
+        }
+        
+        function saveDataForBranch() {
+            const transferData = {
+                level: quizData.level,
+                answers: quizData.answers,
+                accuracy: quizData.accuracy,
+                answeredQuestions: quizData.answeredQuestions,
+                totalBaseQuestions: quizData.totalBaseQuestions
+            };
+            
+            localStorage.setItem('quizTransferData', JSON.stringify(transferData));
+            localStorage.setItem('scentme_quiz_results', JSON.stringify(transferData));
+        }
+        
+        function continueToBranch() {
+            console.log('Передача данных в ветку...');
+            
+            const transferData = {
+                level: quizData.level,
+                answers: {
+                    q1: quizData.answers.q1,
+                    q2: quizData.answers.q2,
+                    q3: quizData.answers.q3,
+                    quizType: quizData.answers.q2 === 'perfume' ? 'perfume' : 'oils'
+                },
+                accuracy: quizData.accuracy,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Сохраняем данные
+            localStorage.setItem('quizTransferData', JSON.stringify(transferData));
+            
+            console.log('Данные сохранены:', transferData);
+            
+            // Определяем, куда переходить
+            let targetFile = '';
+            if (quizData.answers.q2 === 'perfume') {
+                targetFile = 'perfume.html';
+            } else if (quizData.answers.q2 === 'oils') {
+                targetFile = 'oils.html';
+            } else if (quizData.answers.q2 === 'close' || 
+                      quizData.answers.q2 === 'colleague' || 
+                      quizData.answers.q2 === 'boss' || 
+                      quizData.answers.q2 === 'unknown') {
+                // Для подарков - всегда парфюмерия
+                targetFile = 'perfume.html';
+            } else {
+                // По умолчанию - парфюмерия
+                targetFile = 'perfume.html';
+            }
+            
+            // Переход
+            window.location.href = targetFile + '?level=' + quizData.level;
+        }
+        
+        // ===== МОДАЛЬНОЕ ОКНО ПРОПУСКА =====
+        function showSkipModal() {
+            const currentMode = userManager.getMode();
+            
+            // Обновляем текст в зависимости от режима
+            const modalText = document.querySelector('.modal-text');
+            const confirmBtn = document.querySelector('.modal-btn.confirm');
+            
+            if (currentMode === 'guest') {
+                modalText.textContent = 'Вы находитесь в гостевом режиме. Пропуск теста приведёт вас на главную страницу.';
+                confirmBtn.textContent = 'В гостевой режим';
+            } else {
+                modalText.textContent = 'Пропустить подбор ароматов? Вы перейдёте в основное приложение.';
+                confirmBtn.textContent = 'В приложение';
+            }
+            
+            document.getElementById('skipModal').classList.add('active');
+        }
+        
+        function hideSkipModal() {
+            document.getElementById('skipModal').classList.remove('active');
+        }
+        
+        function skipToMain() {
+            goToMainApp();
+        }
+        
+        function goToMainApp() {
+            // Сохраняем информацию о пропуске
+            const skipData = {
+                skipped: true,
+                timestamp: new Date().toISOString(),
+                mode: userManager.getMode(),
+                answeredQuestions: quizData.answeredQuestions || 0
+            };
+            localStorage.setItem('quiz_skip_data', JSON.stringify(skipData));
+            
+            // Если пользователь зарегистрирован, помечаем тест как "пропущенный"
+            if (userManager.isRegistered()) {
+                userManager.markQuizCompleted();
+            }
+            
+            // Переходим на главную
+            window.location.href = 'main.html';
+        }
+        
+        function goToWelcome() {
+            const currentMode = userManager.getMode();
+            
+            if (currentMode === 'guest') {
+                // Для гостей - назад к выбору входа
+                window.location.href = 'index.html';
+            } else {
+                // Для зарегистрированных - спросить подтверждение
+                if (confirm('Вернуться на страницу приветствия? Прогресс теста будет сохранён.')) {
+                    window.location.href = 'index.html';
                 }
             }
-        });
-    }
-    
-    function updateAccuracyText() {
-        const accuracy = quizData.accuracy;
+        }
         
-        document.querySelectorAll('.accuracy-percent').forEach(element => {
-            element.textContent = `Точность: ${accuracy}/5`;
-        });
-    }
-    
-    function saveDataForBranch() {
-        // Сохраняем все данные для передачи в ветку
-        const transferData = {
-            level: quizData.level,
-            answers: quizData.answers,
-            accuracy: quizData.accuracy,
-            answeredQuestions: quizData.answeredQuestions,
-            totalBaseQuestions: quizData.totalBaseQuestions
-        };
+        // ===== ИНИЦИАЛИЗАЦИЯ ТЕМЫ =====
+        const savedTheme = localStorage.getItem('theme') || 'light';
         
-        localStorage.setItem('quizTransferData', JSON.stringify(transferData));
-    }
-    
-    // ===== МОДАЛЬНОЕ ОКНО ПРОПУСКА =====
-    function showSkipModal() {
-        const currentMode = userManager.getMode();
-        
-        // Обновляем текст в зависимости от режима
-        const modalText = document.querySelector('.modal-text');
-        const confirmBtn = document.querySelector('.modal-btn.confirm');
-        
-        if (currentMode === 'guest') {
-            modalText.textContent = 'Вы находитесь в гостевом режиме. Пропуск теста приведёт вас на главную страницу.';
-            confirmBtn.textContent = 'В гостевой режим';
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+            document.querySelector('.theme-bg.light').classList.remove('active');
+            document.querySelector('.theme-bg.dark').classList.add('active');
         } else {
-            modalText.textContent = 'Пропустить подбор ароматов? Вы перейдёте в основное приложение.';
-            confirmBtn.textContent = 'В приложение';
+            document.body.classList.remove('dark-theme');
+            document.querySelector('.theme-bg.dark').classList.remove('active');
+            document.querySelector('.theme-bg.light').classList.add('active');
         }
         
-        document.getElementById('skipModal').classList.add('active');
-    }
-    
-    function hideSkipModal() {
-        document.getElementById('skipModal').classList.remove('active');
-    }
-    
-    function skipToMain() {
-        // Всегда переходим в главное приложение
-        goToMainApp();
-    }
-    
-    function goToMainApp() {
-        // Сохраняем информацию о пропуске
-        const skipData = {
-            skipped: true,
-            timestamp: new Date().toISOString(),
-            mode: userManager.getMode(),
-            answeredQuestions: quizData.answeredQuestions || 0
-        };
-        localStorage.setItem('quiz_skip_data', JSON.stringify(skipData));
-        
-        // Если пользователь зарегистрирован, помечаем тест как "пропущенный"
-        if (userManager.isRegistered()) {
-            userManager.markQuizCompleted();
-        }
-        
-        // Переходим на главную
-        window.location.href = 'main.html';
-    }
-    
-    function goToWelcome() {
-        const currentMode = userManager.getMode();
-        
-        if (currentMode === 'guest') {
-            // Для гостей - назад к выбору входа
-            window.location.href = 'index.html';
-        } else {
-            // Для зарегистрированных - спросить подтверждение
-            if (confirm('Вернуться на страницу приветствия? Прогресс теста будет сохранён.')) {
-                window.location.href = 'index.html';
+        // ===== ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ =====
+        document.addEventListener('DOMContentLoaded', function() {
+            // Проверяем текущий режим
+            const currentMode = userManager.getMode();
+            console.log('Текущий режим:', currentMode);
+            
+            // Если пользователь зарегистрирован и уже проходил тест
+            if (currentMode === 'registered' && userManager.isQuizCompleted()) {
+                window.location.href = 'main.html';
+                return;
             }
-        }
-    }
-    
-    function continueToBranch() {
-    console.log('Передача данных в ветку...');
-    
-    const transferData = {
-        level: quizData.level,
-        answers: {
-            q1: quizData.answers.q1,
-            q2: quizData.answers.q2,
-            q3: quizData.answers.q3,
-            // Явно передаем тип теста
-            quizType: quizData.answers.q2 === 'perfume' ? 'perfume' : 'oils'
-        },
-        accuracy: quizData.accuracy,
-        timestamp: new Date().toISOString()
-    };
-    
-    // Сохраняем в ОДИН ключ для простоты
-    localStorage.setItem('quizTransferData', JSON.stringify(transferData));
-    localStorage.setItem('scentme_quiz_results', JSON.stringify(transferData));
-    
-    console.log('Данные сохранены:', transferData);
-    
-    // Переход
-    const targetFile = quizData.answers.q2 === 'perfume' ? 'perfume.html' : 'oils.html';
-    window.location.href = targetFile + '?level=' + quizData.level;
-}
-// Функция для проверки перед переходом
-function validateAndContinue() {
-    const q1 = quizData.answers.q1;
-    const q2 = quizData.answers.q2;
-    
-    if (!q1 || !q2) {
-        alert('Пожалуйста, ответьте на вопросы 1 и 2');
-        return false;
-    }
-    
-    // Бюджет не обязателен, но можно предупредить
-    if (quizData.answers.q3.length === 0) {
-        const proceed = confirm('Вы не указали бюджет. Без бюджета подбор будет менее точным. Продолжить?');
-        if (!proceed) {
-            return false;
-        }
-    }
-    
-    continueToBranch();
-    return true;
-}
-
-// ===== ИНИЦИАЛИЗАЦИЯ =====
-document.addEventListener('DOMContentLoaded', function() {
-    // Проверяем текущий режим
-    const currentMode = userManager.getMode();
-    console.log('Текущий режим:', currentMode);
-    
-    // Если пользователь зарегистрирован и уже проходил тест
-    if (currentMode === 'registered' && userManager.isQuizCompleted()) {
-        // Сразу на главную
-        window.location.href = 'main.html';
-        return;
-    }
-    
-    // Если пользователь зарегистрирован, но ещё не проходил тест (новый пользователь)
-    if (currentMode === 'registered' && !userManager.isQuizCompleted()) {
-        // Показываем тест, но убираем возможность пропуска на главную
-        const skipBtn = document.querySelector('.level-action-btn[onclick*="skip"]');
-        if (skipBtn) {
-            skipBtn.onclick = function() {
-                alert('Как новый пользователь, рекомендуем пройти тест для персонализации!');
-            };
-        }
-    }
-    
-    // Инициализируем точность
-    updateAccuracyDots();
-    updateAccuracyText();
-    
-    // Устанавливаем тему из сохраненных настроек
-    if (savedTheme === 'dark') {
-        document.body.classList.add('dark-theme');
-    }
-    
-    // Закрытие модального окна по клику на оверлей
-    document.getElementById('skipModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            hideSkipModal();
-        }
-    });
-    
-    // Изначально кнопка "Начать тест" отключена
-    document.getElementById('startQuizBtn').disabled = true;
-    
-    // Бюджет можно пропустить
-    document.getElementById('budgetNextBtn').disabled = false;    });
-const UserManager = {
-    currentMode: 'guest',
-    
-    init() {
-        const savedMode = localStorage.getItem('scentme_user_mode');
-        if (savedMode) this.currentMode = savedMode;
-        return this;
-    },
-    
-    getMode() {
-        return this.currentMode;
-    },
-    
-    setMode(mode) {
-        this.currentMode = mode;
-        localStorage.setItem('scentme_user_mode', mode);
-        return this;
-    },
-    
-    isRegistered() {
-        return this.currentMode === 'registered';
-    },
-    
-    isQuizCompleted() {
-        if (!this.isRegistered()) return false;
-        const userData = this.getUserData();
-        return userData?.quizCompleted || false;
-    },
-    
-    markQuizCompleted() {
-        if (this.isRegistered()) {
-            const userData = this.getUserData();
-            userData.quizCompleted = true;
-            userData.quizCompletedDate = new Date().toISOString();
-            this.saveUserData(userData);
-        }
-        return this;
-    },
-    
-    getUserData() {
-        const data = localStorage.getItem('scentme_user_data');
-        return data ? JSON.parse(data) : {
-            quizCompleted: false,
-            registrationDate: new Date().toISOString(),
-            preferences: {},
-            quizHistory: [],
-            collections: {
-                perfumes: [],
-                oils: [],
-                articles: []
-            }
-        };
-    },
-    
-    saveUserData(data) {
-        localStorage.setItem('scentme_user_data', JSON.stringify(data));
-        return this;
-    },
-    
-    register(email, name) {
-        const userData = {
-            email: email,
-            name: name,
-            registrationDate: new Date().toISOString(),
-            quizCompleted: false,
-            preferences: {},
-            quizHistory: [],
-            collections: {
-                perfumes: [],
-                oils: [],
-                articles: []
-            }
-        };
-        
-        this.saveUserData(userData);
-        this.setMode('registered');
-        return userData;
-    },
-    
-    logout() {
-        this.setMode('guest');
-        return this;
-    }
-};
-
-// Автоматическая инициализация
-window.userManager = UserManager.init();
-</script>
+            
+            // Инициализируем точность
+            updateAccuracyDots();
+            updateAccuracyText();
+            
+            // Закрытие модального окна по клику на оверлей
+            document.getElementById('skipModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    hideSkipModal();
+                }
+            });
+            
+            // Изначально кнопка "Начать тест" отключена
+            document.getElementById('startQuizBtn').disabled = true;
+            
+            // Бюджет можно пропустить
+            document.getElementById('budgetNextBtn').disabled = false;
+        });
+    </script>
 </body>
 </html>
