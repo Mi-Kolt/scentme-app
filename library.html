@@ -4302,11 +4302,33 @@ function initializeApp() {
 
 function checkAuthentication() {
     const currentUserId = localStorage.getItem('current_user');
+    
+    // Если пользователя нет, создаем гостевую сессию
     if (!currentUserId) {
-        setTimeout(() => {
-            window.location.href = 'login.html';
-        }, 100);
+        const guestId = 'guest_' + Date.now();
+        localStorage.setItem('current_user', guestId);
+        
+        // Создаем запись для гостя в общем хранилище пользователей
+        const usersJson = localStorage.getItem('scentme_users') || '[]';
+        const users = JSON.parse(usersJson);
+        
+        const existingGuest = users.find(u => u.id === guestId);
+        if (!existingGuest) {
+            users.push({
+                id: guestId,
+                displayName: 'Гость',
+                email: '',
+                registrationDate: new Date().toISOString(),
+                settings: {
+                    theme: localStorage.getItem('scentme_theme') || 'dark'
+                },
+                isGuest: true
+            });
+            localStorage.setItem('scentme_users', JSON.stringify(users));
+        }
     }
+    
+    updateUserAvatar();
 }
 
 function updateUserAvatar() {
