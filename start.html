@@ -1090,6 +1090,20 @@
     </div>
 
     <script>
+        // Игнорируем дублирующий UserManager
+delete window.UserManager;
+
+// Создаем функцию selectLevel
+window.selectLevel = function(level) {
+    localStorage.setItem('quizLevel', level);
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-questions').classList.add('active');
+    
+    // Если есть функция startQuiz - вызываем
+    if (typeof startQuiz === 'function') {
+        startQuiz();
+    }
+};
          // Переименовываем UserManager, если он уже объявлен
     if (typeof UserManager !== 'undefined') {
         window.quizManager = UserManager;
