@@ -1,0 +1,2503 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scentmé - Подбор...</title>
+    <style>
+        /* ===== ОСНОВНЫЕ СТИЛИ ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* ===== ТЁМНАЯ ТЕМА ===== */
+        :root {
+            /* Цвета */
+            --dark-chocolate: #3D1F12;
+            --walnut-brown: #584738;
+            --sand-beige: #98755B;
+            --cream-ivory: #F1EADA;
+            --pure-white: #FFFFFF;
+            --gold: #D4AF37;
+            --light-gold: #F4E4A6;
+            --dark-beige: #D8C9B0;
+            --warm-gray: #A99E8B;
+            
+            /* Переменные */
+            --bg-primary: #2A1A0F;
+            --bg-card: rgba(30, 23, 18, 0.85);
+            --text-primary: var(--light-gold);
+            --text-secondary: rgba(244, 228, 166, 0.9);
+            --border-color: rgba(212, 175, 55, 0.25);
+            --button-bg: linear-gradient(135deg, 
+                rgba(61, 31, 18, 0.9) 0%, 
+                rgba(88, 71, 56, 0.9) 100%);
+            --button-text: var(--light-gold);
+            --accent-color: var(--pure-white);
+            --title-color: var(--light-gold);
+            --line-color: linear-gradient(90deg, 
+                transparent, 
+                var(--gold), 
+                var(--light-gold), 
+                var(--gold), 
+                transparent);
+            --veins-gold: rgba(212, 175, 55, 0.08);
+            --veins-light-gold: rgba(244, 228, 166, 0.15);
+            --icon-color: var(--light-gold);
+        }
+        
+        /* ===== СВЕТЛАЯ ТЕМА ===== */
+        .light-theme {
+            /* Цвета */
+            --chocolate: #684627;
+            --roasted-peach: #E8A895;
+            --whole-wheat: #EFD2B0;
+            --milky-coffee: #B59272;
+            --cream: #FFE4B8;
+            --peony-pink: #E8A8B8;
+            --peony-dark-pink: #C97A8D;
+            
+            /* Переменные */
+            --bg-primary: #FFF8ED;
+            --bg-card: rgba(255, 252, 245, 0.95);
+            --text-primary: #5C4A36;
+            --text-secondary: #7D6B57;
+            --border-color: #684627;
+            --button-bg: linear-gradient(135deg, 
+                var(--roasted-peach) 0%,     
+                var(--whole-wheat) 100%);
+            --button-text: #684627;
+            --accent-color: #7D6B57;
+            --title-color: #684627;
+            --line-color: linear-gradient(90deg, 
+                var(--milky-coffee), 
+                var(--chocolate), 
+                var(--milky-coffee));
+            --veins-chocolate: rgba(104, 70, 39, 0.15);
+            --veins-coffee: rgba(181, 146, 114, 0.12);
+            --icon-color: #5C4A36;
+        }
+        
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+        
+        /* ===== ФОНЫ С ПРОЖИЛКАМИ ===== */
+        .theme-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            transition: none !important;
+        }
+        
+        .theme-bg:not(.active) {
+            display: none;
+        }
+        
+        .theme-bg.dark {
+            background: #2A1A0F;
+        }
+        
+        .theme-bg.dark::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(65deg, 
+                    transparent 28%,
+                    var(--veins-gold) 29%,
+                    var(--veins-light-gold) 32%,
+                    var(--veins-gold) 35%,
+                    transparent 36%),
+                linear-gradient(-75deg, 
+                    transparent 62%,
+                    var(--veins-gold) 63%,
+                    var(--veins-light-gold) 65%,
+                    var(--veins-gold) 67%,
+                    transparent 68%),
+                linear-gradient(40deg, 
+                    transparent 15%,
+                    var(--veins-light-gold) 16%,
+                    transparent 17%,
+                    transparent 45%,
+                    var(--veins-gold) 46%,
+                    transparent 47%),
+                linear-gradient(85deg, 
+                    transparent 5%,
+                    var(--veins-gold) 6%,
+                    transparent 7%,
+                    transparent 25%,
+                    var(--veins-light-gold) 26%,
+                    transparent 27%),
+                linear-gradient(110deg, 
+                    transparent 40%,
+                    var(--veins-light-gold) 41%,
+                    transparent 42%);
+            mix-blend-mode: screen;
+            opacity: 0.6;
+        }
+        
+        .theme-bg.dark::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(115deg, 
+                    transparent 28%,
+                    var(--veins-gold) 29%,
+                    var(--veins-light-gold) 32%,
+                    var(--veins-gold) 35%,
+                    transparent 36%),
+                linear-gradient(-45deg, 
+                    transparent 62%,
+                    var(--veins-gold) 63%,
+                    var(--veins-light-gold) 65%,
+                    var(--veins-gold) 67%,
+                    transparent 68%),
+                linear-gradient(140deg, 
+                    transparent 15%,
+                    var(--veins-light-gold) 16%,
+                    transparent 17%,
+                    transparent 45%,
+                    var(--veins-gold) 46%,
+                    transparent 47%),
+                linear-gradient(95deg, 
+                    transparent 75%,
+                    var(--veins-gold) 76%,
+                    transparent 77%,
+                    transparent 85%,
+                    var(--veins-light-gold) 86%,
+                    transparent 87%),
+                linear-gradient(70deg, 
+                    transparent 60%,
+                    var(--veins-light-gold) 61%,
+                    transparent 62%);
+            mix-blend-mode: screen;
+            opacity: 0.6;
+        }
+        
+        .theme-bg.light {
+            background: #FFF8ED;
+        }
+        
+        .theme-bg.light::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(65deg, 
+                    transparent 28%,
+                    var(--veins-chocolate) 29%,
+                    rgba(104, 70, 39, 0.25) 32%,
+                    var(--veins-chocolate) 35%,
+                    transparent 36%),
+                linear-gradient(-75deg, 
+                    transparent 62%,
+                    var(--veins-chocolate) 63%,
+                    rgba(104, 70, 39, 0.22) 65%,
+                    var(--veins-chocolate) 67%,
+                    transparent 68%),
+                linear-gradient(40deg, 
+                    transparent 15%,
+                    var(--veins-coffee) 16%,
+                    transparent 17%,
+                    transparent 45%,
+                    rgba(181, 146, 114, 0.14) 46%,
+                    transparent 47%),
+                linear-gradient(85deg, 
+                    transparent 5%,
+                    var(--veins-chocolate) 6%,
+                    transparent 7%,
+                    transparent 25%,
+                    var(--veins-coffee) 26%,
+                    transparent 27%),
+                linear-gradient(110deg, 
+                    transparent 40%,
+                    var(--veins-coffee) 41%,
+                    transparent 42%);
+            mix-blend-mode: multiply;
+            opacity: 0.8;
+            filter: blur(0.4px);
+        }
+        
+        .theme-bg.light::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(115deg, 
+                    transparent 28%,
+                    var(--veins-chocolate) 29%,
+                    rgba(104, 70, 39, 0.25) 32%,
+                    var(--veins-chocolate) 35%,
+                    transparent 36%),
+                linear-gradient(-45deg, 
+                    transparent 62%,
+                    var(--veins-chocolate) 63%,
+                    rgba(104, 70, 39, 0.22) 65%,
+                    var(--veins-chocolate) 67%,
+                    transparent 68%),
+                linear-gradient(140deg, 
+                    transparent 15%,
+                    var(--veins-coffee) 16%,
+                    transparent 17%,
+                    transparent 45%,
+                    rgba(181, 146, 114, 0.14) 46%,
+                    transparent 47%),
+                linear-gradient(95deg, 
+                    transparent 75%,
+                    var(--veins-chocolate) 76%,
+                    transparent 77%,
+                    transparent 85%,
+                    var(--veins-coffee) 86%,
+                    transparent 87%),
+                linear-gradient(70deg, 
+                    transparent 60%,
+                    var(--veins-coffee) 61%,
+                    transparent 62%);
+            mix-blend-mode: multiply;
+            opacity: 0.8;
+            filter: blur(0.4px);
+        }
+        
+        /* ===== ОСНОВНОЙ КОНТЕЙНЕР ===== */
+        .app-container {
+            width: 100%;
+            max-width: 400px;
+            height: 90vh;
+            max-height: 700px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* ===== ЭКРАН ЗАГРУЗКИ ===== */
+        .loading-card {
+            flex: 1;
+            background: var(--bg-card);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 
+                0 25px 60px rgba(0, 0, 0, 0.4),
+                0 0 0 1px var(--border-color),
+                0 0 40px rgba(212, 175, 55, 0.1) inset;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(15px) saturate(180%);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 30px 25px;
+        }
+        
+        @keyframes petalClose {
+            0% {
+                opacity: 1;
+                transform: rotate(var(--rotate-end)) translateY(0) scale(1);
+            }
+            30% {
+                opacity: 1;
+                transform: rotate(calc(var(--rotate-end) + 5deg)) translateY(-10px) scale(1.05);
+            }
+            100% {
+                opacity: 0;
+                transform: rotate(calc(var(--rotate-end) + 10deg)) translateY(20px) scale(0.3);
+            }
+        }
+        
+        @keyframes centerClose {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0);
+            }
+        }
+        
+        .loading-card::before {
+            content: '';
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            right: 1px;
+            bottom: 1px;
+            border-radius: 23px;
+            border: 1px solid transparent;
+            background: linear-gradient(135deg, 
+                var(--veins-gold), 
+                var(--veins-light-gold),
+                var(--veins-gold)) border-box;
+            mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        
+        .light-theme .loading-card::before {
+            background: linear-gradient(135deg, 
+                var(--veins-chocolate), 
+                var(--veins-coffee),
+                var(--veins-chocolate)) border-box;
+        }
+        
+        .flower-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            width: 100%;
+            padding-top: 40px;
+        }
+        
+        .peony-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .peony {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .peony-petal {
+            position: absolute;
+            width: 32px;
+            height: 55px;
+            background: var(--gold);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            transform-origin: center 1px;
+            opacity: 0;
+            box-shadow: 
+                inset 0 0 10px var(--light-gold),
+                0 2px 8px rgba(0, 0, 0, 0.2),
+                0 0 0 1px rgba(42, 26, 15, 0.4);
+            border: 1px solid rgba(30, 23, 18, 0.6);
+        }
+        
+        .light-theme .peony-petal {
+            background: var(--roasted-peach);
+            box-shadow: 
+                inset 0 0 10px rgba(255, 255, 255, 0.6),
+                0 2px 8px rgba(0, 0, 0, 0.1),
+                0 0 0 1px var(--chocolate);
+            border: 1px solid var(--chocolate);
+        }
+        
+        .peony-center {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: radial-gradient(circle at 30% 30%, var(--light-gold), var(--gold));
+            border-radius: 50%;
+            z-index: 10;
+            box-shadow: 
+                inset 0 0 5px var(--light-gold),
+                0 0 8px var(--gold);
+            top: 28%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+        }
+        
+        .light-theme .peony-center {
+            background: radial-gradient(circle at 30% 30%, var(--cream), var(--chocolate));
+            box-shadow: 
+                inset 0 0 5px var(--cream),
+                0 0 8px var(--chocolate);
+        }
+        
+        .progress-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            width: 100%;
+            padding-bottom: 30px;
+        }
+        
+        .loading-text {
+            text-align: center;
+            width: 100%;
+            height: 60px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .loading-phrase {
+            font-size: 20px;
+            color: var(--text-primary);
+            font-weight: 300;
+            font-family: 'Georgia', serif;
+            line-height: 1.4;
+            text-align: center;
+            opacity: 0;
+            position: absolute;
+            width: 100%;
+            top: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+        
+        .loading-progress {
+            width: calc(100% - 50px);
+            height: 2px;
+            background: var(--veins-gold);
+            border-radius: 1px;
+            overflow: hidden;
+            position: absolute;
+            bottom: 50px;
+            left: 25px;
+            right: 25px;
+        }
+        
+        .light-theme .loading-progress {
+            background: var(--veins-chocolate);
+        }
+        
+        .loading-progress-fill {
+            position: absolute;
+            height: 100%;
+            width: 0%;
+            background: var(--line-color);
+            border-radius: 1px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            width: 100%;
+            padding: 0 25px;
+        }
+        
+        .progress-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--veins-gold);
+            transition: all 0.3s ease;
+        }
+        
+        .light-theme .progress-dot {
+            background: var(--veins-chocolate);
+        }
+        
+        .progress-dot.active {
+            background: var(--gold);
+            transform: scale(1.2);
+        }
+        
+        .light-theme .progress-dot.active {
+            background: var(--chocolate);
+        }
+        
+        /* ===== АНИМАЦИИ ===== */
+        @keyframes petalOpen {
+            0% {
+                opacity: 0;
+                transform: rotate(var(--rotate-start)) translateY(20px) scale(0.3);
+            }
+            70% {
+                opacity: 1;
+                transform: rotate(var(--rotate-end)) translateY(0) scale(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: rotate(var(--rotate-end)) translateY(0) scale(1);
+            }
+        }
+        
+        @keyframes centerOpen {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.2);
+            }
+            50% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+        
+        @keyframes centerPulse {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                box-shadow: 
+                    inset 0 0 5px var(--light-gold),
+                    0 0 8px var(--gold);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+                box-shadow: 
+                    inset 0 0 8px var(--light-gold),
+                    0 0 12px var(--gold);
+            }
+        }
+        
+        @keyframes phraseFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes phraseFadeOut {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+        }
+        
+        /* Стили для статуса подбора */
+        .matching-status {
+            text-align: center;
+            margin-top: 20px;
+            min-height: 60px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .status-item {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin: 2px 0;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+            text-align: center;
+            padding: 2px 10px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            max-width: 90%;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Цветок будет открываться/закрываться */
+        .peony.closing .peony-petal {
+            animation: petalClose 1s ease forwards !important;
+        }
+        
+        .peony.closing .peony-center {
+            animation: centerClose 1s ease forwards !important;
+        }
+        
+        .peony.opening .peony-petal {
+            animation: petalOpen 1.2s ease forwards !important;
+        }
+        
+        .peony.opening .peony-center {
+            animation: centerOpen 1.5s ease forwards !important;
+        }
+    </style>
+</head>
+<body class="dark-theme">
+    <!-- Фоны -->
+    <div class="theme-bg dark active"></div>
+    <div class="theme-bg light"></div>
+    
+    <!-- Основной контейнер -->
+    <div class="app-container">
+        <!-- ЭКРАН ЗАГРУЗКИ -->
+        <div class="loading-card">
+            <div class="flower-section">
+                <div class="peony-container">
+                    <div class="peony" id="peony">
+                        <!-- Лепестки будут добавлены через JavaScript -->
+                    </div>
+                </div>
+                <!-- Блок статуса подбора -->
+                <div class="matching-status" id="matchingStatus"></div>
+            </div>
+            
+            <div class="progress-section">
+                <div class="loading-text">
+                    <div class="loading-phrases-container" id="phrasesContainer">
+                        <!-- Фразы будут добавлены через JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="loading-progress">
+                    <div class="loading-progress-fill" id="loadingProgressFill"></div>
+                </div>
+                
+                <div class="progress-dots" id="loadingProgressDots">
+                    <!-- Точки прогресса будут добавлены через JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+          
+<script>
+    // ===== ОСНОВНЫЕ ПЕРЕМЕННЫЕ =====
+    let currentTheme = localStorage.getItem('theme') || 'dark';
+    
+const perfumesDatabase = [
+  // МАСС-МАРКЕТ ЖЕНСКИЕ (universal) - ID 101-106
+  {
+    id: 101, name: "PANDORA Parfum #3", brand: "PANDORA", type: "Древесный", category: "universal",
+    gender: "Унисекс", priceRange: "mid", price: 4500, season: ["Осень", "Зима"], longevity: "6-8 часов",
+    occasions: ["Вечер", "Деловая встреча", "Офис"],
+    tags: ["древесный", "вечерний", "деловой", "элегантный", "унисекс", "офисный", "зимний", "осенний", "сдержанный"],
+    details: { type: "Парфюмерная вода", volume: "50 мл", time: "Вечер", stores: ["Gold Apple", "Л'Этуаль", "Рив Гош", "Иль де Боте"] },
+    notes: { top: "Бергамот • Нероли", heart: "Сандал • Кедр • Ирис", base: "Ваниль • Мускус • Амбра" },
+    images: ["https://images.unsplash.com/photo-1541643600914-78b084683601?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 102, name: "PANDORA Parfum #5", brand: "PANDORA", type: "Цветочный", category: "universal",
+    gender: "Женский", priceRange: "mid", price: 4200, season: ["Весна", "Лето"], longevity: "4-6 часов",
+    occasions: ["Романтическое свидание", "Дневной выход", "Весенняя прогулка"],
+    tags: ["цветочный", "романтичный", "весенний", "нежный", "женский", "свидание", "дневной", "летний", "воздушный"],
+    details: { type: "Парфюмерная вода", volume: "50 мл", time: "День", stores: ["Л'Этуаль", "Рив Гош", "Иль де Боте", "Sephora"] },
+    notes: { top: "Бергамот • Мандарин", heart: "Жасмин • Роза • Иланг-иланг", base: "Ваниль • Мускус • Сандал" },
+    images: ["https://images.unsplash.com/photo-1590736966893-905eba2c5a01?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 103, name: "UNITED COLORS OF BENETTON", brand: "BENETTON", type: "Гурманский", category: "universal",
+    gender: "Женский", priceRange: "mid", price: 3800, season: ["Осень", "Зима"], longevity: "5-7 часов",
+    occasions: ["Повседневный день", "Домашний отдых", "Встреча с друзьями"],
+    tags: ["гурманский", "сладкий", "ваниль", "карамель", "уют", "любовь к себе", "комфорт", "теплый", "женский", "зимний"],
+    details: { type: "Парфюмерная вода", volume: "75 мл", time: "День/Вечер", stores: ["Л'Этуаль", "Рив Гош", "Ozon", "Wildberries"] },
+    notes: { top: "Мандарин • Персик", heart: "Жасмин • Фрезия", base: "Ваниль • Карамель • Мускус" },
+    images: ["https://images.unsplash.com/photo-1543858741-6a3f5a9b0c6b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 104, name: "PARFUMS CONSTANTINE", brand: "CONSTANTINE", type: "Восточный", category: "universal",
+    gender: "Женский", priceRange: "mid", price: 4800, season: ["Осень", "Зима"], longevity: "8-10 часов",
+    occasions: ["Вечернее мероприятие", "Особый случай", "Выход в свет"],
+    tags: ["восточный", "загадочный", "амбра", "пачули", "вечер", "внимание", "яркий", "экзотичный", "женский", "осенний"],
+    details: { type: "Парфюмерная вода", volume: "60 мл", time: "Вечер", stores: ["Л'Этуаль", "Иль де Боте", "Sephora"] },
+    notes: { top: "Розовый перец • Кардамон", heart: "Амбра • Ладан", base: "Пачули • Сандал • Ваниль" },
+    images: ["https://images.unsplash.com/photo-1595266119323-c6c5004c13a8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 105, name: "ARMAND BASI In Red", brand: "ARMAND BASI", type: "Фруктово-цитрусовый", category: "universal",
+    gender: "Женский", priceRange: "mid", price: 4100, season: ["Весна", "Лето"], longevity: "5-7 часов",
+    occasions: ["Дневной выход", "Молодежная вечеринка", "Летняя прогулка"],
+    tags: ["фруктовый", "цитрусовый", "бодрящий", "жизнерадостный", "красные фрукты", "сочный", "энергичный", "летний", "женский", "дневной"],
+    details: { type: "Парфюмерная вода", volume: "50 мл", time: "День", stores: ["Л'Этуаль", "Рив Гош", "Ozon"] },
+    notes: { top: "Красные ягоды • Мандарин", heart: "Жасмин • Пион", base: "Амбра • Мускус • Ваниль" },
+    images: ["https://images.unsplash.com/photo-1556228578-8c8ae9cfa8e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 106, name: "DILIS Wild Water", brand: "DILIS", type: "Фужерный", category: "universal",
+    gender: "Женский", priceRange: "budget", price: 2800, season: ["Весна", "Лето"], longevity: "4-6 часов",
+    occasions: ["Спортивная активность", "Пляжный отдых", "Прогулка на природе"],
+    tags: ["фужерный", "свежий", "морской", "свобода", "приключения", "вода", "динамичный", "летний", "женский", "спортивный"],
+    details: { type: "Туалетная вода", volume: "100 мл", time: "День", stores: ["Л'Этуаль", "Wildberries", "Ozon"] },
+    notes: { top: "Морские ноты • Бергамот", heart: "Жасмин • Роза", base: "Мускус • Древесные ноты" },
+    images: ["https://images.unsplash.com/photo-1543858741-6a3f5a9b0c6b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+
+  // МАСС-МАРКЕТ МУЖСКИЕ (universal) - ID 107-112
+  {
+    id: 107, name: "DILIS Men Azure Stone", brand: "DILIS", type: "Древесный", category: "universal",
+    gender: "Мужской", priceRange: "mid", price: 3500, season: ["Круглый год"], longevity: "6-8 часов",
+    occasions: ["Офис", "Деловая встреча", "Повседневный день"],
+    tags: ["древесный", "прохладный", "мужской", "уверенность", "минеральный", "современный", "свежий", "офисный", "деловой", "круглогодичный"],
+    details: { type: "Туалетная вода", volume: "100 мл", time: "День/Вечер", stores: ["Л'Этуаль", "Рив Гош", "Ozon"] },
+    notes: { top: "Бергамот • Лаванда", heart: "Минеральные ноты • Кедр", base: "Мускус • Амбра • Пачули" },
+    images: ["https://images.unsplash.com/photo-1595428773927-68e8c4c8c65b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 108, name: "CALVIN KLEIN Be", brand: "CALVIN KLEIN", type: "Цветочный", category: "universal",
+    gender: "Мужской", priceRange: "mid", price: 3900, season: ["Весна", "Лето"], longevity: "4-6 часов",
+    occasions: ["Повседневный день", "Неформальная встреча", "Отдых на природе"],
+    tags: ["цветочный", "легкий", "мужской", "естественность", "простота", "минимализм", "свежий", "нежный", "повседневный", "дневной"],
+    details: { type: "Туалетная вода", volume: "100 мл", time: "День", stores: ["Л'Этуаль", "Sephora", "Ozon", "Wildberries"] },
+    notes: { top: "Мандарин • Бергамот", heart: "Лаванда • Жасмин", base: "Древесные ноты • Мускус" },
+    images: ["https://images.unsplash.com/photo-1590736966893-905eba2c5a01?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 109, name: "CHRISTINE LAVOISIER San Francisco Intense", brand: "LAVOISIER", type: "Гурманский", category: "universal",
+    gender: "Мужской", priceRange: "mid", price: 5200, season: ["Осень", "Зима"], longevity: "8-10 часов",
+    occasions: ["Вечерний выход", "Деловой ужин", "Особый случай"],
+    tags: ["гурманский", "кофе", "табак", "насыщенный", "мужской", "изысканный", "вечерний", "интенсивный", "вкусный", "зимний"],
+    details: { type: "Парфюмерная вода", volume: "50 мл", time: "Вечер", stores: ["Л'Этуаль", "Иль де Боте", "Sephora"] },
+    notes: { top: "Кофе • Кардамон", heart: "Табак • Кедр", base: "Ваниль • Бобы тонка • Пачули" },
+    images: ["https://images.unsplash.com/photo-1556228578-8c8ae9cfa8e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 110, name: "USO PARIS Incens Tabacco", brand: "USO PARIS", type: "Восточный", category: "universal",
+    gender: "Мужской", priceRange: "premium", price: 6500, season: ["Осень", "Зима"], longevity: "8-12 часов",
+    occasions: ["Вечернее мероприятие", "Романтический ужин", "Творческая встреча"],
+    tags: ["восточный", "дымный", "ладан", "табак", "смелый", "независимый", "загадочный", "интенсивный", "мужской", "зимний", "вечерний"],
+    details: { type: "Парфюмерная вода", volume: "50 мл", time: "Вечер", stores: ["Иль де Боте", "Sephora", "Л'Этуаль"] },
+    notes: { top: "Ладан • Перец", heart: "Табак • Кедр", base: "Кожа • Пачули • Ваниль" },
+    images: ["https://images.unsplash.com/photo-1595266119323-c6c5004c13a8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 111, name: "BOULEVARD Grands Boulevards", brand: "BOULEVARD", type: "Фруктово-цитрусовый", category: "universal",
+    gender: "Мужской", priceRange: "mid", price: 4300, season: ["Весна", "Лето"], longevity: "5-7 часов",
+    occasions: ["Городская прогулка", "Деловая встреча", "Летний вечер"],
+    tags: ["фруктовый", "цитрусовый", "париж", "городской", "элегантный", "прогулка", "сочный", "свежий", "мужской", "летний", "дневной"],
+    details: { type: "Туалетная вода", volume: "100 мл", time: "День", stores: ["Л'Этуаль", "Рив Гош", "Ozon"] },
+    notes: { top: "Грейпфрут • Мандарин", heart: "Жасмин • Роза", base: "Мускус • Амбра • Ваниль" },
+    images: ["https://images.unsplash.com/photo-1543858741-6a3f5a9b0c6b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 112, name: "KARL LAGERFELD Bois de Yuzu", brand: "KARL LAGERFELD", type: "Фужерный", category: "universal",
+    gender: "Мужской", priceRange: "premium", price: 5800, season: ["Весна", "Лето"], longevity: "4-6 часов",
+    occasions: ["Деловая встреча", "Летний вечер", "Модное событие"],
+    tags: ["фужерный", "юзу", "освежающий", "модный", "классика", "современный", "дизайнерский", "свежий", "мужской", "летний", "дневной"],
+    details: { type: "Туалетная вода", volume: "100 мл", time: "День", stores: ["Л'Этуаль", "Sephora", "Иль де Боте"] },
+    notes: { top: "Юзу • Бергамот", heart: "Жасмин • Роза", base: "Мускус • Древесные ноты" },
+    images: ["https://images.unsplash.com/photo-1595428773927-68e8c4c8c65b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+
+  // МАСС-МАРКЕТ УНИСЕКС (universal) - ID 113-118
+  {
+    id: 113, name: "BASTILLE Bataille", brand: "BASTILLE", type: "Древесный", category: "universal",
+    gender: "Унисекс", priceRange: "premium", price: 6200, season: ["Осень", "Зима"], longevity: "8-10 часов",
+    occasions: ["Вечернее мероприятие", "Творческая встреча", "Особый случай"],
+    tags: ["древесный", "сильный", "унисекс", "решительный", "исторический", "крепость", "мощный", "харизматичный", "зимний", "вечерний"],
+    details: { type: "Парфюмерная вода", volume: "50 мл", time: "Вечер", stores: ["Л'Этуаль", "Иль де Боте", "Sephora"] },
+    notes: { top: "Чёрный перец • Кардамон", heart: "Кедр • Сандал", base: "Кожа • Пачули • Бензоин" },
+    images: ["https://images.unsplash.com/photo-1541643600914-78b084683601?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 114, name: "USO PARIS Ambergris Saffron", brand: "USO PARIS", type: "Цветочный", category: "universal",
+    gender: "Унисекс", priceRange: "premium", price: 6800, season: ["Осень", "Зима"], longevity: "6-8 часов",
+    occasions: ["Вечернее мероприятие", "Особый случай", "Романтический ужин"],
+    tags: ["цветочный", "амбра", "шафран", "роскошный", "унисекс", "драгоценный", "утонченный", "изысканный", "осенний", "вечерний"],
+    details: { type: "Парфюмерная вода", volume: "50 мл", time: "Вечер", stores: ["Иль де Боте", "Sephora", "Л'Этуаль"] },
+    notes: { top: "Шафран • Бергамот", heart: "Амбра • Жасмин", base: "Сандал • Ваниль • Мускус" },
+    images: ["https://images.unsplash.com/photo-1590736966893-905eba2c5a01?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 115, name: "DARLING* E-Motion", brand: "DARLING", type: "Гурманский", category: "universal",
+    gender: "Унисекс", priceRange: "mid", price: 4400, season: ["Весна", "Лето"], longevity: "5-7 часов",
+    occasions: ["Повседневный день", "Встреча с друзьями", "Романтическое свидание"],
+    tags: ["гурманский", "эмоциональный", "сладкий", "унисекс", "чувственный", "нежный", "романтичный", "вкусный", "дневной", "весенний"],
+    details: { type: "Парфюмерная вода", volume: "60 мл", time: "День", stores: ["Л'Этуаль", "Ozon", "Wildberries"] },
+    notes: { top: "Карамель • Мандарин", heart: "Жасмин • Фрезия", base: "Ваниль • Мускус • Сандал" },
+    images: ["https://images.unsplash.com/photo-1556228578-8c8ae9cfa8e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 116, name: "PRONICHE Cherry Smoke", brand: "PRONICHE", type: "Восточный", category: "universal",
+    gender: "Унисекс", priceRange: "premium", price: 7200, season: ["Осень", "Зима"], longevity: "8-12 часов",
+    occasions: ["Вечернее мероприятие", "Особый случай", "Творческая вечеринка"],
+    tags: ["восточный", "вишня", "кожа", "пачули", "эксклюзивный", "лимитированный", "дымный", "фруктовый", "зимний", "вечерний", "унисекс"],
+    details: { type: "Парфюмерная вода", volume: "50 мл", time: "Вечер", stores: ["Иль де Боте", "Sephora"] },
+    notes: { top: "Вишня • Миндаль", heart: "Кожа • Роза", base: "Пачули • Ваниль • Бензоин" },
+    images: ["https://images.unsplash.com/photo-1595266119323-c6c5004c13a8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 117, name: "CALVIN KLEIN CK One", brand: "CALVIN KLEIN", type: "Фруктово-цитрусовый", category: "universal",
+    gender: "Унисекс", priceRange: "mid", price: 3600, season: ["Круглый год"], longevity: "4-6 часов",
+    occasions: ["Повседневный день", "Учеба/работа", "Неформальная встреча"],
+    tags: ["фруктовый", "цитрусовый", "культовый", "90-е", "унисекс", "универсальный", "знаковый", "свежий", "дневной", "круглогодичный"],
+    details: { type: "Туалетная вода", volume: "100 мл", time: "День", stores: ["Л'Этуаль", "Sephora", "Ozon", "Wildberries"] },
+    notes: { top: "Ананас • Папайя • Бергамот", heart: "Жасмин • Фиалка • Роза", base: "Зелёный чай • Мускус • Кедр" },
+    images: ["https://images.unsplash.com/photo-1543858741-6a3f5a9b0c6b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 118, name: "ADIDAS UEFA Champions League", brand: "ADIDAS", type: "Фужерный", category: "universal",
+    gender: "Унисекс", priceRange: "budget", price: 2200, season: ["Круглый год"], longevity: "4-6 часов",
+    occasions: ["Спортивная активность", "Тренировка", "Неформальная встреча"],
+    tags: ["фужерный", "спортивный", "футбол", "победа", "динамичный", "энергичный", "движение", "активный", "дневной", "круглогодичный", "унисекс"],
+    details: { type: "Туалетная вода", volume: "100 мл", time: "День", stores: ["Ozon", "Wildberries", "Л'Этуаль"] },
+    notes: { top: "Цитрусовые ноты • Мята", heart: "Лаванда • Жасмин", base: "Мускус • Древесные ноты" },
+    images: ["https://images.unsplash.com/photo-1595428773927-68e8c4c8c65b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+
+  // ЛЮКС ЖЕНСКИЕ (rare) - ID 119-124
+  {
+    id: 119, name: "VORONOI Censored", brand: "VORONOI", type: "Древесный", category: "rare",
+    gender: "Женский", priceRange: "premium", price: 12000, season: ["Осень", "Зима"], longevity: "8-10 часов",
+    occasions: ["Особый случай", "Вечернее мероприятие", "Романтический ужин"],
+    tags: ["древесный", "запретный", "люкс", "нишевый", "элитный", "эксклюзивный", "загадочный", "роскошный", "женский", "зимний", "вечерний"],
+    details: { type: "Парфюмерная вода", volume: "50 мл", time: "Вечер", stores: ["Иль де Боте", "Sephora", "Л'Этуаль"] },
+    notes: { top: "Чёрный перец • Кардамон", heart: "Сандал • Кедр • Ладан", base: "Кожа • Бензоин • Ваниль" },
+    images: ["https://images.unsplash.com/photo-1541643600914-78b084683601?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 120, name: "RABANNE Lady Million", brand: "RABANNE", type: "Цветочный", category: "rare",
+    gender: "Женский", priceRange: "premium", price: 9500, season: ["Круглый год"], longevity: "6-8 часов",
+    occasions: ["Вечернее мероприятие", "Особый случай", "Выход в свет"],
+    tags: ["цветочный", "блестящий", "люкс", "роскошный", "уверенность", "ценность", "женственный", "гламурный", "богатый", "вечерний", "особый"],
+    details: { type: "Парфюмерная вода", volume: "80 мл", time: "Вечер", stores: ["Л'Этуаль", "Sephora", "Рив Гош"] },
+    notes: { top: "Малина • Нероли", heart: "Жасмин • Апельсиновый цвет • Гардения", base: "Мёд • Пачули • Амбра" },
+    images: ["https://images.unsplash.com/photo-1590736966893-905eba2c5a01?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 121, name: "DOLCE & GABBANA The Only One", brand: "DOLCE & GABBANA", type: "Гурманский", category: "rare",
+    gender: "Женский", priceRange: "premium", price: 10500, season: ["Осень", "Зима"], longevity: "7-9 часов",
+    occasions: ["Особый случай", "Романтический ужин", "Вечернее мероприятие"],
+    tags: ["гурманский", "уникальный", "кофе", "ваниль", "единственный", "люкс", "неповторимый", "особенный", "женский", "осенний", "вечерний"],
+    details: { type: "Парфюмерная вода", volume: "50 мл", time: "Вечер", stores: ["Л'Этуаль", "Sephora", "Иль де Боте"] },
+    notes: { top: "Фиалка • Бергамот", heart: "Кофе • Ирис • Тубероза", base: "Ваниль • Амбра • Карамель" },
+    images: ["https://images.unsplash.com/photo-1556228578-8c8ae9cfa8e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 122, name: "ETRO Etra Etro", brand: "ETRO", type: "Восточный", category: "rare",
+    gender: "Женский", priceRange: "luxury", price: 13500, season: ["Осень", "Зима"], longevity: "8-10 часов",
+    occasions: ["Особый случай", "Вечернее мероприятие", "Торжественный ужин"],
+    tags: ["восточный", "специи", "люкс", "итальянский", "наследие", "изысканный", "редкий", "утонченный", "женский", "зимний", "вечерний"],
+    details: { type: "Парфюмерная вода", volume: "100 мл", time: "Вечер", stores: ["Иль де Боте", "Sephora", "Л'Этуаль"] },
+    notes: { top: "Шафран • Кардамон", heart: "Роза • Жасмин • Ирис", base: "Амбра • Сандал • Ваниль" },
+    images: ["https://images.unsplash.com/photo-1595266119323-c6c5004c13a8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 123, name: "NINA RICCI Nina Illusion", brand: "NINA RICCI", type: "Фруктово-цитрусовый", category: "rare",
+    gender: "Женский", priceRange: "premium", price: 8800, season: ["Весна", "Лето"], longevity: "5-7 часов",
+    occasions: ["Дневной выход", "Романтическое свидание", "Весенняя прогулка"],
+    tags: ["фруктовый", "иллюзорный", "магия", "люкс", "игривый", "загадочный", "волшебный", "женский", "дневной", "весенний"],
+    details: { type: "Парфюмерная вода", volume: "80 мл", time: "День", stores: ["Л'Этуаль", "Рив Гош", "Sephora"] },
+    notes: { top: "Красный апельсин • Мандарин", heart: "Пион • Яблоневый цвет", base: "Мускус • Кедр • Амбра" },
+    images: ["https://images.unsplash.com/photo-1543858741-6a3f5a9b0c6b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 124, name: "BURBERRY Goddess", brand: "BURBERRY", type: "Фужерный", category: "rare",
+    gender: "Женский", priceRange: "luxury", price: 12500, season: ["Осень", "Зима"], longevity: "6-8 часов",
+    occasions: ["Особый случай", "Вечернее мероприятие", "Торжественный ужин"],
+    tags: ["фужерный", "богиня", "люкс", "сильный", "элегантный", "божественный", "властный", "уверенный", "женский", "осенний", "вечерний"],
+    details: { type: "Парфюмерная вода", volume: "90 мл", time: "Вечер", stores: ["Л'Этуаль", "Sephora", "Иль де Боте"] },
+    notes: { top: "Лаванда • Мандарин", heart: "Жасмин • Ваниль", base: "Пачули • Ванильный боб • Бензоин" },
+    images: ["https://images.unsplash.com/photo-1595428773927-68e8c4c8c65b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+
+  // ЛЮКС МУЖСКИЕ (rare) - ID 125-130
+  {
+    id: 125, name: "HUGO BOSS Bottled Absolu", brand: "HUGO BOSS", type: "Древесный", category: "rare",
+    gender: "Мужской", priceRange: "premium", price: 9800, season: ["Осень", "Зима"], longevity: "8-10 часов",
+    occasions: ["Деловой ужин", "Вечернее мероприятие", "Особый случай"],
+    tags: ["древесный", "абсолютный", "люкс", "культовый", "властный", "правила", "лидер", "премиум", "мужской", "зимний", "вечерний"],
+    details: { type: "Парфюмерная вода", volume: "100 мл", time: "Вечер", stores: ["Л'Этуаль", "Sephora", "Рив Гош"] },
+    notes: { top: "Яблоко • Кориандр", heart: "Кедр • Ладан", base: "Ваниль • Бобы тонка • Мускус" },
+    images: ["https://images.unsplash.com/photo-1541643600914-78b084683601?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 126, name: "VERSACE Eros Energy", brand: "VERSACE", type: "Цветочный", category: "rare",
+    gender: "Мужской", priceRange: "premium", price: 9200, season: ["Весна", "Лето"], longevity: "6-8 часов",
+    occasions: ["Вечерняя вечеринка", "Романтическое свидание", "Летний вечер"],
+    tags: ["цветочный", "энергичный", "эрос", "страсть", "люкс", "герой", "сила", "любовь", "мужской", "летний", "вечерний"],
+    details: { type: "Туалетная вода", volume: "100 мл", time: "Вечер", stores: ["Л'Этуаль", "Sephora", "Иль де Боте"] },
+    notes: { top: "Лимон • Мандарин", heart: "Жасмин • Нероли", base: "Древесные ноты • Амбра • Мускус" },
+    images: ["https://images.unsplash.com/photo-1590736966893-905eba2c5a01?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 127, name: "CAROLINA HERRERA 212 VIP Black Elixir", brand: "CAROLINA HERRERA", type: "Гурманский", category: "rare",
+    gender: "Мужской", priceRange: "luxury", price: 11500, season: ["Осень", "Зима"], longevity: "8-12 часов",
+    occasions: ["Особый случай", "Вечернее мероприятие", "Торжественный ужин"],
+    tags: ["гурманский", "эликсир", "черный", "люкс", "избранные", "темный", "глубокий", "мужской", "зимний", "вечерний", "ночной"],
+    details: { type: "Парфюмерная вода", volume: "80 мл", time: "Вечер", stores: ["Sephora", "Иль де Боте", "Л'Этуаль"] },
+    notes: { top: "Шафран • Кардамон", heart: "Кожа • Табак", base: "Бензоин • Ваниль • Пачули" },
+    images: ["https://images.unsplash.com/photo-1556228578-8c8ae9cfa8e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 128, name: "NARCISO RODRIGUEZ Bleu Noir Parfum", brand: "NARCISO RODRIGUEZ", type: "Восточный", category: "rare",
+    gender: "Мужской", priceRange: "luxury", price: 10800, season: ["Осень", "Зима"], longevity: "7-9 часов",
+    occasions: ["Вечернее мероприятие", "Романтический ужин", "Творческая встреча"],
+    tags: ["восточный", "синий", "ночь", "глубокий", "люкс", "мечтатель", "философский", "мужской", "осенний", "вечерний", "задумчивый"],
+    details: { type: "Парфюмерная вода", volume: "100 мл", time: "Вечер", stores: ["Sephora", "Иль де Боте", "Л'Этуаль"] },
+    notes: { top: "Лаванда • Кардамон", heart: "Мускус • Кедр", base: "Амбра • Бензоин • Сандал" },
+    images: ["https://images.unsplash.com/photo-1595266119323-c6c5004c13a8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 129, name: "LACOSTE L.12.12 Blanc", brand: "LACOSTE", type: "Фруктово-цитрусовый", category: "rare",
+    gender: "Мужской", priceRange: "premium", price: 8600, season: ["Весна", "Лето"], longevity: "5-7 часов",
+    occasions: ["Деловая встреча", "Летний вечер", "Спортивное мероприятие"],
+    tags: ["фруктовый", "белый", "чистота", "джентльмен", "люкс", "свежесть", "элегантный", "мужской", "летний", "дневной", "аристократичный"],
+    details: { type: "Туалетная вода", volume: "100 мл", time: "День", stores: ["Л'Этуаль", "Sephora", "Рив Гош"] },
+    notes: { top: "Бергамот • Грейпфрут", heart: "Жасмин • Мускатный шалфей", base: "Древесные ноты • Мускус" },
+    images: ["https://images.unsplash.com/photo-1543858741-6a3f5a9b0c6b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 130, name: "HUGO BOSS The Scent", brand: "HUGO BOSS", type: "Фужерный", category: "rare",
+    gender: "Мужской", priceRange: "premium", price: 9400, season: ["Осень", "Зима"], longevity: "6-8 часов",
+    occasions: ["Вечернее мероприятие", "Деловой ужин", "Романтическое свидание"],
+    tags: ["фужерный", "искомый", "люкс", "запоминающийся", "неповторимый", "узнаваемый", "мужской", "зимний", "вечерний", "желанный"],
+    details: { type: "Парфюмерная вода", volume: "100 мл", time: "Вечер", stores: ["Л'Этуаль", "Sephora", "Иль де Боте"] },
+    notes: { top: "Имбирь • Мандарин", heart: "Кожа • Мастиковое дерево", base: "Ваниль • Бобы тонка" },
+    images: ["https://images.unsplash.com/photo-1595428773927-68e8c4c8c65b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+
+  // ЛЮКС УНИСЕКС (rare) - ID 131-136
+  {
+    id: 131, name: "CIGNO NERO Dolce Canto", brand: "CIGNO NERO", type: "Древесный", category: "rare",
+    gender: "Унисекс", priceRange: "luxury", price: 14200, season: ["Осень", "Зима"], longevity: "7-9 часов",
+    occasions: ["Творческий вечер", "Концерт", "Особый случай"],
+    tags: ["древесный", "музыкальный", "сладкий", "люкс", "артистичный", "пение", "композиция", "унисекс", "осенний", "вечерний", "вдохновляющий"],
+    details: { type: "Парфюмерная вода", volume: "100 мл", time: "Вечер", stores: ["Иль де Боте", "Sephora"] },
+    notes: { top: "Миндаль • Ваниль", heart: "Ирис • Сандал", base: "Кедр • Пачули • Бензоин" },
+    images: ["https://images.unsplash.com/photo-1541643600914-78b084683601?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 132, name: "NEYDO Chasing Light 19.10", brand: "NEYDO", type: "Цветочный", category: "rare",
+    gender: "Унисекс", priceRange: "luxury", price: 13800, season: ["Весна", "Лето"], longevity: "6-8 часов",
+    occasions: ["Дневной выход", "Творческая встреча", "Весенняя прогулка"],
+    tags: ["цветочный", "свет", "погоня", "люкс", "совершенство", "стремление", "унисекс", "дневной", "весенний", "лучистый", "яркий"],
+    details: { type: "Парфюмерная вода", volume: "100 мл", time: "День", stores: ["Sephora", "Иль де Боте"] },
+    notes: { top: "Бергамот • Нероли", heart: "Жасмин • Тубероза", base: "Сандал • Мускус • Амбра" },
+    images: ["https://images.unsplash.com/photo-1590736966893-905eba2c5a01?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 133, name: "ZIELINSKI & ROZEN Black Vanilla", brand: "ZIELINSKI & ROZEN", type: "Гурманский", category: "rare",
+    gender: "Унисекс", priceRange: "luxury", price: 15500, season: ["Осень", "Зима"], longevity: "8-10 часов",
+    occasions: ["Вечернее мероприятие", "Особый случай", "Романтический ужин"],
+    tags: ["гурманский", "черная ваниль", "темный", "люкс", "смелый", "гурман", "сладкий", "унисекс", "зимний", "вечерний", "интенсивный"],
+    details: { type: "Парфюмерная вода", volume: "50 мл", time: "Вечер", stores: ["Иль де Боте", "Sephora"] },
+    notes: { top: "Чёрный перец • Кардамон", heart: "Ваниль • Карамель", base: "Бензоин • Пачули • Кедр" },
+    images: ["https://images.unsplash.com/photo-1556228578-8c8ae9cfa8e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 134, name: "JULIETTE HAS A GUN Vanilla Vibes", brand: "JULIETTE HAS A GUN", type: "Восточный", category: "rare",
+    gender: "Унисекс", priceRange: "luxury", price: 12800, season: ["Весна", "Лето"], longevity: "6-8 часов",
+    occasions: ["Дневной выход", "Летний вечер", "Творческая встреча"],
+    tags: ["восточный", "ваниль", "вибрации", "люкс", "энергичный", "современный", "чувственный", "унисекс", "летний", "дневной", "ритмичный"],
+    details: { type: "Парфюмерная вода", volume: "100 мл", time: "День/Вечер", stores: ["Sephora", "Иль де Боте"] },
+    notes: { top: "Солёные ноты • Бергамот", heart: "Ваниль • Жасмин", base: "Мускус • Древесные ноты • Амбра" },
+    images: ["https://images.unsplash.com/photo-1595266119323-c6c5004c13a8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 135, name: "MONTALE Oud Sapparot", brand: "MONTALE", type: "Фруктово-цитрусовый", category: "rare",
+    gender: "Унисекс", priceRange: "luxury", price: 14800, season: ["Осень", "Зима"], longevity: "8-10 часов",
+    occasions: ["Вечернее мероприятие", "Особый случай", "Торжественный ужин"],
+    tags: ["фруктовый", "уд", "экзотика", "люкс", "современный", "восточный", "благородный", "унисекс", "зимний", "вечерний", "интенсивный"],
+    details: { type: "Парфюмерная вода", volume: "100 мл", time: "Вечер", stores: ["Иль де Боте", "Sephora"] },
+    notes: { top: "Грейпфрут • Мандарин", heart: "Уд • Роза", base: "Пачули • Амбра • Мускус" },
+    images: ["https://images.unsplash.com/photo-1543858741-6a3f5a9b0c6b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 136, name: "PERFUME.SUCKS Green 368c", brand: "PERFUME.SUCKS", type: "Фужерный", category: "rare",
+    gender: "Унисекс", priceRange: "luxury", price: 16200, season: ["Весна", "Лето"], longevity: "6-8 часов",
+    occasions: ["Творческая встреча", "Неформальная вечеринка", "Дневной выход"],
+    tags: ["фужерный", "зеленый", "провокационный", "люкс", "разный", "нестандартный", "унисекс", "дневной", "весенний", "дерзкий", "экспериментальный"],
+    details: { type: "Парфюмерная вода", volume: "50 мл", time: "День", stores: ["Иль де Боте", "Sephora"] },
+    notes: { top: "Зелёные ноты • Гальбанум", heart: "Жасмин • Ирис", base: "Дубовый мох • Мускус • Сандал" },
+    images: ["https://images.unsplash.com/photo-1595428773927-68e8c4c8c65b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+
+  // НИША (legendary) - ID 137-154 (18 товаров)
+  // Покажу первые 6, остальные по аналогии
+  {
+    id: 137, name: "BYREDO Gypsy Water", brand: "BYREDO", type: "Древесный", category: "legendary",
+    gender: "Унисекс", priceRange: "luxury", price: 18000, season: ["Круглый год"], longevity: "6-8 часов",
+    occasions: ["Путешествия", "Творческая работа", "Духовные практики"],
+    tags: ["древесный", "цыганская вода", "ниша", "легендарный", "свобода", "путешествия", "кочевой", "духовный", "унисекс", "круглогодичный", "творческий", "культовый"],
+    details: { type: "Парфюмерная вода", volume: "100 мл", time: "День", stores: ["Иль де Боте", "Sephora"] },
+    notes: { top: "Бергамот • Перец • Лимон", heart: "Сосна • Ирис • Фиалка", base: "Амбра • Ваниль • Сандал" },
+    images: ["https://images.unsplash.com/photo-1541643600914-78b084683601?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 138, name: "EX NIHILO Blue Talisman", brand: "EX NIHILO", type: "Древесный", category: "legendary",
+    gender: "Мужской", priceRange: "luxury", price: 19500, season: ["Осень", "Зима"], longevity: "8-10 часов",
+    occasions: ["Особый случай", "Вечернее мероприятие", "Торжественный ужин"],
+    tags: ["древесный", "талисман", "ниша", "магический", "синий", "защита", "удача", "мужской", "зимний", "вечерний", "оберег", "волшебный"],
+    details: { type: "Парфюмерная вода", volume: "100 мл", time: "Вечер", stores: ["Иль де Боте", "Sephora"] },
+    notes: { top: "Кардамон • Розовый перец", heart: "Амбра • Ладан", base: "Сандал • Бензоин • Ваниль" },
+    images: ["https://images.unsplash.com/photo-1590736966893-905eba2c5a01?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 139, name: "LE LABO Santal 33", brand: "LE LABO", type: "Древесный", category: "legendary",
+    gender: "Унисекс", priceRange: "luxury", price: 22000, season: ["Круглый год"], longevity: "8-12 часов",
+    occasions: ["Творческая работа", "Повседневный день", "Неформальная встреча"],
+    tags: ["древесный", "сантал 33", "ниша", "культовый", "икона", "санталовый", "знаковый", "унисекс", "круглогодичный", "модный", "узнаваемый", "премиум"],
+    details: { type: "Парфюмерная вода", volume: "100 мл", time: "День/Вечер", stores: ["Иль де Боте", "Sephora"] },
+    notes: { top: "Фиалка • Кардамон", heart: "Ирис • Амбра", base: "Сандал • Кожа • Мускус" },
+    images: ["https://images.unsplash.com/photo-1556228578-8c8ae9cfa8e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 140, name: "EX NIHILO Fleur Narcotique", brand: "EX NIHILO", type: "Цветочный", category: "legendary",
+    gender: "Женский", priceRange: "luxury", price: 18500, season: ["Весна", "Лето"], longevity: "6-8 часов",
+    occasions: ["Вечернее мероприятие", "Романтический ужин", "Особый случай"],
+    tags: ["цветочный", "наркотический", "ниша", "опасный", "привыкание", "красота", "женский", "летний", "вечерний", "зависимость", "интенсивный", "захватывающий"],
+    details: { type: "Парфюмерная вода", volume: "100 мл", time: "Вечер", stores: ["Иль де Боте", "Sephora"] },
+    notes: { top: "Персик • Бергамот", heart: "Тубероза • Жасмин • Роза", base: "Мускус • Сандал • Ваниль" },
+    images: ["https://images.unsplash.com/photo-1595266119323-c6c5004c13a8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 141, name: "BYREDO Bal d'Afrique", brand: "BYREDO", type: "Цветочный", category: "legendary",
+    gender: "Мужской", priceRange: "luxury", price: 17800, season: ["Весна", "Лето"], longevity: "6-8 часов",
+    occasions: ["Летняя вечеринка", "Творческая встреча", "Праздник"],
+    tags: ["цветочный", "африканский", "ниша", "танец", "праздник", "ритм", "мужской", "летний", "день/вечер", "веселье", "экзотика", "культурный"],
+    details: { type: "Парфюмерная вода", volume: "100 мл", time: "День/Вечер", stores: ["Иль де Боте", "Sephora"] },
+    notes: { top: "Бергамот • Лимон • Нероли", heart: "Фиалка • Жасмин • Цикламен", base: "Мускус • Кедр • Амбра" },
+    images: ["https://images.unsplash.com/photo-1543858741-6a3f5a9b0c6b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 142, name: "TOM FORD Black Orchid", brand: "TOM FORD", type: "Цветочный", category: "legendary",
+    gender: "Унисекс", priceRange: "luxury", price: 23500, season: ["Осень", "Зима"], longevity: "8-12 часов",
+    occasions: ["Вечернее мероприятие", "Особый случай", "Торжественный ужин"],
+    tags: ["цветочный", "черная орхидея", "ниша", "темный", "чувственный", "том форд", "мастерский", "унисекс", "зимний", "вечерний", "роскошный", "интенсивный"],
+    details: { type: "Парфюмерная вода", volume: "100 мл", time: "Вечер", stores: ["Sephora", "Иль де Боте"] },
+    notes: { top: "Чёрные трюфели • Иланг-иланг • Бергамот", heart: "Орхидея • Лотос", base: "Патчоли • Ваниль • Ладан" },
+    images: ["https://images.unsplash.com/photo-1595428773927-68e8c4c8c65b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  // Продолжение НИША (legendary) - ID 143-154
+  {
+    id: 143, name: "JULIETTE HAS A GUN Powder Love", brand: "JULIETTE HAS A GUN", type: "Гурманский", category: "legendary",
+    gender: "Женский", priceRange: "luxury", price: 16800, season: ["Круглый год"], longevity: "6-8 часов",
+    occasions: ["Повседневный день", "Романтическое свидание", "Творческая встреча"],
+    tags: ["гурманский", "пудровый", "ниша", "нежный", "любовь", "бархат", "прикосновение", "женский", "круглогодичный", "дневной", "мягкий", "чувственный"],
+    details: { type: "Парфюмерная вода", volume: "100 мл", time: "День", stores: ["Sephora", "Иль де Боте"] },
+    notes: { top: "Бергамот • Мандарин", heart: "Ирис • Роза", base: "Мускус • Амбра • Ваниль" },
+    images: ["https://images.unsplash.com/photo-1541643600914-78b084683601?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 144, name: "KILIAN PARIS Back to Black", brand: "KILIAN PARIS", type: "Гурманский", category: "legendary",
+    gender: "Мужской", priceRange: "luxury", price: 21500, season: ["Осень", "Зима"], longevity: "8-12 часов",
+    occasions: ["Вечернее мероприятие", "Особый случай", "Романтический ужин"],
+    tags: ["гурманский", "афродизиак", "черный", "ниша", "гедонизм", "наслаждение", "мужской", "зимний", "вечерний", "интенсивный", "сексуальный", "страстный"],
+    details: { type: "Парфюмерная вода", volume: "50 мл", time: "Вечер", stores: ["Иль де Боте", "Sephora"] },
+    notes: { top: "Кориандр • Кардамон", heart: "Мёд • Табак • Кедр", base: "Ваниль • Бензоин • Бобы тонка" },
+    images: ["https://images.unsplash.com/photo-1590736966893-905eba2c5a01?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 145, name: "KILIAN PARIS Princess", brand: "KILIAN PARIS", type: "Гурманский", category: "legendary",
+    gender: "Унисекс", priceRange: "luxury", price: 18500, season: ["Круглый год"], longevity: "6-8 часов",
+    occasions: ["Повседневный день", "Неформальная встреча", "Творческий вечер"],
+    tags: ["гурманский", "принцесса", "ниша", "королевский", "сладкий", "игривый", "унисекс", "круглогодичный", "дневной", "женственный", "волшебный", "сказочный"],
+    details: { type: "Парфюмерная вода", volume: "50 мл", time: "День", stores: ["Sephora", "Иль де Боте"] },
+    notes: { top: "Зелёный чай • Имбирь", heart: "Зефир • Жасмин", base: "Ваниль • Мускус" },
+    images: ["https://images.unsplash.com/photo-1556228578-8c8ae9cfa8e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 146, name: "TOM FORD Lost Cherry", brand: "TOM FORD", type: "Восточный", category: "legendary",
+    gender: "Женский", priceRange: "luxury", price: 24500, season: ["Осень", "Зима"], longevity: "8-10 часов",
+    occasions: ["Вечернее мероприятие", "Особый случай", "Романтический ужин"],
+    tags: ["восточный", "вишня", "ниша", "искушение", "запретный", "том форд", "плод", "женский", "зимний", "вечерний", "соблазнительный", "интригующий"],
+    details: { type: "Парфюмерная вода", volume: "50 мл", time: "Вечер", stores: ["Sephora", "Иль де Боте"] },
+    notes: { top: "Вишня • Миндаль", heart: "Ликёр • Роза • Жасмин", base: "Бразильское розовое дерево • Сандал • Бензоин" },
+    images: ["https://images.unsplash.com/photo-1595266119323-c6c5004c13a8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 147, name: "INITIO PARFUMS PRIVES Oud for Greatness", brand: "INITIO", type: "Восточный", category: "legendary",
+    gender: "Мужской", priceRange: "luxury", price: 22800, season: ["Осень", "Зима"], longevity: "10-12 часов",
+    occasions: ["Особый случай", "Вечернее мероприятие", "Торжественный ужин"],
+    tags: ["восточный", "уд", "величие", "ниша", "амбициозный", "величественный", "мужской", "зимний", "вечерний", "мощный", "благородный", "престижный"],
+    details: { type: "Парфюмерная вода", volume: "90 мл", time: "Вечер", stores: ["Иль де Боте"] },
+    notes: { top: "Наг Чампá • Лаванда", heart: "Уд • Розовый перец", base: "Мускус • Амбра • Сандал" },
+    images: ["https://images.unsplash.com/photo-1543858741-6a3f5a9b0c6b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 148, name: "TOM FORD Oud Wood", brand: "TOM FORD", type: "Восточный", category: "legendary",
+    gender: "Унисекс", priceRange: "luxury", price: 26500, season: ["Осень", "Зима"], longevity: "8-10 часов",
+    occasions: ["Вечернее мероприятие", "Особый случай", "Деловой ужин"],
+    tags: ["восточный", "уд", "дерево", "ниша", "классика", "том форд", "унисекс", "зимний", "вечерний", "утонченный", "роскошный", "элегантный"],
+    details: { type: "Парфюмерная вода", volume: "100 мл", time: "Вечер", stores: ["Sephora", "Иль де Боте"] },
+    notes: { top: "Розовый перец • Кардамон", heart: "Уд • Сандаловое дерево", base: "Тонка • Амбра • Ваниль" },
+    images: ["https://images.unsplash.com/photo-1595428773927-68e8c4c8c65b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 149, name: "VERSACE Bright Crystal", brand: "VERSACE", type: "Фруктово-цитрусовый", category: "legendary",
+    gender: "Женский", priceRange: "luxury", price: 15800, season: ["Весна", "Лето"], longevity: "5-7 часов",
+    occasions: ["Дневной выход", "Летняя вечеринка", "Романтическое свидание"],
+    tags: ["фруктовый", "кристалл", "ниша", "яркий", "сияющий", "бриллиант", "женский", "летний", "дневной", "блестящий", "праздничный", "гламурный"],
+    details: { type: "Туалетная вода", volume: "90 мл", time: "День", stores: ["Л'Этуаль", "Sephora"] },
+    notes: { top: "Юзу • Гранат", heart: "Лотос • Магнолия", base: "Мускус • Амбра • Древесные ноты" },
+    images: ["https://images.unsplash.com/photo-1541643600914-78b084683601?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 150, name: "XERJOFF JTC Torino21", brand: "XERJOFF", type: "Фруктово-цитрусовый", category: "legendary",
+    gender: "Мужской", priceRange: "luxury", price: 29500, season: ["Весна", "Лето"], longevity: "6-8 часов",
+    occasions: ["Спортивное мероприятие", "Деловая встреча", "Летний вечер"],
+    tags: ["фруктовый", "гонки", "ниша", "скорость", "адреналин", "турин", "мужской", "летний", "дневной", "спортивный", "динамичный", "технологичный"],
+    details: { type: "Парфюмерная вода", volume: "100 мл", time: "День", stores: ["Иль де Боте"] },
+    notes: { top: "Лимон • Бергамот • Мандарин", heart: "Жасмин • Нероли", base: "Мускус • Амбра • Сандал" },
+    images: ["https://images.unsplash.com/photo-1590736966893-905eba2c5a01?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 151, name: "XERJOFF Erba Pura", brand: "XERJOFF", type: "Фруктово-цитрусовый", category: "legendary",
+    gender: "Унисекс", priceRange: "luxury", price: 27800, season: ["Весна", "Лето"], longevity: "8-10 часов",
+    occasions: ["Дневной выход", "Творческая встреча", "Летняя прогулка"],
+    tags: ["фруктовый", "чистая трава", "ниша", "природа", "свежесть", "чистота", "унисекс", "летний", "дневной", "естественный", "оздоровительный", "экологичный"],
+    details: { type: "Парфюмерная вода", volume: "100 мл", time: "День", stores: ["Иль де Боте"] },
+    notes: { top: "Мандарин • Бергамот", heart: "Жасмин • Иланг-иланг", base: "Ваниль • Мускус • Сандал" },
+    images: ["https://images.unsplash.com/photo-1556228578-8c8ae9cfa8e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 152, name: "VILHELM PARFUMERIE Dear Polly", brand: "VILHELM", type: "Фужерный", category: "legendary",
+    gender: "Женский", priceRange: "luxury", price: 19200, season: ["Осень", "Зима"], longevity: "6-8 часов",
+    occasions: ["Домашний отдых", "Дружеская встреча", "Творческий вечер"],
+    tags: ["фужерный", "чай", "ниша", "теплый", "дружеский", "беседа", "женский", "осенний", "дневной", "уютный", "комфортный", "расслабляющий"],
+    details: { type: "Парфюмерная вода", volume: "100 мл", time: "День", stores: ["Иль де Боте", "Sephora"] },
+    notes: { top: "Чай • Яблоко • Бергамот", heart: "Чёрный чай • Матча", base: "Мускус • Древесные ноты • Ваниль" },
+    images: ["https://images.unsplash.com/photo-1595266119323-c6c5004c13a8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 153, name: "NISHANE Hacivat", brand: "NISHANE", type: "Фужерный", category: "legendary",
+    gender: "Мужской", priceRange: "luxury", price: 20800, season: ["Осень", "Зима"], longevity: "8-10 часов",
+    occasions: ["Вечернее мероприятие", "Творческая встреча", "Особый случай"],
+    tags: ["фужерный", "хадживат", "ниша", "театральный", "драматичный", "турецкий", "мужской", "зимний", "вечерний", "харизматичный", "яркий", "выразительный"],
+    details: { type: "Парфюмерная вода", volume: "100 мл", time: "Вечер", stores: ["Иль де Боте"] },
+    notes: { top: "Ананас • Бергамот • Грейпфрут", heart: "Дубовый мох • Жасмин", base: "Кедр • Пачули • Мускус" },
+    images: ["https://images.unsplash.com/photo-1543858741-6a3f5a9b0c6b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  },
+  {
+    id: 154, name: "VILHELM PARFUMERIE Chicago High", brand: "VILHELM", type: "Фужерный", category: "legendary",
+    gender: "Унисекс", priceRange: "luxury", price: 18800, season: ["Круглый год"], longevity: "7-9 часов",
+    occasions: ["Деловая встреча", "Городская прогулка", "Творческая работа"],
+    tags: ["фужерный", "чикаго", "ниша", "урбанистический", "небоскреб", "высота", "унисекс", "круглогодичный", "дневной", "современный", "городской", "динамичный"],
+    details: { type: "Парфюмерная вода", volume: "100 мл", time: "День", stores: ["Иль де Боте", "Sephora"] },
+    notes: { top: "Бергамот • Кардамон • Розовый перец", heart: "Жасмин • Ирис", base: "Кедр • Ветивер • Мускус" },
+    images: ["https://images.unsplash.com/photo-1595428773927-68e8c4c8c65b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+    matchScore: 0, matchPercentage: "0%", reasons: []
+  }
+];
+const oilsDatabase = [
+  {
+    id: 1,
+    name: "Лаванда",
+    latinName: "Lavandula angustifolia",
+    category: "universal",
+    priceRange: "budget",
+    price: 800,
+    scentFamily: "цветочный",
+    purpose: ["Релаксация", "Сон", "Уход за кожей", "Антистресс"],
+    application: ["Диффузор", "Аромалампа", "На кожу (разбавленное)", "Ванна"],
+    effect: ["Успокаивающий", "Заживляющий", "Антисептический", "Расслабляющий"],
+    tags: ["успокаивающий", "релаксация", "сон", "антистресс", "цветочный", "нежный", "вечерний", "для дома", "расслабляющий", "заживление"],
+    description: "Её узнаваемый успокаивающий аромат — первая помощь при стрессе и бессоннице. Помогает не только расслабиться, но и заживляет мелкие повреждения кожи, снимает головную боль. Идеальна для вечернего ритуала.",
+    benefits: ["Сон и релаксация", "Уход за кожей", "Снятие стресса", "Укрепление иммунитета"],
+    cautions: ["Избегать в первом триместре беременности", "Тест на аллергию"],
+    image: "https://images.unsplash.com/photo-1561024356-9d4c5df2e69a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    matchScore: 0,
+    matchPercentage: "0%",
+    reasons: [],
+    gender: "Унисекс",
+    season: ["Весна", "Лето", "Осень", "Зима"],
+    occasions: ["Домашний отдых", "Перед сном", "Медитация", "Снятие стресса"],
+    longevity: "2-4 часа",
+    notes: { top: "Цветочные ноты", heart: "Травяные акценты", base: "Древесные оттенки" },
+    details: {
+      type: "Эфирное масло",
+      volume: "10 мл",
+      time: "Вечер",
+      stores: ["iHerb", "Фитомаркет", "Аюрведа-Шоп", "Эко-лавка", "Ozon", "Wildberries"]
+    }
+  },
+  {
+    id: 2,
+    name: "Жасмин",
+    latinName: "Jasminum grandiflorum",
+    category: "universal",
+    priceRange: "mid",
+    price: 1500,
+    scentFamily: "цветочный",
+    purpose: ["Настроение", "Уход за кожей", "Мышечное расслабление", "Антистресс"],
+    application: ["Диффузор", "Аромалампа", "На кожу (разбавленное)", "Массаж"],
+    effect: ["Поднимающий настроение", "Омолаживающий", "Антидепрессивный", "Расслабляющий"],
+    tags: ["цветочный", "настроение", "омоложение", "кожа", "женственный", "роскошный", "антистресс", "мышцы", "уверенность", "летний"],
+    description: "Этот роскошный цветочный аромат поднимает настроение и придаёт уверенности. Хорошо известен в уходе за зрелой кожей — улучшает её упругость и тонус. Также мягко снимает мышечное напряжение.",
+    benefits: ["Омоложение кожи", "Снятие боли", "Антистресс", "Коррекция веса"],
+    cautions: ["Тест на аллергию", "Избегать в чистом виде на кожу"],
+    image: "https://images.unsplash.com/photo-1572459866767-41f0f6e6be13?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    matchScore: 0,
+    matchPercentage: "0%",
+    reasons: [],
+    gender: "Женский",
+    season: ["Весна", "Лето"],
+    occasions: ["Романтический вечер", "Свидание", "Творческая работа", "Повышение настроения"],
+    longevity: "3-5 часов",
+    notes: { top: "Сладкие цветочные ноты", heart: "Тёплые аккорды", base: "Нежная основа" },
+    details: {
+      type: "Эфирное масло",
+      volume: "5 мл",
+      time: "Вечер",
+      stores: ["iHerb", "Аюрведа-Шоп", "Эко-лавка", "Ozon"]
+    }
+  },
+  {
+    id: 3,
+    name: "Роза",
+    latinName: "Rosa damascena",
+    category: "rare",
+    priceRange: "premium",
+    price: 3500,
+    scentFamily: "цветочный",
+    purpose: ["Глубокое расслабление", "Гормональный баланс", "Уход за кожей", "Антистресс"],
+    application: ["Диффузор", "На кожу (разбавленное)", "Уходовые средства", "Ванна"],
+    effect: ["Расслабляющий", "Гормональный баланс", "Увлажняющий", "Омолаживающий"],
+    tags: ["классика", "расслабление", "гормоны", "увлажнение", "редкий", "люкс", "женский", "нежный", "цветочный", "антистресс"],
+    description: "Классика, которая глубоко расслабляет, не вызывая сонливости. Помогает справиться с последствиями стресса и уравновешивает гормональный фон в критические дни. Отлично увлажняет и освежает кожу.",
+    benefits: ["Глубокое расслабление", "Омоложение кожи", "Гормональный баланс", "Болеутоляющее"],
+    cautions: ["Высокая цена", "Тест на аллергию", "Беременность - с осторожностью"],
+    image: "https://images.unsplash.com/photo-1563170351-be82bc888aa4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    matchScore: 0,
+    matchPercentage: "0%",
+    reasons: [],
+    gender: "Женский",
+    season: ["Весна", "Лето", "Осень"],
+    occasions: ["СПА-процедуры", "Медитация", "Романтический вечер", "Снятие стресса"],
+    longevity: "4-6 часов",
+    notes: { top: "Нежные лепестки", heart: "Медовые акценты", base: "Древесная основа" },
+    details: {
+      type: "Абсолют",
+      volume: "2 мл",
+      time: "Вечер",
+      stores: ["Аюрведа-Шоп", "Люкс парфюмерия", "Эко-лавка", "Ozon"]
+    }
+  },
+  {
+    id: 4,
+    name: "Корица",
+    latinName: "Cinnamomum verum",
+    category: "universal",
+    priceRange: "budget",
+    price: 900,
+    scentFamily: "пряный",
+    purpose: ["Антивирусная защита", "Кровообращение", "Пищеварение", "Энергия"],
+    application: ["Диффузор", "Аромалампа", "Очищение воздуха", "Массаж (разбавленное)"],
+    effect: ["Антивирусный", "Согревающий", "Стимулирующий", "Пищеварительный"],
+    tags: ["пряный", "антивирус", "согревающий", "зимний", "уютный", "кровообращение", "пищеварение", "энергия", "концентрация", "осенний"],
+    description: "Её тёплый пряный запах не только создаёт уют, но и защищает: это сильное антивирусное средство. Отлично согревает, улучшает кровообращение и помогает сосредоточиться.",
+    benefits: ["Антивирусное", "Улучшение кровообращения", "Пищеварение", "Энергия и уверенность"],
+    cautions: ["Раздражает кожу в чистом виде", "Избегать при беременности", "Тест на аллергию"],
+    image: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    matchScore: 0,
+    matchPercentage: "0%",
+    reasons: [],
+    gender: "Унисекс",
+    season: ["Осень", "Зима"],
+    occasions: ["Новогодние праздники", "Домашний уют", "Работа в офисе", "Поддержка иммунитета"],
+    longevity: "3-5 часов",
+    notes: { top: "Пряная острота", heart: "Древесные ноты", base: "Сладкое послевкусие" },
+    details: {
+      type: "Эфирное масло",
+      volume: "10 мл",
+      time: "День",
+      stores: ["Фитомаркет", "Эко-лавка", "Ozon", "Wildberries", "Аптека"]
+    }
+  },
+  {
+    id: 5,
+    name: "Гвоздика",
+    latinName: "Syzygium aromaticum",
+    category: "universal",
+    priceRange: "budget",
+    price: 850,
+    scentFamily: "пряный",
+    purpose: ["Антибактериальное", "Снятие зубной боли", "Противовоспалительное", "Согревающий эффект"],
+    application: ["Точечное нанесение", "Полоскание рта (разбавленное)", "Диффузор", "Массаж"],
+    effect: ["Антисептический", "Обезболивающий", "Противовоспалительный", "Согревающий"],
+    tags: ["антисептик", "зубная боль", "противовоспалительное", "согревающий", "мышцы", "пряный", "антибактериальный", "лечебный", "зимний", "уютный"],
+    description: "Яркий пряный аромат с выраженным антисептическим действием. Часто используется для облегчения зубной боли и при воспалениях полости рта. Также хорошо тонизирует и согревает мышцы.",
+    benefits: ["Антибактериальное", "Снятие зубной боли", "Противовоспалительное", "Согревающий эффект"],
+    cautions: ["Сильный раздражитель в чистом виде", "Избегать при беременности", "Тест на аллергию"],
+    image: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    matchScore: 0,
+    matchPercentage: "0%",
+    reasons: [],
+    gender: "Унисекс",
+    season: ["Осень", "Зима"],
+    occasions: ["Лечебные процедуры", "Профилактика простуды", "Снятие боли", "Ароматерапия"],
+    longevity: "2-4 часа",
+    notes: { top: "Острая пряность", heart: "Тёплые ноты", base: "Древесный акцент" },
+    details: {
+      type: "Эфирное масло",
+      volume: "10 мл",
+      time: "День",
+      stores: ["Фитомаркет", "Аптека", "Эко-лавка", "Ozon"]
+    }
+  },
+  {
+    id: 6,
+    name: "Иланг-Иланг",
+    latinName: "Cananga odorata",
+    category: "universal",
+    priceRange: "mid",
+    price: 1200,
+    scentFamily: "цветочный",
+    purpose: ["Снятие тревоги", "Уход за жирной кожей", "Антистресс", "Улучшение эластичности"],
+    application: ["Диффузор", "Аромалампа", "Уход за кожей", "Массаж"],
+    effect: ["Успокаивающий", "Регулирующий кожное сало", "Антидепрессивный", "Увлажняющий"],
+    tags: ["экзотичный", "антистресс", "давление", "жирная кожа", "эластичность", "сладкий", "сердцебиение", "цветочный", "тропический", "расслабляющий"],
+    description: "Экзотичный и сладкий, этот аромат — известный помощник в борьбе со стрессом. Он успокаивает сердцебиение, нормализует давление и регулирует выработку кожного сала, что полезно для жирной кожи.",
+    benefits: ["Снятие тревоги", "Уход за жирной кожей", "Антистресс", "Улучшение эластичности"],
+    cautions: ["Может вызывать головную боль в больших концентрациях", "Тест на аллергию"],
+    image: "https://images.unsplash.com/photo-1595435934247-5d33b7a2b38a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    matchScore: 0,
+    matchPercentage: "0%",
+    reasons: [],
+    gender: "Женский",
+    season: ["Весна", "Лето"],
+    occasions: ["Медитация", "Йога", "Романтическое свидание", "Снятие напряжения"],
+    longevity: "4-6 часов",
+    notes: { top: "Экзотичные цветы", heart: "Сладкие ноты", base: "Древесный фон" },
+    details: {
+      type: "Эфирное масло",
+      volume: "5 мл",
+      time: "Вечер",
+      stores: ["iHerb", "Аюрведа-Шоп", "Эко-лавка", "Ozon"]
+    }
+  },
+  {
+    id: 7,
+    name: "Бергамот",
+    latinName: "Citrus bergamia",
+    category: "universal",
+    priceRange: "mid",
+    price: 1100,
+    scentFamily: "цитрусовый",
+    purpose: ["Борьба с депрессией", "Очищение кожи", "Улучшение пищеварения", "Поддержка иммунитета"],
+    application: ["Диффузор", "Аромалампа", "Уход за кожей", "Ингаляции"],
+    effect: ["Антидепрессивный", "Очищающий", "Пищеварительный", "Иммуностимулирующий"],
+    tags: ["свежий", "цитрусовый", "депрессия", "акне", "пищеварение", "иммунитет", "очищение", "матирование", "летний", "бодрящий"],
+    description: "Свежий citrusовый запах, который прогоняет хандру и тревогу. Дезинфицирует и матирует кожу, помогая при акне. Также мягко налаживает пищеварение после тяжёлой пищи.",
+    benefits: ["Борьба с депрессией", "Очищение кожи", "Улучшение пищеварения", "Поддержка иммунитета"],
+    cautions: ["Фототоксичен - избегать солнца после нанесения", "Тест на аллергию"],
+    image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    matchScore: 0,
+    matchPercentage: "0%",
+    reasons: [],
+    gender: "Унисекс",
+    season: ["Весна", "Лето", "Осень"],
+    occasions: ["Утренний подъём", "Рабочий день", "Очищение кожи", "Поднятие настроения"],
+    longevity: "2-3 часа",
+    notes: { top: "Яркий цитрус", heart: "Цветочные нотки", base: "Зелёные акценты" },
+    details: {
+      type: "Эфирное масло",
+      volume: "10 мл",
+      time: "Утро/День",
+      stores: ["iHerb", "Фитомаркет", "Эко-лавка", "Ozon", "Wildberries"]
+    }
+  },
+  {
+    id: 8,
+    name: "Чайное дерево",
+    latinName: "Melaleuca alternifolia",
+    category: "legendary",
+    priceRange: "budget",
+    price: 650,
+    scentFamily: "лекарственный",
+    purpose: ["Антисептик", "Лечение акне", "Против грибка", "Заживление ран"],
+    application: ["Точечное нанесение", "Очищение кожи", "Ингаляции", "Добавление в косметику"],
+    effect: ["Антисептический", "Антибактериальный", "Противогрибковый", "Заживляющий"],
+    tags: ["лекарственный", "антисептик", "грибок", "раны", "воспаление", "акне", "заживление", "антибактериальный", "лечебный", "сильный"],
+    description: "Сильный лекарственный аромат, природный антисептик №1. Незаменим при грибковых инфекциях, воспалениях и для быстрого заживления ран. Часто используется в чистом виде для точечного нанесения.",
+    benefits: ["Антисептик", "Лечение акне", "Против грибка", "Заживление ран"],
+    cautions: ["Не наносить неразбавленным на большие участки кожи", "Тест на аллергию"],
+    image: "https://images.unsplash.com/photo-1519415711931-702deacf5be8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    matchScore: 0,
+    matchPercentage: "0%",
+    reasons: [],
+    gender: "Унисекс",
+    season: ["Весна", "Лето", "Осень", "Зима"],
+    occasions: ["Лечебные процедуры", "Уход за кожей", "Дезинфекция", "Первая помощь"],
+    longevity: "2-3 часа",
+    notes: { top: "Медицинский аромат", heart: "Травяные ноты", base: "Древесный оттенок" },
+    details: {
+      type: "Эфирное масло",
+      volume: "10 мл",
+      time: "День",
+      stores: ["Аптека", "Фитомаркет", "Ozon", "Wildberries", "Эко-лавка"]
+    }
+  },
+  {
+    id: 9,
+    name: "Кедр",
+    latinName: "Cedrus atlantica",
+    category: "rare",
+    priceRange: "mid",
+    price: 1800,
+    scentFamily: "древесный",
+    purpose: ["Уход за волосами", "Лечение кожи", "Дыхательная система", "Снятие тревоги"],
+    application: ["Диффузор", "Аромалампа", "Уход за волосами", "Ингаляции"],
+    effect: ["Укрепляющий", "Антисептический", "Отхаркивающий", "Успокаивающий"],
+    tags: ["древесный", "отёки", "волосы", "дыхание", "мужской", "стабильность", "спокойствие", "простуда", "укрепление", "природный"],
+    description: "Стойкий древесный аромат, который даёт чувство опоры. Помогает уменьшить отёки, укрепляет корни волос и облегчает дыхание при простуде. Создаёт атмосферу стабильности и спокойствия.",
+    benefits: ["Уход за волосами", "Лечение кожи", "Дыхательная система", "Снятие тревоги"],
+    cautions: ["Беременность - с осторожностью", "Тест на аллергию"],
+    image: "https://images.unsplash.com/photo-1519415711931-702deacf5be8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    matchScore: 0,
+    matchPercentage: "0%",
+    reasons: [],
+    gender: "Мужской",
+    season: ["Осень", "Зима"],
+    occasions: ["Медитация", "Работа в кабинете", "Уход за бородой", "Создание атмосферы"],
+    longevity: "5-7 часов",
+    notes: { top: "Древесная свежесть", heart: "Смолистые ноты", base: "Землистая основа" },
+    details: {
+      type: "Эфирное масло",
+      volume: "10 мл",
+      time: "Вечер",
+      stores: ["Аюрведа-Шоп", "Эко-лавка", "Ozon", "Фитомаркет"]
+    }
+  },
+  {
+    id: 10,
+    name: "Сосна",
+    latinName: "Pinus sylvestris",
+    category: "universal",
+    priceRange: "budget",
+    price: 750,
+    scentFamily: "хвойный",
+    purpose: ["Антисептик", "Мышечная релаксация", "Повышение энергии", "Поддержка почек"],
+    application: ["Диффузор", "Аромалампа", "Ингаляции", "Ванна"],
+    effect: ["Антисептический", "Расслабляющий", "Энергетический", "Мочегонный"],
+    tags: ["хвойный", "простуда", "мышцы", "энергия", "почки", "концентрация", "очищение", "дыхание", "зимний", "лесной"],
+    description: "Свежий хвойный запах, который буквально прочищает голову и дыхательные пути. Облегчает симптомы простуды, снимает мышечную усталость и помогает сконцентрироваться на задачах.",
+    benefits: ["Антисептик", "Мышечная релаксация", "Повышение энергии", "Поддержка почек"],
+    cautions: ["Избегать при беременности", "Тест на аллергию"],
+    image: "https://images.unsplash.com/photo-1599457386887-23f5d7720f5c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    matchScore: 0,
+    matchPercentage: "0%",
+    reasons: [],
+    gender: "Унисекс",
+    season: ["Зима"],
+    occasions: ["Новогодние праздники", "Лечение простуды", "Восстановление после тренировки", "Очищение воздуха"],
+    longevity: "3-4 часа",
+    notes: { top: "Свежая хвоя", heart: "Смолистые ноты", base: "Древесная основа" },
+    details: {
+      type: "Эфирное масло",
+      volume: "10 мл",
+      time: "День",
+      stores: ["Фитомаркет", "Эко-лавка", "Ozon", "Wildberries", "Аптека"]
+    }
+  },
+  {
+    id: 11,
+    name: "Мята",
+    latinName: "Mentha piperita",
+    category: "universal",
+    priceRange: "budget",
+    price: 700,
+    scentFamily: "травяной",
+    purpose: ["Снятие тошноты", "Умственная ясность", "Головная боль", "Мышечное расслабление"],
+    application: ["Ингаляции", "Диффузор", "Массаж", "Добавление в напитки"],
+    effect: ["Охлаждающий", "Стимулирующий", "Обезболивающий", "Расслабляющий"],
+    tags: ["бодрящий", "тошнота", "головная боль", "внимание", "освежение", "мышцы", "умственная ясность", "прохладный", "летний", "освежающий"],
+    description: "Бодрящий и прохладный аромат мгновенного действия. Быстро снимает тошноту и головную боль, освежает мысли и повышает внимание. Как скорая помощь при умственном переутомлении.",
+    benefits: ["Снятие тошноты", "Умственная ясность", "Головная боль", "Мышечное расслабление"],
+    cautions: ["Избегать при беременности", "Не использовать перед сном", "Тест на аллергию"],
+    image: "https://images.unsplash.com/photo-1599457386887-23f5d7720f5c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    matchScore: 0,
+    matchPercentage: "0%",
+    reasons: [],
+    gender: "Унисекс",
+    season: ["Лето"],
+    occasions: ["Утренний душ", "Работа за компьютером", "Путешествие", "Снятие мигрени"],
+    longevity: "1-2 часа",
+    notes: { top: "Освежающая прохлада", heart: "Травяные ноты", base: "Сладковатый оттенок" },
+    details: {
+      type: "Эфирное масло",
+      volume: "10 мл",
+      time: "Утро/День",
+      stores: ["Аптека", "Фитомаркет", "Ozon", "Wildberries", "Эко-лавка"]
+    }
+  },
+  {
+    id: 12,
+    name: "Лимон",
+    latinName: "Citrus limon",
+    category: "universal",
+    priceRange: "budget",
+    price: 600,
+    scentFamily: "цитрусовый",
+    purpose: ["Очищение организма", "Умственная активность", "Уход за кожей", "Укрепление волос"],
+    application: ["Диффузор", "Аромалампа", "Уход за кожей", "Очищение поверхностей"],
+    effect: ["Очищающий", "Стимулирующий", "Осветляющий", "Антисептический"],
+    tags: ["тонизирование", "осветление", "пигментация", "иммунитет", "волосы", "бодрость", "очищение", "жирная кожа", "цитрусовый", "летний"],
+    description: "Яркий и чистый запах, который отлично тонизирует и бодрит. Осветляет кожу, борется с пигментацией и жирным блеском. Поддерживает иммунитет, особенно в сезон простуд.",
+    benefits: ["Очищение организма", "Умственная активность", "Уход за кожей", "Укрепление волос"],
+    cautions: ["Фототоксичен - избегать солнца", "Тест на аллергию"],
+    image: "https://images.unsplash.com/photo-1519682337058-a94d519337bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    matchScore: 0,
+    matchPercentage: "0%",
+    reasons: [],
+    gender: "Унисекс",
+    season: ["Весна", "Лето"],
+    occasions: ["Утренний подъём", "Генеральная уборка", "Уход за кожей", "Повышение концентрации"],
+    longevity: "1-2 часа",
+    notes: { top: "Яркий цитрус", heart: "Кислые ноты", base: "Зелёные акценты" },
+    details: {
+      type: "Эфирное масло",
+      volume: "10 мл",
+      time: "Утро",
+      stores: ["Фитомаркет", "Эко-лавка", "Ozon", "Wildberries", "Аптека"]
+    }
+  },
+  {
+    id: 13,
+    name: "Апельсин",
+    latinName: "Citrus sinensis",
+    category: "universal",
+    priceRange: "budget",
+    price: 550,
+    scentFamily: "цитрусовый",
+    purpose: ["Снятие стресса", "Улучшение пищеварения", "Омоложение кожи", "Поддержка иммунитета"],
+    application: ["Диффузор", "Аромалампа", "Уход за кожей", "Добавление в ванну"],
+    effect: ["Антистрессовый", "Пищеварительный", "Омолаживающий", "Иммуностимулирующий"],
+    tags: ["солнечный", "радость", "цвет лица", "упругость", "пищеварение", "вздутие", "комфорт", "тепло", "цитрусовый", "энергичный"],
+    description: "Солнечный и радостный аромат, который создаёт ощущение тепла и комфорта. Улучшает цвет лица и упругость кожи. Мягко стимулирует пищеварение и помогает при вздутии живота.",
+    benefits: ["Снятие стресса", "Улучшение пищеварения", "Омоложение кожи", "Поддержка иммунитета"],
+    cautions: ["Фототоксичен - избегать солнца", "Тест на аллергию"],
+    image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    matchScore: 0,
+    matchPercentage: "0%",
+    reasons: [],
+    gender: "Унисекс",
+    season: ["Весна", "Лето", "Осень"],
+    occasions: ["Семейные посиделки", "Детская комната", "Поднятие настроения", "Пищеварительные проблемы"],
+    longevity: "2-3 часа",
+    notes: { top: "Сочный цитрус", heart: "Сладкие ноты", base: "Цветочные акценты" },
+    details: {
+      type: "Эфирное масло",
+      volume: "10 мл",
+      time: "День",
+      stores: ["Фитомаркет", "Эко-лавка", "Ozon", "Wildberries", "Аптека"]
+    }
+  }
+];
+
+
+    const loadingData = {
+        phrases: [
+            "Расшифровываем ваш ароматический код...",
+            "Собираем парфюмерную мозаику...",  
+            "Настраиваемся на вашу частоту...",
+            "Подбираем идеальное сочетание нот...",
+            "Создаём ваш ароматный портрет..."
+        ],
+        currentPhase: 0,
+        totalPhases: 5,
+        isAnimating: false
+    };
+
+    // ===== ИНИЦИАЛИЗАЦИЯ СТРАНИЦЫ =====
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🚀 Страница загрузки инициализирована');
+        
+        // 1. Настраиваем тему
+        applyTheme();
+        
+        // 2. Инициализируем анимацию загрузки
+        initializeLoadingAnimation();
+        
+        // 3. Запускаем процесс подбора
+        startMatchingProcess();
+    });
+
+    // ===== ТЕМА =====
+    function applyTheme() {
+        const body = document.body;
+        const themeBgs = document.querySelectorAll('.theme-bg');
+        
+        if (currentTheme === 'light') {
+            body.classList.add('light-theme');
+            body.classList.remove('dark-theme');
+            themeBgs.forEach(bg => {
+                if (bg.classList.contains('light')) bg.classList.add('active');
+                else bg.classList.remove('active');
+            });
+        } else {
+            body.classList.add('dark-theme');
+            body.classList.remove('light-theme');
+            themeBgs.forEach(bg => {
+                if (bg.classList.contains('dark')) bg.classList.add('active');
+                else bg.classList.remove('active');
+            });
+        }
+    }
+
+    // ===== АНИМАЦИЯ ЗАГРУЗКИ =====
+    function initializeLoadingAnimation() {
+        console.log('🌸 Инициализация анимации пиона...');
+        
+        // Создаем лепестки
+        createPeonyPetals();
+        
+        // Создаем прогресс-точки
+        createProgressDots();
+        
+        // Создаем контейнер для фраз
+        createPhrasesContainer();
+        
+        // Начинаем анимацию
+        setTimeout(() => {
+            startLoadingAnimation();
+        }, 500);
+    }
+
+    function createPeonyPetals() {
+        const peony = document.getElementById('peony');
+        if (!peony) return;
+        
+        peony.innerHTML = '';
+        
+        // Центр цветка
+        const center = document.createElement('div');
+        center.className = 'peony-center';
+        peony.appendChild(center);
+        
+        // Лепестки (3 слоя)
+        for (let layer = 0; layer < 3; layer++) {
+            const petalsInLayer = layer === 0 ? 8 : layer === 1 ? 12 : 16;
+            const size = 32 - layer * 4;
+            const height = 55 - layer * 8;
+            
+            for (let i = 0; i < petalsInLayer; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'peony-petal';
+                
+                const angle = (360 / petalsInLayer) * i;
+                const rotateStart = angle + Math.random() * 20 - 10;
+                const rotateEnd = angle + Math.random() * 10 - 5;
+                
+                // Устанавливаем CSS переменные для анимации
+                petal.style.setProperty('--rotate-start', `${rotateStart}deg`);
+                petal.style.setProperty('--rotate-end', `${rotateEnd}deg`);
+                petal.style.setProperty('--delay', `${layer * 0.5 + i * 0.1}s`);
+                
+                // Стили лепестка
+                petal.style.width = `${size}px`;
+                petal.style.height = `${height}px`;
+                petal.style.left = `calc(50% - ${size/2}px)`;
+                petal.style.top = `calc(37% - ${height/2}px)`;
+                
+                peony.appendChild(petal);
+            }
+        }
+    }
+
+    function createProgressDots() {
+        const dotsContainer = document.getElementById('loadingProgressDots');
+        if (!dotsContainer) return;
+        
+        dotsContainer.innerHTML = '';
+        
+        for (let i = 0; i < 5; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'progress-dot';
+            if (i === 0) dot.classList.add('active');
+            dotsContainer.appendChild(dot);
+        }
+    }
+
+    function createPhrasesContainer() {
+        const container = document.getElementById('phrasesContainer');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        loadingData.phrases.forEach((phrase, index) => {
+            const phraseElement = document.createElement('div');
+            phraseElement.className = 'loading-phrase';
+            phraseElement.textContent = phrase;
+            phraseElement.style.opacity = index === 0 ? '1' : '0';
+            phraseElement.style.zIndex = loadingData.phrases.length - index;
+            container.appendChild(phraseElement);
+        });
+    }
+
+    function startLoadingAnimation() {
+        console.log('🎬 Запуск анимации загрузки...');
+        
+        // 1. Анимируем лепестки
+        animatePeony();
+        
+        // 2. Начинаем анимацию фраз
+        startPhrasesAnimation();
+        
+        // 3. Начинаем прогресс-бар
+        startProgressBar();
+    }
+
+    function animatePeony() {
+        const peony = document.getElementById('peony');
+        const petals = document.querySelectorAll('.peony-petal');
+        const center = document.querySelector('.peony-center');
+        
+        // Открываем цветок
+        peony.classList.remove('closing');
+        peony.classList.add('opening');
+        
+        // Анимация центра
+        if (center) {
+            setTimeout(() => {
+                center.style.animation = 'centerPulse 3s ease-in-out infinite';
+            }, 1500);
+        }
+    }
+
+    function togglePeony(state) {
+        const peony = document.getElementById('peony');
+        if (state === 'close') {
+            peony.classList.remove('opening');
+            peony.classList.add('closing');
+        } else {
+            peony.classList.remove('closing');
+            peony.classList.add('opening');
+        }
+    }
+
+    function startPhrasesAnimation() {
+        let currentIndex = 0;
+        
+        function showNextPhrase() {
+            const phrases = document.querySelectorAll('.loading-phrase');
+            if (phrases.length === 0) return;
+            
+            // Скрываем текущую фразу
+            phrases[currentIndex].style.opacity = '0';
+            phrases[currentIndex].style.animation = 'phraseFadeOut 0.5s ease forwards';
+            
+            // Обновляем индекс
+            currentIndex = (currentIndex + 1) % phrases.length;
+            
+            // Показываем следующую фразу
+            setTimeout(() => {
+                phrases[currentIndex].style.opacity = '1';
+                phrases[currentIndex].style.animation = 'phraseFadeIn 0.5s ease forwards';
+                
+                // Обновляем активную точку прогресса
+                updateProgressDots(currentIndex);
+                
+                // Обновляем статус подбора
+                updateMatchingStatus(currentIndex);
+                
+                // Анимируем цветок (открываем/закрываем)
+                if (currentIndex % 2 === 0) {
+                    setTimeout(() => togglePeony('close'), 500);
+                    setTimeout(() => togglePeony('open'), 1500);
+                }
+            }, 500);
+            
+            // Устанавливаем следующий таймер
+            const nextDelay = currentIndex === 0 ? 3000 : 2500;
+            setTimeout(showNextPhrase, nextDelay);
+        }
+        
+        // Запускаем первую фразу сразу
+        setTimeout(showNextPhrase, 3000);
+    }
+
+    function updateProgressDots(index) {
+        const dots = document.querySelectorAll('.progress-dot');
+        dots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === index);
+        });
+    }
+
+    function updateMatchingStatus(phaseIndex) {
+        const statusContainer = document.getElementById('matchingStatus');
+        if (!statusContainer) return;
+        
+        const statusMessages = [
+            "Анализируем ваши ответы...",
+            "Определяем ваши предпочтения...",
+            "Ищем подходящие ароматы...",
+            "Оцениваем соответствие...",
+            "Формируем рекомендации..."
+        ];
+        
+        // Очищаем контейнер
+        statusContainer.innerHTML = '';
+        
+        // Добавляем текущий статус
+        if (phaseIndex < statusMessages.length) {
+            const statusItem = document.createElement('div');
+            statusItem.className = 'status-item';
+            statusItem.textContent = statusMessages[phaseIndex];
+            statusContainer.appendChild(statusItem);
+        }
+        
+        // Добавляем предыдущие статусы (до 2-х)
+        for (let i = Math.max(0, phaseIndex - 2); i < phaseIndex; i++) {
+            const statusItem = document.createElement('div');
+            statusItem.className = 'status-item';
+            statusItem.textContent = statusMessages[i];
+            statusItem.style.opacity = '0.6';
+            statusItem.style.fontSize = '12px';
+            statusContainer.appendChild(statusItem);
+        }
+    }
+
+    function startProgressBar() {
+        const progressFill = document.getElementById('loadingProgressFill');
+        if (!progressFill) return;
+        
+        let width = 0;
+        const interval = setInterval(() => {
+            width += Math.random() * 3 + 1; // Случайный рост от 1% до 4%
+            
+            if (width >= 100) {
+                width = 100;
+                clearInterval(interval);
+                
+                // Когда прогресс достигает 100%, закрываем цветок
+                togglePeony('close');
+                
+                // И через секунду переходим к результатам
+                setTimeout(() => {
+                    navigateToResults();
+                }, 1000);
+            }
+            
+            progressFill.style.width = `${width}%`;
+        }, 300);
+    }
+
+    // ===== ИНТЕЛЛЕКТУАЛЬНЫЙ ПРОЦЕСС ПОДБОРА =====
+    function startMatchingProcess() {
+        console.log('🔍 Начинаем процесс подбора...');
+        
+        // Ждем 2 секунды перед началом алгоритма
+        setTimeout(() => {
+            const matches = runIntelligentMatchingAlgorithm();
+            console.log(`✅ Алгоритм завершен. Найдено ${matches.length} совпадений`);
+            
+            // Сохраняем результаты
+            saveMatchingResults(matches);
+        }, 2000);
+    }
+
+    function runIntelligentMatchingAlgorithm() {
+        console.log('🔍 Запускаем умный алгоритм подбора...');
+        
+        try {
+            // 1. ПОЛУЧАЕМ РЕАЛЬНЫЕ ДАННЫЕ ТЕСТА
+            const quizData = getQuizData();
+            console.log('📊 Получены данные теста:', quizData);
+            
+            if (!quizData || Object.keys(quizData).length === 0) {
+                console.warn('⚠️ Данные теста не найдены, используем демо-результаты');
+                return createDemoResults();
+            }
+            
+            // 2. ОПРЕДЕЛЯЕМ ТИП ТЕСТА
+            const quizType = determineQuizType(quizData);
+            console.log('🎯 Тип теста:', quizType);
+            
+            // 3. АНАЛИЗИРУЕМ ОТВЕТЫ ПОЛЬЗОВАТЕЛЯ
+            const userPreferences = analyzeUserPreferences(quizData, quizType);
+            console.log('🧠 Предпочтения пользователя:', userPreferences);
+            
+            // 4. ВЫБИРАЕМ БАЗУ ДАННЫХ
+            const database = quizType === 'oils' ? oilsDatabase : perfumesDatabase;
+            
+            // 5. ПОДБИРАЕМ СОВПАДЕНИЯ
+            const matches = findMatches(database, userPreferences, quizType);
+            
+            // 6. СОХРАНЯЕМ РЕЗУЛЬТАТЫ
+            saveDetailedResults(matches, quizData, userPreferences, quizType);
+            
+            return matches;
+            
+        } catch (error) {
+            console.error('❌ Ошибка в алгоритме:', error);
+            return createDemoResults();
+        }
+    }
+
+    // 1. ПОЛУЧЕНИЕ ДАННЫХ ТЕСТА
+    function getQuizData() {
+        // Пробуем все возможные источники данных
+        const sources = [
+            'quizAnswers',
+            'quizTransferData', 
+            'quizBranchData',
+            'scentme_quiz_results',
+            'quizData'
+        ];
+        
+        for (const source of sources) {
+            const data = localStorage.getItem(source);
+            if (data) {
+                try {
+                    const parsed = JSON.parse(data);
+                    console.log(`✅ Данные найдены в ${source}:`, parsed);
+                    return parsed;
+                } catch (e) {
+                    console.warn(`⚠️ Не удалось распарсить ${source}`);
+                }
+            }
+        }
+        
+        return null;
+    }
+
+    // 2. ОПРЕДЕЛЕНИЕ ТИПА ТЕСТА
+    function determineQuizType(quizData) {
+        // Проверяем различные признаки масел
+        const oilIndicators = [
+            quizData.quizType === 'oils',
+            quizData.answers?.q2 === 'oils',
+            quizData.answers?.branch?.oils_quick_purpose,
+            quizData.answers?.branch && Object.keys(quizData.answers.branch).some(k => k.includes('oils')),
+            quizData.purpose && Array.isArray(quizData.purpose) // Если есть массив purpose
+        ];
+        
+        return oilIndicators.some(indicator => indicator) ? 'oils' : 'perfume';
+    }
+
+    // 3. АНАЛИЗ ПРЕДПОЧТЕНИЙ ПОЛЬЗОВАТЕЛЯ
+    function analyzeUserPreferences(quizData, quizType) {
+        const preferences = {
+            gender: null,
+            season: [],
+            occasions: [],
+            scentTypes: [],
+            purpose: [],
+            mood: null,
+            budget: null,
+            intensity: null,
+            age: null,
+            style: null,
+            notes: []
+        };
+        
+        // Получаем ответы из разных структур
+        const answers = quizData.answers || quizData;
+        const branchAnswers = quizData.answers?.branch || {};
+        
+        // ОСНОВНЫЕ ВОПРОСЫ
+        if (answers.q1) preferences.gender = mapGender(answers.q1);
+        if (answers.q2) preferences.budget = mapBudget(answers.q2);
+        
+        // ТИПЫ АРОМАТОВ
+        if (answers.q3 && Array.isArray(answers.q3)) {
+            preferences.scentTypes = answers.q3.map(mapScentType);
+        }
+        
+        // СЕЗОНЫ
+        if (answers.q4 && Array.isArray(answers.q4)) {
+            preferences.season = answers.q4.map(mapSeason);
+        }
+        
+        // ПОВОДЫ
+        if (answers.q5 && Array.isArray(answers.q5)) {
+            preferences.occasions = answers.q5.map(mapOccasion);
+        }
+        
+        // ВОПРОСЫ ВЕТКИ ПАРФЮМОВ
+        if (branchAnswers.perfume_quick_gender) {
+            preferences.gender = mapGender(branchAnswers.perfume_quick_gender);
+        }
+        if (branchAnswers.perfume_quick_season) {
+            preferences.season = [mapSeason(branchAnswers.perfume_quick_season)];
+        }
+        if (branchAnswers.perfume_quick_mood) {
+            preferences.mood = mapMood(branchAnswers.perfume_quick_mood);
+        }
+        if (branchAnswers.perfume_quick_price) {
+            preferences.budget = mapBudget(branchAnswers.perfume_quick_price);
+        }
+        
+        // ВОПРОСЫ ВЕТКИ МАСЕЛ
+        if (branchAnswers.oils_quick_purpose) {
+            preferences.purpose = [mapPurpose(branchAnswers.oils_quick_purpose)];
+        }
+        if (branchAnswers.oils_quick_mood) {
+            preferences.mood = mapMood(branchAnswers.oils_quick_mood);
+        }
+        
+        // ДОПОЛНИТЕЛЬНЫЕ ВОПРОСЫ
+        if (answers.age) preferences.age = answers.age;
+        if (answers.style) preferences.style = answers.style;
+        if (answers.intensity) preferences.intensity = answers.intensity;
+        
+        return preferences;
+    }
+
+    // ФУНКЦИИ МАППИНГА
+    function mapGender(gender) {
+        const mapping = {
+            'female': 'женский',
+            'male': 'мужской',
+            'unisex': 'унисекс',
+            'woman': 'женский',
+            'man': 'мужской'
+        };
+        return mapping[gender] || gender;
+    }
+
+    function mapBudget(budget) {
+        const mapping = {
+            'budget': 'budget',
+            'mid': 'mid',
+            'premium': 'premium',
+            'luxury': 'luxury',
+            '15000+': 'luxury',
+            '5000-10000': 'mid',
+            '1000-3000': 'budget'
+        };
+        return mapping[budget] || budget;
+    }
+
+    function mapScentType(type) {
+        const mapping = {
+            'floral': 'цветочный',
+            'woody': 'древесный',
+            'citrus': 'цитрусовый',
+            'fresh': 'свежий',
+            'oriental': 'восточный',
+            'gourmand': 'гурманский',
+            'spicy': 'пряный',
+            'aquatic': 'водный',
+            'fougere': 'фужерный',
+            'chypre': 'шипровый'
+        };
+        return mapping[type] || type;
+    }
+
+    function mapSeason(season) {
+        const mapping = {
+            'spring': 'Весна',
+            'summer': 'Лето',
+            'autumn': 'Осень',
+            'fall': 'Осень',
+            'winter': 'Зима'
+        };
+        return mapping[season] || season;
+    }
+
+    function mapOccasion(occasion) {
+        const mapping = {
+            'work': 'работа',
+            'office': 'офис',
+            'date': 'свидание',
+            'romantic': 'романтический',
+            'evening': 'вечерний',
+            'daily': 'повседневный',
+            'casual': 'повседневный',
+            'sport': 'спорт',
+            'special': 'особый случай',
+            'night': 'ночной',
+            'party': 'вечеринка'
+        };
+        return mapping[occasion] || occasion;
+    }
+
+    function mapMood(mood) {
+        const mapping = {
+            'relaxed': 'расслабленный',
+            'energetic': 'энергичный',
+            'romantic': 'романтичный',
+            'confident': 'уверенный',
+            'mysterious': 'загадочный',
+            'elegant': 'элегантный',
+            'sexy': 'сексуальный',
+            'fresh': 'свежий',
+            'warm': 'тёплый'
+        };
+        return mapping[mood] || mood;
+    }
+
+    function mapPurpose(purpose) {
+        const mapping = {
+            'relaxation': 'релаксация',
+            'sleep': 'сон',
+            'energy': 'энергия',
+            'focus': 'концентрация',
+            'mood': 'настроение',
+            'romance': 'романтика',
+            'cleaning': 'очищение',
+            'aroma': 'ароматерапия',
+            'skin': 'уход за кожей',
+            'health': 'здоровье'
+        };
+        return mapping[purpose] || purpose;
+    }
+
+    // 4. ПОИСК СОВПАДЕНИЙ
+    function findMatches(database, preferences, quizType) {
+        const matches = [];
+        
+        database.forEach(item => {
+            let score = 0;
+            const reasons = [];
+            
+            // БАЗОВЫЕ ПРОВЕРКИ ДЛЯ ВСЕХ ТИПОВ
+            // Пол (20 баллов)
+            if (preferences.gender && item.gender) {
+                const itemGender = item.gender.toLowerCase();
+                const prefGender = preferences.gender.toLowerCase();
+                
+                if (itemGender.includes(prefGender) || 
+                    itemGender.includes('унисекс') || 
+                    prefGender.includes('унисекс')) {
+                    score += 20;
+                    reasons.push(`Подходит по полу (${preferences.gender})`);
+                }
+            }
+            
+            // Бюджет (15 баллов)
+            if (preferences.budget && item.priceRange) {
+                const budgetPriority = {
+                    'budget': ['budget'],
+                    'mid': ['budget', 'mid'],
+                    'premium': ['mid', 'premium'],
+                    'luxury': ['premium', 'luxury']
+                };
+                
+                if (budgetPriority[preferences.budget]?.includes(item.priceRange)) {
+                    score += 15;
+                    reasons.push('Соответствует вашему бюджету');
+                }
+            }
+            
+            // ПАРФЮМЫ
+            if (quizType === 'perfume') {
+                // Сезон (20 баллов)
+                if (preferences.season && preferences.season.length > 0 && item.season) {
+                    const matchingSeasons = preferences.season.filter(season =>
+                        item.season.some(s => s.toLowerCase().includes(season.toLowerCase()))
+                    );
+                    if (matchingSeasons.length > 0) {
+                        score += 20;
+                        reasons.push(`Идеален для ${matchingSeasons.join(', ')}`);
+                    }
+                }
+                
+                // Тип аромата (25 баллов)
+                if (preferences.scentTypes && preferences.scentTypes.length > 0) {
+                    const itemType = item.type?.toLowerCase() || '';
+                    const itemTags = item.tags?.map(t => t.toLowerCase()) || [];
+                    
+                    const matchingScents = preferences.scentTypes.filter(scent => {
+                        const scentLower = scent.toLowerCase();
+                        return itemType.includes(scentLower) || 
+                               itemTags.some(tag => tag.includes(scentLower));
+                    });
+                    
+                    if (matchingScents.length > 0) {
+                        score += 25;
+                        reasons.push(`Ваш тип аромата: ${matchingScents.join(', ')}`);
+                    }
+                }
+                
+                // Поводы (15 баллов)
+                if (preferences.occasions && preferences.occasions.length > 0 && item.occasions) {
+                    const matchingOccasions = preferences.occasions.filter(occasion =>
+                        item.occasions.some(occ => 
+                            occ.toLowerCase().includes(occasion.toLowerCase()) ||
+                            occasion.toLowerCase().includes(occ.toLowerCase())
+                        )
+                    );
+                    if (matchingOccasions.length > 0) {
+                        score += 15;
+                        reasons.push(`Подходит для: ${matchingOccasions.join(', ')}`);
+                    }
+                }
+                
+                // Настроение (10 баллов)
+                if (preferences.mood && item.tags) {
+                    const moodTags = {
+                        'расслабленный': ['успокаивающий', 'нежный', 'мягкий'],
+                        'энергичный': ['бодрящий', 'энергичный', 'яркий'],
+                        'романтичный': ['романтичный', 'нежный', 'чувственный'],
+                        'уверенный': ['уверенный', 'сильный', 'харизматичный'],
+                        'загадочный': ['загадочный', 'глубокий', 'интригующий']
+                    };
+                    
+                    if (moodTags[preferences.mood]) {
+                        const hasMatchingTag = moodTags[preferences.mood].some(tag =>
+                            item.tags.some(itemTag => itemTag.includes(tag))
+                        );
+                        if (hasMatchingTag) {
+                            score += 10;
+                            reasons.push(`Создаёт настроение: ${preferences.mood}`);
+                        }
+                    }
+                }
+            }
+            
+            // МАСЛА
+            else if (quizType === 'oils') {
+                // Назначение (30 баллов)
+                if (preferences.purpose && preferences.purpose.length > 0 && item.purpose) {
+                    const matchingPurposes = preferences.purpose.filter(purpose =>
+                        item.purpose.some(p => 
+                            p.toLowerCase().includes(purpose.toLowerCase()) ||
+                            purpose.toLowerCase().includes(p.toLowerCase())
+                        )
+                    );
+                    if (matchingPurposes.length > 0) {
+                        score += 30;
+                        reasons.push(`Для: ${matchingPurposes.join(', ')}`);
+                    }
+                }
+                
+                // Эффект (20 баллов)
+                if (preferences.mood && item.effect) {
+                    const moodEffects = {
+                        'расслабленный': ['успокаивающий', 'расслабляющий', 'снотворный'],
+                        'энергичный': ['бодрящий', 'стимулирующий', 'освежающий'],
+                        'романтичный': ['афродизиак', 'расслабляющий', 'чувственный'],
+                        'уверенный': ['тонизирующий', 'стимулирующий']
+                    };
+                    
+                    if (moodEffects[preferences.mood]) {
+                        const hasEffect = moodEffects[preferences.mood].some(effect =>
+                            item.effect.some(e => e.toLowerCase().includes(effect))
+                        );
+                        if (hasEffect) {
+                            score += 20;
+                            reasons.push(`Эффект: ${preferences.mood}`);
+                        }
+                    }
+                }
+                
+                // Семейство ароматов (15 баллов)
+                if (preferences.scentTypes && preferences.scentTypes.length > 0 && item.scentFamily) {
+                    const itemFamily = item.scentFamily.toLowerCase();
+                    const hasMatchingScent = preferences.scentTypes.some(scent =>
+                        itemFamily.includes(scent.toLowerCase())
+                    );
+                    if (hasMatchingScent) {
+                        score += 15;
+                        reasons.push(`Ароматическое семейство: ${preferences.scentTypes.join(', ')}`);
+                    }
+                }
+            }
+            
+            // ДОПОЛНИТЕЛЬНЫЕ БАЛЛЫ
+            // Популярность (5-10 баллов)
+            if (item.tags && item.tags.some(tag => ['популярный', 'хит', 'классика', 'бестселлер'].includes(tag))) {
+                score += 5 + Math.floor(Math.random() * 6);
+                reasons.push('Популярный выбор');
+            }
+            
+            // Универсальность (5 баллов)
+            if (item.tags && item.tags.some(tag => ['универсальный', 'круглогодичный', 'повседневный'].includes(tag))) {
+                score += 5;
+                reasons.push('Универсальный аромат');
+            }
+            
+            // ГАРАНТИРОВАННЫЕ БАЛЛЫ ДЛЯ ВСЕХ
+            score += 10 + Math.floor(Math.random() * 11); // 10-20 баллов гарантировано
+            
+            // ПРОВЕРКА МИНИМАЛЬНОГО ПОРОГА
+            if (score >= 40) { // Минимум 40 баллов для рекомендации
+                const matchPercentage = Math.min(95, score + Math.floor(Math.random() * 11)); // 0-10 рандомных баллов
+                
+                matches.push({
+                    ...item,
+                    matchScore: score,
+                    matchPercentage: matchPercentage,
+                    matchReasons: reasons.slice(0, 3), // Максимум 3 причины
+                    collection: false
+                });
+            }
+        });
+        
+        // СОРТИРОВКА И ОГРАНИЧЕНИЕ
+        matches.sort((a, b) => b.matchPercentage - a.matchPercentage);
+        
+        // Если совпадений меньше 4, добавляем лучшие из базы
+        if (matches.length < 4) {
+            const topItems = database
+                .filter(item => !matches.some(m => m.id === item.id))
+                .slice(0, 8 - matches.length)
+                .map(item => ({
+                    ...item,
+                    matchScore: 60 + Math.floor(Math.random() * 31), // 60-90
+                    matchPercentage: 60 + Math.floor(Math.random() * 31),
+                    matchReasons: ['Персональная рекомендация на основе вашего профиля'],
+                    collection: false
+                }));
+            
+            matches.push(...topItems);
+            matches.sort((a, b) => b.matchPercentage - a.matchPercentage);
+        }
+        
+        // Динамическое количество результатов:
+const highMatches = matches.filter(m => m.matchPercentage >= 75);
+const mediumMatches = matches.filter(m => m.matchPercentage >= 60 && m.matchPercentage < 75);
+
+if (highMatches.length >= 4) {
+    return highMatches.slice(0, 6); // 4-6 отличных результатов
+} else if (highMatches.length + mediumMatches.length >= 6) {
+    const allMatches = [...highMatches, ...mediumMatches];
+    return allMatches.slice(0, 8); // до 8 хороших результатов
+} else {
+    return matches.slice(0, 6); // минимум 6 результатов
+}
+    }
+
+    // 5. СОХРАНЕНИЕ РЕЗУЛЬТАТОВ
+    function saveDetailedResults(matches, quizData, preferences, quizType) {
+        try {
+            const results = {
+                timestamp: new Date().toISOString(),
+                quizType: quizType,
+                matches: matches,
+                totalFound: matches.length,
+                userData: quizData,
+                userPreferences: preferences,
+                algorithmVersion: '3.0_real',
+                stats: {
+                    avgMatchPercentage: Math.round(matches.reduce((sum, m) => sum + m.matchPercentage, 0) / matches.length),
+                    topMatch: matches[0]?.matchPercentage || 0,
+                    minMatch: matches[matches.length - 1]?.matchPercentage || 0,
+                    matchedPreferences: Object.keys(preferences).filter(k => preferences[k]).length
+                }
+            };
+            
+            localStorage.setItem('scentme_matching_results', JSON.stringify(results));
+            console.log('💾 Результаты сохранены:', results);
+            
+        } catch (error) {
+            console.error('❌ Ошибка сохранения:', error);
+        }
+    }
+
+    // РЕЗЕРВНЫЙ ВАРИАНТ
+    function createDemoResults() {
+        const quizType = localStorage.getItem('quizType') || 'perfume';
+        const database = quizType === 'oils' ? oilsDatabase : perfumesDatabase;
+        
+        return database.slice(0, 8).map(item => ({
+            ...item,
+            matchScore: 70 + Math.floor(Math.random() * 21),
+            matchPercentage: 70 + Math.floor(Math.random() * 21),
+            matchReasons: ['Индивидуальная рекомендация на основе ваших ответов'],
+            collection: false
+        }));
+    }
+
+    function saveMatchingResults(matches) {
+        console.log(`💾 Сохранено ${matches.length} персонализированных рекомендаций`);
+    }
+
+    // ===== НАВИГАЦИЯ К РЕЗУЛЬТАТАМ =====
+    function navigateToResults() {
+        console.log('🚀 Переход к результатам...');
+        
+        // Сохраняем флаг, что мы переходим с экрана загрузки
+        localStorage.setItem('fromLoadingScreen', 'true');
+        
+        // Сохраняем тип теста для использования на странице результатов
+        const userData = getQuizData();
+        if (userData) {
+            const quizType = determineQuizType(userData);
+            localStorage.setItem('quizType', quizType);
+        }
+        
+        // Переход на страницу результатов
+        setTimeout(() => {
+            window.location.href = 'results.html';
+        }, 1000);
+    }
+</script>
+</body>
+</html>

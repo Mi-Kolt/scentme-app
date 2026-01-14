@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scentmé - Викторина по подбору ароматов</title>
+    <script src="user-manager.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        /* Все стили остаются без изменений */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+            position: relative;
+            overflow-x: hidden;
+            transition: none !important;
+        }
+        
+        /* ===== СВЕТЛАЯ ТЕМА ===== */
+        :root {
+            --chocolate: #684627;
+            --roasted-peach: #E8A895;
+            --whole-wheat: #EFD2B0;
+            --milky-coffee: #B59272;
+            --cream: #FFE4B8;
+            --peony-pink: #E8A8B8;
+            --peony-dark-pink: #C97A8D;
+            
+            --bg-primary: #FFF8ED;
+            --bg-card: #FFFCF5;
+            --text-primary: #5C4A36;
+            --text-secondary: #7D6B57;
+            --border-color: rgba(104, 70, 39, 0.2);
+            --button-bg: #E8A895;
+            --button-text: #684627;
+            --accent-color: #684627;
+            --title-color: #684627;
+            --line-color: linear-gradient(90deg, var(--milky-coffee), var(--chocolate), var(--milky-coffee));
+            --veins-chocolate: rgba(104, 70, 39, 0.15);
+            --veins-coffee: rgba(181, 146, 114, 0.12);
+            --icon-color: #5C4A36;
+            --level-card-bg: #FFFCF5;
+            --option-bg: transparent;
+        }
+        
+        /* ===== ТЁМНАЯ ТЕМА ===== */
+        body.dark-theme {
+            --dark-chocolate: #3D1F12;
+            --walnut-brown: #584738;
+            --sand-beige: #98755B;
+            --cream-ivory: #F1EADA;
+            --gold: #D4AF37;
+            --light-gold: #F4E4A6;
+            --dark-beige: #D8C9B0;
+            
+            --bg-primary: #2A1A0F;
+            --bg-card: #1E1712;
+            --text-primary: #F4E4A6;
+            --text-secondary: rgba(244, 228, 166, 0.8);
+            --border-color: rgba(212, 175, 55, 0.25);
+            --button-bg: linear-gradient(135deg, #3D1F12 0%, #584738 100%);
+            --button-text: #F4E4A6;
+            --accent-color: #F4E4A6;
+            --title-color: #F4E4A6;
+            --line-color: linear-gradient(90deg, transparent, #D4AF37, #F4E4A6, #D4AF37, transparent);
+            --veins-gold: rgba(212, 175, 55, 0.08);
+            --veins-light-gold: rgba(244, 228, 166, 0.15);
+            --icon-color: #F4E4A6;
+            --level-card-bg: rgba(30, 23, 18, 0.85);
+            --option-bg: linear-gradient(135deg, rgba(61, 31, 18, 0.9) 0%, rgba(88, 71, 56, 0.9) 100%);
+        }
+        
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: none !important;
+        }
+        
+        /* ===== ФОН С ПРОЖИЛКАМИ ===== */
+        .theme-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            transition: none !important;
+        }
+        
+        .theme-bg:not(.active) {
+            display: none;
+        }
+        
+        .theme-bg.light {
+            background: #FFF8ED;
+        }
+        
+        .theme-bg.light::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(65deg, 
+                    transparent 28%,
+                    var(--veins-chocolate) 29%,
+                    rgba(104, 70, 39, 0.25) 32%,
+                    var(--veins-chocolate) 35%,
+                    transparent 36%),
+                linear-gradient(-75deg, 
+                    transparent 62%,
+                    var(--veins-chocolate) 63%,
+                    rgba(104, 70, 39, 0.22) 65%,
+                    var(--veins-chocolate) 67%,
+                    transparent 68%),
+                linear-gradient(40deg, 
+                    transparent 15%,
+                    var(--veins-coffee) 16%,
+                    transparent 17%,
+                    transparent 45%,
+                    rgba(181, 146, 114, 0.14) 46%,
+                    transparent 47%),
+                linear-gradient(85deg, 
+                    transparent 5%,
+                    var(--veins-chocolate) 6%,
+                    transparent 7%,
+                    transparent 25%,
+                    var(--veins-coffee) 26%,
+                    transparent 27%),
+                linear-gradient(110deg, 
+                    transparent 40%,
+                    var(--veins-coffee) 41%,
+                    transparent 42%);
+            mix-blend-mode: multiply;
+            opacity: 0.8;
+            filter: blur(0.4px);
+        }
+        
+        .theme-bg.light::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(115deg, 
+                    transparent 28%,
+                    var(--veins-chocolate) 29%,
+                    rgba(104, 70, 39, 0.25) 32%,
+                    var(--veins-chocolate) 35%,
+                    transparent 36%),
+                linear-gradient(-45deg, 
+                    transparent 62%,
+                    var(--veins-chocolate) 63%,
+                    rgba(104, 70, 39, 0.22) 65%,
+                    var(--veins-chocolate) 67%,
+                    transparent 68%),
+                linear-gradient(140deg, 
+                    transparent 15%,
+                    var(--veins-coffee) 16%,
+                    transparent 17%,
+                    transparent 45%,
+                    rgba(181, 146, 114, 0.14) 46%,
+                    transparent 47%),
+                linear-gradient(95deg, 
+                    transparent 75%,
+                    var(--veins-chocolate) 76%,
+                    transparent 77%,
+                    transparent 85%,
+                    var(--veins-coffee) 86%,
+                    transparent 87%),
+                linear-gradient(70deg, 
+                    transparent 60%,
+                    var(--veins-coffee) 61%,
+                    transparent 62%);
+            mix-blend-mode: multiply;
+            opacity: 0.8;
+            filter: blur(0.4px);
+        }
+        
+        .theme-bg.dark {
+            background: #2A1A0F;
+        }
+        
+        .theme-bg.dark::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(65deg, 
+                    transparent 28%,
+                    var(--veins-gold) 29%,
+                    var(--veins-light-gold) 32%,
+                    var(--veins-gold) 35%,
+                    transparent 36%),
+                linear-gradient(-75deg, 
+                    transparent 62%,
+                    var(--veins-gold) 63%,
+                    var(--veins-light-gold) 65%,
+                    var(--veins-gold) 67%,
+                    transparent 68%),
+                linear-gradient(40deg, 
+                    transparent 15%,
+                    var(--veins-light-gold) 16%,
+                    transparent 17%,
+                    transparent 45%,
+                    var(--veins-gold) 46%,
+                    transparent 47%),
+                linear-gradient(85deg, 
+                    transparent 5%,
+                    var(--veins-gold) 6%,
+                    transparent 7%,
+                    transparent 25%,
+                    var(--veins-light-gold) 26%,
+                    transparent 27%),
+                linear-gradient(110deg, 
+                    transparent 40%,
+                    var(--veins-light-gold) 41%,
+                    transparent 42%);
+            mix-blend-mode: screen;
+            opacity: 0.6;
+        }
+        
+        .theme-bg.dark::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(115deg, 
+                    transparent 28%,
+                    var(--veins-gold) 29%,
+                    var(--veins-light-gold) 32%,
+                    var(--veins-gold) 35%,
+                    transparent 36%),
+                linear-gradient(-45deg, 
+                    transparent 62%,
+                    var(--veins-gold) 63%,
+                    var(--veins-light-gold) 65%,
+                    var(--veins-gold) 67%,
+                    transparent 68%),
+                linear-gradient(140deg, 
+                    transparent 15%,
+                    var(--veins-light-gold) 16%,
+                    transparent 17%,
+                    transparent 45%,
+                    var(--veins-gold) 46%,
+                    transparent 47%),
+                linear-gradient(95deg, 
+                    transparent 75%,
+                    var(--veins-gold) 76%,
+                    transparent 77%,
+                    transparent 85%,
+                    var(--veins-light-gold) 86%,
+                    transparent 87%),
+                linear-gradient(70deg, 
+                    transparent 60%,
+                    var(--veins-light-gold) 61%,
+                    transparent 62%);
+            mix-blend-mode: screen;
+            opacity: 0.6;
+        }
+        
+        /* ===== ОСНОВНОЙ КОНТЕЙНЕР ===== */
+        .app-container {
+            width: 100%;
+            max-width: 400px;
+            height: 90vh;
+            max-height: 700px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .screen {
+            display: none;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+        }
+        
+        .screen.active {
+            display: flex;
+        }
+        
+        /* ===== ЭКРАН 1: ВЫБОР УРОВНЯ ===== */
+        .level-selection {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .level-title {
+            font-size: 28px;
+            color: var(--title-color);
+            margin-bottom: 40px;
+            font-weight: 300;
+            text-align: center;
+            font-family: 'Georgia', serif;
+        }
+        
+        .level-options {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .level-card {
+            background: var(--level-card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .level-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .level-card.selected {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px var(--border-color);
+        }
+        
+        .level-card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        
+        .level-card-icon {
+            font-size: 20px;
+        }
+        
+        .level-card h3 {
+            font-size: 17px;
+            color: var(--title-color);
+            font-weight: 500;
+            font-family: 'Georgia', serif;
+        }
+        
+        .level-stats {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+            line-height: 1.4;
+        }
+        
+        .level-description {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+        
+        /* Кнопки под "Начать тест" */
+        .level-footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            margin-top: 5px;
+        }
+        
+        .level-action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 5px;
+        }
+        
+        .level-action-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 13px;
+            cursor: pointer;
+            padding: 5px 10px;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            font-family: 'Georgia', serif;
+        }
+        
+        .level-action-btn:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+        
+        /* ===== ПРОГРЕСС БАР И ТОЧНОСТЬ ===== */
+        .progress-container {
+            flex-shrink: 0;
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 0 10px;
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .progress-title {
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+        
+        .progress-count {
+            font-size: 12px;
+            color: var(--text-secondary);
+            opacity: 0.8;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 3px;
+            background: var(--veins-chocolate);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+        
+        .dark-theme .progress-bar {
+            background: var(--veins-gold);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--line-color);
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        /* ТОЧНОСТЬ В ТОЧКАХ */
+        .accuracy-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            margin-top: 5px;
+        }
+        
+        .accuracy-dots {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+        }
+        
+        .accuracy-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--veins-chocolate);
+            transition: all 0.3s ease;
+        }
+        
+        .dark-theme .accuracy-dot {
+            background: var(--veins-gold);
+        }
+        
+        .accuracy-dot.active {
+            background: var(--chocolate);
+            transform: scale(1.2);
+        }
+        
+        .dark-theme .accuracy-dot.active {
+            background: var(--gold);
+        }
+        
+        .accuracy-percent {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        /* ===== КАРТОЧКА ВОПРОСА ===== */
+        .question-card {
+            flex: 1;
+            background: var(--bg-card);
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .scroll-container {
+            flex: 1;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        
+        .scroll-container::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .question-number {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+        
+        .question-text {
+            font-size: 20px;
+            line-height: 1.4;
+            margin-bottom: 25px;
+            color: var(--text-primary);
+            font-weight: 300;
+            font-family: 'Georgia', serif;
+        }
+        
+        /* ===== ВАРИАНТЫ ОТВЕТА (ОДИНОЧНЫЙ ВЫБОР) ===== */
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .option-radio {
+            display: flex;
+            align-items: center;
+            padding: 14px 18px;
+            background: var(--option-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        /* Светлая тема: без заливки у вариантов ответа */
+        .light-theme .option-radio {
+            background: transparent;
+        }
+        
+        /* Темная тема: с заливкой у вариантов ответа */
+        .dark-theme .option-radio {
+            background: var(--option-bg);
+        }
+        
+        .option-radio:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .option-radio.selected {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px var(--border-color);
+        }
+        
+        .light-theme .option-radio.selected {
+            border-color: var(--chocolate);
+        }
+        
+        .radio-custom {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            margin-right: 12px;
+            position: relative;
+            flex-shrink: 0;
+        }
+        
+        .option-radio.selected .radio-custom::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 8px;
+            height: 8px;
+            background: var(--chocolate);
+            border-radius: 50%;
+        }
+        
+        .light-theme .option-radio.selected .radio-custom::after {
+            background: var(--chocolate);
+        }
+        
+        .dark-theme .option-radio.selected .radio-custom::after {
+            background: var(--gold);
+        }
+        
+        .radio-text {
+            flex: 1;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: 'Georgia', serif;
+            line-height: 1.4;
+        }
+        
+        /* ===== БЮДЖЕТ (МНОЖЕСТВЕННЫЙ ВЫБОР) ===== */
+        .budget-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .budget-hint {
+            font-size: 12px;
+            color: var(--milky-coffee);
+            margin-top: 5px;
+            line-height: 1.4;
+            font-family: 'Georgia', serif;
+            display: block;
+        }
+        
+        .dark-theme .budget-hint {
+            color: rgba(244, 228, 166, 0.7);
+        }
+        
+        .budget-option {
+            display: flex;
+            align-items: center;
+            padding: 14px 18px;
+            background: var(--option-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .budget-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .budget-option.selected {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px var(--border-color);
+        }
+        
+        .checkbox-custom {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
+            margin-right: 12px;
+            position: relative;
+            flex-shrink: 0;
+        }
+        
+        .budget-option.selected .checkbox-custom::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--chocolate);
+            font-size: 11px;
+            font-weight: bold;
+        }
+        
+        .light-theme .budget-option.selected .checkbox-custom::after {
+            color: var(--chocolate);
+        }
+        
+        .dark-theme .budget-option.selected .checkbox-custom::after {
+            color: var(--gold);
+        }
+        
+        .checkbox-text {
+            flex: 1;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: 'Georgia', serif;
+            line-height: 1.4;
+        }
+        
+        /* ===== КНОПКИ НАВИГАЦИИ ===== */
+        .nav-container {
+            flex-shrink: 0;
+            padding: 20px 25px;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-card);
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        
+        .nav-btn {
+            flex: 1;
+            padding: 14px;
+            border-radius: 18px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border: none;
+            font-family: 'Georgia', serif;
+            background: var(--button-bg);
+            color: var(--button-text);
+        }
+        
+        /* Светлая тема: кнопка без контура */
+        .light-theme .nav-btn {
+            border: none;
+        }
+        
+        /* Темная тема: кнопка с контуром */
+        .dark-theme .nav-btn {
+            border: 1px solid var(--border-color);
+        }
+        
+        .nav-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* ===== ТОЧКИ ТОЧНОСТИ В УРОВНЕ ===== */
+        .accuracy-badge {
+            display: inline-block;
+            background: var(--button-bg);
+            color: var(--button-text);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+        
+        /* ===== МОДАЛЬНОЕ ОКНО ПРОПУСКА ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 25px;
+            max-width: 320px;
+            width: 90%;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            color: var(--title-color);
+            margin-bottom: 12px;
+            font-weight: 300;
+            font-family: 'Georgia', serif;
+            text-align: center;
+        }
+        
+        .modal-text {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: 16px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-family: 'Georgia', serif;
+            min-width: 90px;
+        }
+        
+        .modal-btn.cancel {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+        
+        .modal-btn.confirm {
+            background: var(--button-bg);
+            color: var(--button-text);
+            border: 1px solid var(--border-color);
+        }
+        
+        .light-theme .modal-btn.confirm {
+            border: none;
+        }
+        
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="light-theme">
+    <!-- Фоны с прожилками -->
+    <div class="theme-bg light active"></div>
+    <div class="theme-bg dark"></div>
+    
+    <!-- Модальное окно пропуска -->
+    <div class="modal-overlay" id="skipModal">
+        <div class="modal">
+            <h3 class="modal-title">Пропустить тест?</h3>
+            <p class="modal-text">Вы уверены, что хотите пропустить тест? Вы перейдете прямо в приложение.</p>
+            <div class="modal-buttons">
+                <button class="modal-btn cancel" onclick="hideSkipModal()">Отмена</button>
+                <button class="modal-btn confirm" onclick="skipToMain()">Пропустить</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Основной контейнер -->
+    <div class="app-container">
+        <!-- ЭКРАН 1: ВЫБОР УРОВНЯ -->
+        <div class="screen active" id="screen-level">
+            <div class="level-selection">
+                <h2 class="level-title">Выберите уровень точности</h2>
+                
+                <div class="level-options">
+                    <div class="level-card" onclick="selectLevel('quick')">
+                        <div class="level-card-header">
+                            <i class="bi bi-lightning level-card-icon"></i>
+                            <h3>Быстрый подбор</h3>
+                            <div class="accuracy-badge">до 3/5</div>
+                        </div>
+                        <div class="level-stats">3 вопроса здесь + 3 в ветке</div>
+                        <div class="level-description">Для знакомства или срочного выбора</div>
+                    </div>
+                    
+                    <div class="level-card" onclick="selectLevel('standard')">
+                        <div class="level-card-header">
+                            <i class="bi bi-bullseye level-card-icon"></i>
+                            <h3>Стандартный (рекомендуем)</h3>
+                            <div class="accuracy-badge">до 4/5</div>
+                        </div>
+                        <div class="level-stats">3 вопроса здесь + 4-6 в ветке</div>
+                        <div class="level-description">Идеально для первого точного подбора</div>
+                    </div>
+                    
+                    <div class="level-card" onclick="selectLevel('detailed')">
+                        <div class="level-card-header">
+                            <i class="bi bi-search level-card-icon"></i>
+                            <h3>Детальный анализ</h3>
+                            <div class="accuracy-badge">до 4.5/5</div>
+                        </div>
+                        <div class="level-stats">3 вопроса здесь + 7-9 в ветке</div>
+                        <div class="level-description">Для знатоков или особого повода</div>
+                    </div>
+                </div>
+                
+                <div class="level-footer">
+                    <button class="nav-btn next" onclick="startQuiz()" style="width: 200px;" id="startQuizBtn" disabled>
+                        НАЧАТЬ ТЕСТ
+                    </button>
+                    
+                    <div class="level-action-buttons">
+                        <button class="level-action-btn" onclick="goToWelcome()">
+                            Назад
+                        </button>
+                        <button class="level-action-btn" onclick="showSkipModal()">
+                            Пропустить
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ЭКРАН 2: ВОПРОС 1 (ЦЕЛЬ) -->
+        <div class="screen" id="screen-q1">
+            <div class="progress-container">
+                <div class="progress-header">
+                    <div class="progress-title">Викторина Scentmé</div>
+                    <div class="progress-count">1/3</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <div class="accuracy-display">
+                    <div class="accuracy-dots" id="accuracyDots">
+                        <!-- Заполняется через JS -->
+                    </div>
+                    <div class="accuracy-percent" id="accuracyPercent">Точность: 0/5</div>
+                </div>
+            </div>
+            
+            <div class="question-card">
+                <div class="scroll-container">
+                    <div class="question-number">Вопрос 1</div>
+                    <h2 class="question-text">Какова ваша главная цель?</h2>
+                    
+                    <div class="options-container">
+                        <div class="option-radio" onclick="selectRadioOption(this, 'q1', 'self')">
+                            <div class="radio-custom"></div>
+                            <div class="radio-text">Для себя</div>
+                        </div>
+                        
+                        <div class="option-radio" onclick="selectRadioOption(this, 'q1', 'gift')">
+                            <div class="radio-custom"></div>
+                            <div class="radio-text">Подарок</div>
+                        </div>
+                        
+                        <div class="option-radio" onclick="selectRadioOption(this, 'q1', 'browse')">
+                            <div class="radio-custom"></div>
+                            <div class="radio-text">Просто смотрю варианты</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="nav-container">
+                    <div class="nav-buttons">
+                        <button class="nav-btn prev" onclick="goToScreen('level')">
+                            Назад
+                        </button>
+                        <button class="nav-btn next" onclick="goToScreen('q2')" disabled id="q1NextBtn">
+                            Далее
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ЭКРАН 3: ВОПРОС 2 (ПРОДУКТ/КОМУ) -->
+        <div class="screen" id="screen-q2">
+            <div class="progress-container">
+                <div class="progress-header">
+                    <div class="progress-title">Викторина Scentmé</div>
+                    <div class="progress-count">2/3</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <div class="accuracy-display">
+                    <div class="accuracy-dots" id="accuracyDots2">
+                        <!-- Заполняется через JS -->
+                    </div>
+                    <div class="accuracy-percent" id="accuracyPercent2">Точность: 0/5</div>
+                </div>
+            </div>
+            
+            <div class="question-card">
+                <div class="scroll-container">
+                    <div class="question-number">Вопрос 2</div>
+                    <h2 class="question-text" id="q2Question">Что вас интересует?</h2>
+                    
+                    <div class="options-container" id="q2Options">
+                        <!-- Заполняется динамически -->
+                    </div>
+                </div>
+                
+                <div class="nav-container">
+                    <div class="nav-buttons">
+                        <button class="nav-btn prev" onclick="goToScreen('q1')">
+                            Назад
+                        </button>
+                        <button class="nav-btn next" onclick="goToScreen('budget')" disabled id="q2NextBtn">
+                            Далее
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ЭКРАН 4: ВОПРОС 3 (БЮДЖЕТ - МНОЖЕСТВЕННЫЙ ВЫБОР) -->
+        <div class="screen" id="screen-budget">
+            <div class="progress-container">
+                <div class="progress-header">
+                    <div class="progress-title">Викторина Scentmé</div>
+                    <div class="progress-count">3/3</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <div class="accuracy-display">
+                    <div class="accuracy-dots" id="accuracyDotsBudget">
+                        <!-- Заполняется через JS -->
+                    </div>
+                    <div class="accuracy-percent" id="accuracyPercentBudget">Точность: 0/5</div>
+                </div>
+            </div>
+            
+            <div class="question-card">
+                <div class="scroll-container">
+                    <div class="question-number">Вопрос 3</div>
+                    <h2 class="question-text">Какой у вас бюджет?</h2>
+                    
+                    <div class="budget-container" id="budgetOptions">
+                        <div class="budget-option" onclick="toggleBudgetOption(this, '3000')">
+                            <div class="checkbox-custom"></div>
+                            <div class="checkbox-text">До 3 000 ₽</div>
+                        </div>
+                        
+                        <div class="budget-option" onclick="toggleBudgetOption(this, '3000-8000')">
+                            <div class="checkbox-custom"></div>
+                            <div class="checkbox-text">3 000 – 8 000 ₽</div>
+                        </div>
+                        
+                        <div class="budget-option" onclick="toggleBudgetOption(this, '8000-15000')">
+                            <div class="checkbox-custom"></div>
+                            <div class="checkbox-text">8 000 – 15 000 ₽</div>
+                        </div>
+                        
+                        <div class="budget-option" onclick="toggleBudgetOption(this, '15000+')">
+                            <div class="checkbox-custom"></div>
+                            <div class="checkbox-text">15 000 ₽ и выше</div>
+                        </div>
+                    </div>
+                    
+                    <p class="budget-hint">
+                        <i class="bi bi-lightbulb"></i> Можно выбрать несколько вариантов
+                    </p>
+                </div>
+                
+                <div class="nav-container">
+                    <div class="nav-buttons">
+                        <button class="nav-btn prev" onclick="goToScreen('q2')">
+                            Назад
+                        </button>
+                        <button class="nav-btn next" onclick="validateAndContinue()" id="budgetNextBtn">
+    Продолжить
+</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ===== ДАННЫЕ ВИКТОРИНЫ =====
+    const quizData = {
+        level: null, // quick | standard | detailed
+        answers: {
+            q1: null,
+            q2: null,
+            q3: [] // бюджет - массив для множественного выбора
+        },
+        accuracy: 0,
+        answeredQuestions: 0,
+        totalBaseQuestions: 3
+    };
+    
+    // ===== ИНИЦИАЛИЗАЦИЯ ТЕМЫ =====
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-theme');
+        document.querySelector('.theme-bg.light').classList.remove('active');
+        document.querySelector('.theme-bg.dark').classList.add('active');
+    } else {
+        document.body.classList.remove('dark-theme');
+        document.querySelector('.theme-bg.dark').classList.remove('active');
+        document.querySelector('.theme-bg.light').classList.add('active');
+    }
+    
+    // ===== ОСНОВНЫЕ ФУНКЦИИ =====
+    function selectLevel(level) {
+        quizData.level = level;
+        
+        // Сохраняем данные для передачи в ветки
+        const transferData = JSON.parse(localStorage.getItem('quizTransferData') || '{}');
+        transferData.level = level;
+        localStorage.setItem('quizTransferData', JSON.stringify(transferData));
+        
+        // Убираем выделение со всех карточек
+        document.querySelectorAll('.level-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        
+        // Выделяем выбранную карточку
+        event.currentTarget.classList.add('selected');
+        
+        // Активируем кнопку "Начать тест"
+        document.getElementById('startQuizBtn').disabled = false;
+    }
+    
+    function startQuiz() {
+        // Сброс данных
+        quizData.answers = {
+            q1: null,
+            q2: null,
+            q3: []
+        };
+        quizData.accuracy = 0;
+        quizData.answeredQuestions = 0;
+        
+        // Переходим к первому вопросу
+        goToScreen('q1');
+        
+        // Инициализируем точки точности
+        setTimeout(() => {
+            updateAccuracyDots();
+            updateAccuracyText();
+        }, 100);
+    }
+    
+    function goToScreen(screenId) {
+        // Скрываем все экраны
+        document.querySelectorAll('.screen').forEach(screen => {
+            screen.classList.remove('active');
+        });
+        
+        // Показываем нужный экран
+        const targetScreen = document.getElementById(`screen-${screenId}`);
+        if (targetScreen) {
+            targetScreen.classList.add('active');
+            
+            // Обновляем прогресс
+            updateProgress(screenId);
+            
+            // Если переходим на Q2, загружаем адаптивные варианты
+            if (screenId === 'q2') {
+                loadQuestion2();
+            }
+        }
+    }
+    
+    function updateProgress(screenId) {
+        let questionNum = 0;
+        const totalQuestions = 3;
+        
+        // Определяем номер вопроса по экрану
+        const screenToQuestion = {
+            'level': 0,
+            'q1': 1,
+            'q2': 2,
+            'budget': 3
+        };
+        
+        questionNum = screenToQuestion[screenId] || 0;
+        
+        const progress = (questionNum / totalQuestions) * 100;
+        document.querySelectorAll('.progress-fill').forEach(fill => {
+            fill.style.width = `${progress}%`;
+        });
+        
+        // Обновляем счетчики
+        document.querySelectorAll('.progress-count').forEach(count => {
+            if (questionNum > 0) {
+                count.textContent = `${questionNum}/${totalQuestions}`;
+            }
+        });
+        
+        // Обновляем точность
+        updateAccuracy();
+    }
+    
+    function loadQuestion2() {
+        const q1Answer = quizData.answers.q1;
+        if (!q1Answer) return;
+        
+        let questionText = "";
+        let options = [];
+        
+        if (q1Answer === 'self') {
+            questionText = "Что вас интересует?";
+            options = [
+                { value: "perfume", text: "Парфюмерия" },
+                { value: "oils", text: "Эфирные масла" },
+            ];
+        } else if (q1Answer === 'gift') {
+            questionText = "Для кого подарок?";
+            options = [
+                { value: "close", text: "Близкий человек" },
+                { value: "colleague", text: "Коллега / деловой партнёр" },
+                { value: "boss", text: "Начальник / руководитель" },
+                { value: "unknown", text: "Не знаю / сложно определить" }
+            ];
+        } else if (q1Answer === 'browse') {
+            questionText = "Что вам интересно?";
+            options = [
+                { value: "perfume", text: "Парфюмерия" },
+                { value: "oils", text: "Эфирные масла" },
+            ];
+        }
+        
+        document.getElementById('q2Question').textContent = questionText;
+        const container = document.getElementById('q2Options');
+        container.innerHTML = '';
+        
+        options.forEach(option => {
+            const div = document.createElement('div');
+            div.className = 'option-radio';
+            div.onclick = () => selectRadioOption(div, 'q2', option.value);
+            div.innerHTML = `
+                <div class="radio-custom"></div>
+                <div class="radio-text">${option.text}</div>
+            `;
+            container.appendChild(div);
+        });
+        
+        // Восстанавливаем выбор если есть
+        if (quizData.answers.q2) {
+            setTimeout(() => {
+                const selectedOption = Array.from(container.children).find(
+                    opt => opt.onclick && opt.onclick.toString().includes(`'${quizData.answers.q2}'`)
+                );
+                if (selectedOption) {
+                    selectRadioOption(selectedOption, 'q2', quizData.answers.q2, true);
+                }
+            }, 10);
+        }
+    }
+    
+    function selectRadioOption(element, questionId, value, silent = false) {
+        const container = element.closest('.options-container');
+        
+        // Снимаем выделение со всех вариантов
+        if (container) {
+            container.querySelectorAll('.option-radio').forEach(option => {
+                option.classList.remove('selected');
+            });
+        }
+        
+        // Выделяем выбранный вариант
+        element.classList.add('selected');
+        
+        // Сохраняем ответ
+        quizData.answers[questionId] = value;
+        
+        // Увеличиваем счетчик отвеченных вопросов
+        if (!silent) {
+            updateAnsweredQuestions();
+        }
+        
+        // Активируем кнопку "Далее"
+        if (!silent) {
+            const nextBtn = element.closest('.question-card').querySelector('.nav-btn.next');
+            if (nextBtn) {
+                nextBtn.disabled = false;
+            }
+            
+            // Обновляем точность
+            updateAccuracy();
+        }
+    }
+    
+   function toggleBudgetOption(element, value) {
+    // Переключаем выделение
+    element.classList.toggle('selected');
+    
+    // Обновляем массив ответов
+    const index = quizData.answers.q3.indexOf(value);
+    if (index === -1) {
+        quizData.answers.q3.push(value);
+    } else {
+        quizData.answers.q3.splice(index, 1);
+    }
+    
+    // Обновляем точность (даже если массив пустой)
+    updateAccuracy();
+    
+    // Кнопка всегда активна (бюджет не обязателен)
+    document.getElementById('budgetNextBtn').disabled = false;
+}
+    
+    function updateAnsweredQuestions(increment = 1) {
+        // Проверяем, был ли уже учтен этот вопрос
+        const currentAnswers = calculateAnsweredQuestions();
+        quizData.answeredQuestions = currentAnswers;
+    }
+    
+    function calculateAnsweredQuestions() {
+    let answered = 0;
+    if (quizData.answers.q1) answered++;
+    if (quizData.answers.q2) answered++;
+    
+    // Бюджет считается отвеченным если есть хотя бы один выбор
+    // Но это НЕ обязательно! Можно оставить пустым
+    if (quizData.answers.q3 && quizData.answers.q3.length > 0) {
+        answered++;
+    }
+    return answered;
+}
+    
+   function updateAccuracy() {
+    // Считаем количество отвеченных вопросов
+    const answered = calculateAnsweredQuestions();
+    quizData.answeredQuestions = answered;
+    
+    // Максимальная точность для уровня (НИКОГДА 5!)
+    const maxForLevel = {
+        quick: 3.0,      // Быстрый: максимум 3.0 (не 5!)
+        standard: 3.8,   // Стандартный: максимум 3.8 (не 5!)
+        detailed: 4.2    // Детальный: максимум 4.2 (не 5!)
+    }[quizData.level] || 3.0;
+    
+    // Рассчитываем точность
+    let accuracy = 0;
+    if (quizData.level) {
+        // Базовые вопросы дают 60% от максимальной точности
+        // Веточные вопросы дадут оставшиеся 40%
+        const baseWeight = 0.6; // 60% от общей точности за базовые вопросы
+        
+        // За каждый базовый вопрос даём часть от baseWeight
+        const pointsPerQuestion = (maxForLevel * baseWeight) / 3;
+        accuracy = answered * pointsPerQuestion;
+    }
+    
+    // Ограничиваем максимумом для уровня
+    accuracy = Math.min(accuracy, maxForLevel * 0.6);
+    
+    // Округляем до десятых, но не выше maxForLevel
+    quizData.accuracy = parseFloat(accuracy.toFixed(1));
+    
+    updateAccuracyDots();
+    updateAccuracyText();
+    
+    // Сохраняем данные для передачи в ветки
+    saveDataForBranch();
+}
+    
+    function updateAccuracyDots() {
+        const maxDots = 5;
+        const accuracy = quizData.accuracy;
+        
+        // Создаем или обновляем точки для всех экранов
+        const dotContainers = document.querySelectorAll('.accuracy-dots');
+        
+        dotContainers.forEach(container => {
+            // Если контейнер пустой, заполняем его
+            if (container.children.length === 0) {
+                container.innerHTML = '';
+                for (let i = 0; i < maxDots; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'accuracy-dot';
+                    container.appendChild(dot);
+                }
+            }
+            
+            // Обновляем точки
+            const dots = container.children;
+            for (let i = 0; i < dots.length; i++) {
+                const dot = dots[i];
+                dot.classList.remove('active');
+                
+                if (accuracy >= (i + 1)) {
+                    dot.classList.add('active');
+                } else if (accuracy > i && accuracy < (i + 1)) {
+                    dot.classList.add('active');
+                    dot.style.opacity = '0.6';
+                } else {
+                    dot.style.opacity = '';
+                }
+            }
+        });
+    }
+    
+    function updateAccuracyText() {
+        const accuracy = quizData.accuracy;
+        
+        document.querySelectorAll('.accuracy-percent').forEach(element => {
+            element.textContent = `Точность: ${accuracy}/5`;
+        });
+    }
+    
+    function saveDataForBranch() {
+        // Сохраняем все данные для передачи в ветку
+        const transferData = {
+            level: quizData.level,
+            answers: quizData.answers,
+            accuracy: quizData.accuracy,
+            answeredQuestions: quizData.answeredQuestions,
+            totalBaseQuestions: quizData.totalBaseQuestions
+        };
+        
+        localStorage.setItem('quizTransferData', JSON.stringify(transferData));
+    }
+    
+    // ===== МОДАЛЬНОЕ ОКНО ПРОПУСКА =====
+    function showSkipModal() {
+        const currentMode = userManager.getMode();
+        
+        // Обновляем текст в зависимости от режима
+        const modalText = document.querySelector('.modal-text');
+        const confirmBtn = document.querySelector('.modal-btn.confirm');
+        
+        if (currentMode === 'guest') {
+            modalText.textContent = 'Вы находитесь в гостевом режиме. Пропуск теста приведёт вас на главную страницу.';
+            confirmBtn.textContent = 'В гостевой режим';
+        } else {
+            modalText.textContent = 'Пропустить подбор ароматов? Вы перейдёте в основное приложение.';
+            confirmBtn.textContent = 'В приложение';
+        }
+        
+        document.getElementById('skipModal').classList.add('active');
+    }
+    
+    function hideSkipModal() {
+        document.getElementById('skipModal').classList.remove('active');
+    }
+    
+    function skipToMain() {
+        // Всегда переходим в главное приложение
+        goToMainApp();
+    }
+    
+    function goToMainApp() {
+        // Сохраняем информацию о пропуске
+        const skipData = {
+            skipped: true,
+            timestamp: new Date().toISOString(),
+            mode: userManager.getMode(),
+            answeredQuestions: quizData.answeredQuestions || 0
+        };
+        localStorage.setItem('quiz_skip_data', JSON.stringify(skipData));
+        
+        // Если пользователь зарегистрирован, помечаем тест как "пропущенный"
+        if (userManager.isRegistered()) {
+            userManager.markQuizCompleted();
+        }
+        
+        // Переходим на главную
+        window.location.href = 'main.html';
+    }
+    
+    function goToWelcome() {
+        const currentMode = userManager.getMode();
+        
+        if (currentMode === 'guest') {
+            // Для гостей - назад к выбору входа
+            window.location.href = 'index.html';
+        } else {
+            // Для зарегистрированных - спросить подтверждение
+            if (confirm('Вернуться на страницу приветствия? Прогресс теста будет сохранён.')) {
+                window.location.href = 'index.html';
+            }
+        }
+    }
+    
+    function continueToBranch() {
+    console.log('Передача данных в ветку...');
+    
+    const transferData = {
+        level: quizData.level,
+        answers: {
+            q1: quizData.answers.q1,
+            q2: quizData.answers.q2,
+            q3: quizData.answers.q3,
+            // Явно передаем тип теста
+            quizType: quizData.answers.q2 === 'perfume' ? 'perfume' : 'oils'
+        },
+        accuracy: quizData.accuracy,
+        timestamp: new Date().toISOString()
+    };
+    
+    // Сохраняем в ОДИН ключ для простоты
+    localStorage.setItem('quizTransferData', JSON.stringify(transferData));
+    localStorage.setItem('scentme_quiz_results', JSON.stringify(transferData));
+    
+    console.log('Данные сохранены:', transferData);
+    
+    // Переход
+    const targetFile = quizData.answers.q2 === 'perfume' ? 'perfume.html' : 'oils.html';
+    window.location.href = targetFile + '?level=' + quizData.level;
+}
+// Функция для проверки перед переходом
+function validateAndContinue() {
+    const q1 = quizData.answers.q1;
+    const q2 = quizData.answers.q2;
+    
+    if (!q1 || !q2) {
+        alert('Пожалуйста, ответьте на вопросы 1 и 2');
+        return false;
+    }
+    
+    // Бюджет не обязателен, но можно предупредить
+    if (quizData.answers.q3.length === 0) {
+        const proceed = confirm('Вы не указали бюджет. Без бюджета подбор будет менее точным. Продолжить?');
+        if (!proceed) {
+            return false;
+        }
+    }
+    
+    continueToBranch();
+    return true;
+}
+
+// ===== ИНИЦИАЛИЗАЦИЯ =====
+document.addEventListener('DOMContentLoaded', function() {
+    // Проверяем текущий режим
+    const currentMode = userManager.getMode();
+    console.log('Текущий режим:', currentMode);
+    
+    // Если пользователь зарегистрирован и уже проходил тест
+    if (currentMode === 'registered' && userManager.isQuizCompleted()) {
+        // Сразу на главную
+        window.location.href = 'main.html';
+        return;
+    }
+    
+    // Если пользователь зарегистрирован, но ещё не проходил тест (новый пользователь)
+    if (currentMode === 'registered' && !userManager.isQuizCompleted()) {
+        // Показываем тест, но убираем возможность пропуска на главную
+        const skipBtn = document.querySelector('.level-action-btn[onclick*="skip"]');
+        if (skipBtn) {
+            skipBtn.onclick = function() {
+                alert('Как новый пользователь, рекомендуем пройти тест для персонализации!');
+            };
+        }
+    }
+    
+    // Инициализируем точность
+    updateAccuracyDots();
+    updateAccuracyText();
+    
+    // Устанавливаем тему из сохраненных настроек
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-theme');
+    }
+    
+    // Закрытие модального окна по клику на оверлей
+    document.getElementById('skipModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            hideSkipModal();
+        }
+    });
+    
+    // Изначально кнопка "Начать тест" отключена
+    document.getElementById('startQuizBtn').disabled = true;
+    
+    // Бюджет можно пропустить
+    document.getElementById('budgetNextBtn').disabled = false;    });
+const UserManager = {
+    currentMode: 'guest',
+    
+    init() {
+        const savedMode = localStorage.getItem('scentme_user_mode');
+        if (savedMode) this.currentMode = savedMode;
+        return this;
+    },
+    
+    getMode() {
+        return this.currentMode;
+    },
+    
+    setMode(mode) {
+        this.currentMode = mode;
+        localStorage.setItem('scentme_user_mode', mode);
+        return this;
+    },
+    
+    isRegistered() {
+        return this.currentMode === 'registered';
+    },
+    
+    isQuizCompleted() {
+        if (!this.isRegistered()) return false;
+        const userData = this.getUserData();
+        return userData?.quizCompleted || false;
+    },
+    
+    markQuizCompleted() {
+        if (this.isRegistered()) {
+            const userData = this.getUserData();
+            userData.quizCompleted = true;
+            userData.quizCompletedDate = new Date().toISOString();
+            this.saveUserData(userData);
+        }
+        return this;
+    },
+    
+    getUserData() {
+        const data = localStorage.getItem('scentme_user_data');
+        return data ? JSON.parse(data) : {
+            quizCompleted: false,
+            registrationDate: new Date().toISOString(),
+            preferences: {},
+            quizHistory: [],
+            collections: {
+                perfumes: [],
+                oils: [],
+                articles: []
+            }
+        };
+    },
+    
+    saveUserData(data) {
+        localStorage.setItem('scentme_user_data', JSON.stringify(data));
+        return this;
+    },
+    
+    register(email, name) {
+        const userData = {
+            email: email,
+            name: name,
+            registrationDate: new Date().toISOString(),
+            quizCompleted: false,
+            preferences: {},
+            quizHistory: [],
+            collections: {
+                perfumes: [],
+                oils: [],
+                articles: []
+            }
+        };
+        
+        this.saveUserData(userData);
+        this.setMode('registered');
+        return userData;
+    },
+    
+    logout() {
+        this.setMode('guest');
+        return this;
+    }
+};
+
+// Автоматическая инициализация
+window.userManager = UserManager.init();
+</script>
+</body>
+</html>

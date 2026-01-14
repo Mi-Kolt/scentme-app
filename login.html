@@ -1,0 +1,1655 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход - Scentmé</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="user-manager.js"></script>
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        /* ===== ОСНОВНЫЕ СТИЛИ ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SegoeUI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* ===== ТЁМНАЯ ТЕМА ===== */
+        :root {
+            /* Цвета */
+            --dark-chocolate: #3D1F12;
+            --walnut-brown: #584738;
+            --sand-beige: #98755B;
+            --cream-ivory: #F1EADA;
+            --pure-white: #FFFFFF;
+            --gold: #D4AF37;
+            --light-gold: #F4E4A6;
+            --dark-beige: #D8C9B0;
+            --warm-gray: #A99E8B;
+            
+            /* Переменные */
+            --bg-primary: #2A1A0F;
+            --bg-card: rgba(30, 23, 18, 0.85);
+            --text-primary: var(--light-gold);
+            --text-secondary: rgba(244, 228, 166, 0.9);
+            --border-color: rgba(212, 175, 55, 0.25);
+            --button-bg: linear-gradient(135deg, 
+                rgba(61, 31, 18, 0.9) 0%, 
+                rgba(88, 71, 56, 0.9) 100%);
+            --button-text: var(--light-gold);
+            --accent-color: var(--pure-white);
+            --title-color: var(--light-gold);
+            --line-color: linear-gradient(90deg, 
+                transparent, 
+                var(--gold), 
+                var(--light-gold), 
+                var(--gold), 
+                transparent);
+            --veins-gold: rgba(212, 175, 55, 0.08);
+            --veins-light-gold: rgba(244, 228, 166, 0.15);
+            --icon-color: var(--light-gold);
+        }
+        
+        /* ===== СВЕТЛАЯ ТЕМА ===== */
+        .light-theme {
+            /* Цвета */
+            --chocolate: #684627;
+            --roasted-peach: #E8A895;
+            --whole-wheat: #EFD2B0;
+            --milky-coffee: #B59272;
+            --cream: #FFE4B8;
+            --peony-pink: #E8A8B8;
+            --peony-dark-pink: #C97A8D;
+            
+            /* Переменные */
+            --bg-primary: #FFF8ED;
+            --bg-card: rgba(255, 252, 245, 0.95);
+            --text-primary: #5C4A36;
+            --text-secondary: #7D6B57;
+            --border-color: rgba(104, 70, 39, 0.15);
+            --button-bg: linear-gradient(135deg, 
+                var(--roasted-peach) 0%,     
+                var(--whole-wheat) 100%);
+            --button-text: #684627;
+            --accent-color: #7D6B57;
+            --title-color: #684627;
+            --line-color: linear-gradient(90deg, 
+                var(--milky-coffee), 
+                var(--chocolate), 
+                var(--milky-coffee));
+            --veins-chocolate: rgba(104, 70, 39, 0.15);
+            --veins-coffee: rgba(181, 146, 114, 0.12);
+            --icon-color: #5C4A36;
+        }
+        
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+        
+        /* ===== ФОНЫ С ПРОЖИЛКАМИ ===== */
+        .theme-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            transition: none !important;
+        }
+        
+        .theme-bg:not(.active) {
+            display: none;
+        }
+        
+        .theme-bg.dark {
+            background: #2A1A0F;
+        }
+        
+        .theme-bg.dark::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(65deg, 
+                    transparent 28%,
+                    var(--veins-gold) 29%,
+                    var(--veins-light-gold) 32%,
+                    var(--veins-gold) 35%,
+                    transparent 36%),
+                linear-gradient(-75deg, 
+                    transparent 62%,
+                    var(--veins-gold) 63%,
+                    var(--veins-light-gold) 65%,
+                    var(--veins-gold) 67%,
+                    transparent 68%),
+                linear-gradient(40deg, 
+                    transparent 15%,
+                    var(--veins-light-gold) 16%,
+                    transparent 17%,
+                    transparent 45%,
+                    var(--veins-gold) 46%,
+                    transparent 47%),
+                linear-gradient(85deg, 
+                    transparent 5%,
+                    var(--veins-gold) 6%,
+                    transparent 7%,
+                    transparent 25%,
+                    var(--veins-light-gold) 26%,
+                    transparent 27%),
+                linear-gradient(110deg, 
+                    transparent 40%,
+                    var(--veins-light-gold) 41%,
+                    transparent 42%);
+            mix-blend-mode: screen;
+            opacity: 0.6;
+        }
+        
+        .theme-bg.dark::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(115deg, 
+                    transparent 28%,
+                    var(--veins-gold) 29%,
+                    var(--veins-light-gold) 32%,
+                    var(--veins-gold) 35%,
+                    transparent 36%),
+                linear-gradient(-45deg, 
+                    transparent 62%,
+                    var(--veins-gold) 63%,
+                    var(--veins-light-gold) 65%,
+                    var(--veins-gold) 67%,
+                    transparent 68%),
+                linear-gradient(140deg, 
+                    transparent 15%,
+                    var(--veins-light-gold) 16%,
+                    transparent 17%,
+                    transparent 45%,
+                    var(--veins-gold) 46%,
+                    transparent 47%),
+                linear-gradient(95deg, 
+                    transparent 75%,
+                    var(--veins-gold) 76%,
+                    transparent 77%,
+                    transparent 85%,
+                    var(--veins-light-gold) 86%,
+                    transparent 87%),
+                linear-gradient(70deg, 
+                    transparent 60%,
+                    var(--veins-light-gold) 61%,
+                    transparent 62%);
+            mix-blend-mode: screen;
+            opacity: 0.6;
+        }
+        
+        .theme-bg.light {
+            background: #FFF8ED;
+        }
+        
+        .theme-bg.light::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(65deg, 
+                    transparent 28%,
+                    var(--veins-chocolate) 29%,
+                    rgba(104, 70, 39, 0.25) 32%,
+                    var(--veins-chocolate) 35%,
+                    transparent 36%),
+                linear-gradient(-75deg, 
+                    transparent 62%,
+                    var(--veins-chocolate) 63%,
+                    rgba(104, 70, 39, 0.22) 65%,
+                    var(--veins-chocolate) 67%,
+                    transparent 68%),
+                linear-gradient(40deg, 
+                    transparent 15%,
+                    var(--veins-coffee) 16%,
+                    transparent 17%,
+                    transparent 45%,
+                    rgba(181, 146, 114, 0.14) 46%,
+                    transparent 47%),
+                linear-gradient(85deg, 
+                    transparent 5%,
+                    var(--veins-chocolate) 6%,
+                    transparent 7%,
+                    transparent 25%,
+                    var(--veins-coffee) 26%,
+                    transparent 27%),
+                linear-gradient(110deg, 
+                    transparent 40%,
+                    var(--veins-coffee) 41%,
+                    transparent 42%);
+            mix-blend-mode: multiply;
+            opacity: 0.8;
+            filter: blur(0.4px);
+        }
+        
+        .theme-bg.light::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(115deg, 
+                    transparent 28%,
+                    var(--veins-chocolate) 29%,
+                    rgba(104, 70, 39, 0.25) 32%,
+                    var(--veins-chocolate) 35%,
+                    transparent 36%),
+                linear-gradient(-45deg, 
+                    transparent 62%,
+                    var(--veins-chocolate) 63%,
+                    rgba(104, 70, 39, 0.22) 65%,
+                    var(--veins-chocolate) 67%,
+                    transparent 68%),
+                linear-gradient(140deg, 
+                    transparent 15%,
+                    var(--veins-coffee) 16%,
+                    transparent 17%,
+                    transparent 45%,
+                    rgba(181, 146, 114, 0.14) 46%,
+                    transparent 47%),
+                linear-gradient(95deg, 
+                    transparent 75%,
+                    var(--veins-chocolate) 76%,
+                    transparent 77%,
+                    transparent 85%,
+                    var(--veins-coffee) 86%,
+                    transparent 87%),
+                linear-gradient(70deg, 
+                    transparent 60%,
+                    var(--veins-coffee) 61%,
+                    transparent 62%);
+            mix-blend-mode: multiply;
+            opacity: 0.8;
+            filter: blur(0.4px);
+        }
+        
+        /* ===== ОСНОВНОЙ КОНТЕЙНЕР ===== */
+        .app-container {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .screen {
+            display: none;
+            width: 100%;
+            flex-direction: column;
+        }
+        
+        .screen.active {
+            display: flex;
+        }
+        
+        /* ===== СТРЕЛКА НАЗАД ===== */
+        .back-arrow {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: var(--text-primary);
+            opacity: 0.9;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 900;
+            background: transparent;
+            border: none;
+        }
+        
+        .back-arrow:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        
+        /* ===== ФОРМА КАРТОЧКА ===== */
+        .form-card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 
+                0 25px 60px rgba(0, 0, 0, 0.15),
+                0 0 0 1px var(--border-color),
+                0 0 40px rgba(212, 175, 55, 0.1) inset;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(15px) saturate(180%);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        
+        /* Для экрана входа - компактная карточка */
+        #screen-login .form-card {
+            padding-bottom: 20px;
+            max-height: 500px;
+            align-self: center;
+        }
+        
+        .form-card::before {
+            content: '';
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            right: 1px;
+            bottom: 1px;
+            border-radius: 23px;
+            border: 1px solid transparent;
+            background: linear-gradient(135deg, 
+                var(--veins-gold), 
+                var(--veins-light-gold),
+                var(--veins-gold)) border-box;
+            mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        
+        .light-theme .form-card::before {
+            background: linear-gradient(135deg, 
+                var(--veins-chocolate), 
+                var(--veins-coffee),
+                var(--veins-chocolate)) border-box;
+        }
+        
+        .form-header {
+            padding: 30px 25px 20px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+            position: relative;
+        }
+        
+        .form-title {
+            font-size: 24px;
+            color: var(--title-color);
+            font-weight: 300;
+            font-family: 'Georgia', serif;
+            margin: 0 40px; /* Отступы для стрелки */
+        }
+        
+        /* ===== КОНТЕЙНЕР С ФОРМОЙ И СКРОЛЛОМ ===== */
+        .form-wrapper {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Для экранов, где нужен скролл */
+        .screen-needs-scroll .form-wrapper {
+            overflow: hidden;
+            max-height: 500px;
+        }
+        
+        .screen-needs-scroll .form-content {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-right: 5px;
+        }
+        
+        /* Для экрана восстановления тоже добавляем скролл */
+        #screen-recover .form-wrapper {
+            overflow: hidden;
+            max-height: 500px;
+        }
+        
+        #screen-recover .form-content {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-right: 5px;
+        }
+        
+        /* Стили скроллбара */
+        .form-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .form-content::-webkit-scrollbar-track {
+            background: transparent;
+            border-radius: 3px;
+        }
+        
+        .form-content::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 3px;
+            transition: background 0.3s ease;
+        }
+        
+        .form-content::-webkit-scrollbar-thumb:hover {
+            background: var(--light-gold);
+        }
+        
+        .light-theme .form-content::-webkit-scrollbar-thumb {
+            background: var(--chocolate);
+        }
+        
+        .light-theme .form-content::-webkit-scrollbar-thumb:hover {
+            background: var(--milky-coffee);
+        }
+        
+        /* ===== ПОЛЯ ВВОДА ===== */
+        .form-content {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Центрирование полей в карточке регистрации */
+        #screen-register .form-content {
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+        
+        /* Центрирование полей в карточке восстановления */
+        #screen-recover .form-content {
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        /* Увеличенные отступы для кнопок после полей */
+        #screen-recover .input-group:has(#recoverAnswer) {
+            margin-bottom: 30px;
+        }
+        
+        #screen-register .message-box {
+            margin-bottom: 25px;
+        }
+        
+        .input-label {
+            display: block;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 16px 20px;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            font-size: 15px;
+            color: var(--button-text);
+            font-family: 'Georgia', serif;
+            transition: all 0.3s ease;
+        }
+        
+        /* Для светлой темы - поля без обводки и с легким фоном */
+        .light-theme .input-field {
+            border: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.3);
+            color: var(--text-primary);
+        }
+        
+        /* Более узкие поля для регистрации и восстановления */
+        #screen-register .input-field,
+        #screen-recover .input-field {
+            padding-left: 18px;
+            padding-right: 18px;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--border-color);
+            transform: translateY(-2px);
+        }
+        
+        /* Для светлой темы - фокус без обводки, только тень */
+        .light-theme .input-field:focus {
+            box-shadow: 0 0 0 2px var(--border-color);
+        }
+        
+        /* ===== ПАРОЛЬ-ВВОД С ЦВЕТОЧКАМИ И КНОПКОЙ ПОКАЗАТЬ ===== */
+        .password-container {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            position: relative;
+            justify-content: space-between;
+            padding-right: 0;
+        }
+        
+        .password-digits {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex: 1;
+            margin-right: 10px;
+        }
+        
+        .password-digit {
+            width: 50px;
+            height: 60px;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 22px;
+            color: var(--button-text);
+            text-align: center;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        /* Для светлой темы - ячейки с легким фоном и обводкой */
+        .light-theme .password-digit {
+            border: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.3);
+            color: var(--text-primary);
+        }
+        
+        .password-digit.active {
+            box-shadow: 0 0 0 2px var(--border-color);
+            transform: translateY(-2px);
+        }
+        
+        .password-digit input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 2;
+        }
+        
+        /* Цифра */
+        .password-digit .digit-value {
+            font-size: 24px;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.1s ease;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .password-digit.show-digit .digit-value {
+            opacity: 1;
+        }
+        
+        /* Цветочек */
+        .password-digit .password-flower {
+            font-size: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            color: var(--button-text);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .password-digit.filled .password-flower {
+            opacity: 1;
+        }
+        
+        /* Когда показываем цифры - скрываем цветочек */
+        .password-digit.show-digit.filled .password-flower {
+            opacity: 0;
+        }
+        
+        /* Кнопка показать пароль - как закладка (предыдущий вариант) */
+        .show-password-btn {
+            width: 50px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--button-text);
+            font-size: 22px;
+            flex-shrink: 0;
+            position: relative;
+            right: 0;
+            margin-left: 0;
+            z-index: 2;
+            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Для светлой темы - кнопка глаза с легким фоном и обводкой */
+        .light-theme .show-password-btn {
+            border: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.3);
+            color: var(--text-primary);
+        }
+        
+        .show-password-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: -3px 3px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .show-password-btn.active {
+            background: rgba(212, 175, 55, 0.25);
+            border-color: rgba(212, 175, 55, 0.5);
+        }
+        
+        .light-theme .show-password-btn.active {
+            background: rgba(104, 70, 39, 0.25);
+            border-color: rgba(104, 70, 39, 0.5);
+        }
+        
+        /* Глаз по умолчанию зачеркнут */
+        .show-password-btn i {
+            transition: all 0.3s ease;
+        }
+        
+        /* ===== КНОПКИ ===== */
+        .form-btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 18px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border: none;
+            font-family: 'Georgia', serif;
+            background: var(--button-bg);
+            color: var(--button-text);
+            border: 1px solid var(--border-color);
+            margin-top: 5px;
+        }
+        
+        /* Для светлой темы - кнопки без обводки */
+        .light-theme .form-btn {
+            border: none;
+            background: var(--button-bg);
+            color: var(--button-text);
+        }
+        
+        /* Более узкие кнопки для регистрации и восстановления */
+        #screen-register .form-btn,
+        #screen-recover .form-btn {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+        
+        .form-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+        }
+        
+        .form-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* ===== ССЫЛКИ ПОД ФОРМОЙ ===== */
+        .form-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding: 0;
+        }
+        
+        .form-link {
+            color: var(--text-secondary);
+            font-size: 13px;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+            padding: 5px 8px;
+        }
+        
+        .form-link:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+        
+        /* ===== СООБЩЕНИЯ ===== */
+        .message-box {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 18px;
+            margin: 10px 0;
+            text-align: center;
+        }
+        
+        /* Для светлой темы - сообщение с легким фоном и обводкой */
+        .light-theme .message-box {
+            border: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Более узкое сообщение для восстановления */
+        #screen-recover .message-box {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+        
+        .message-title {
+            font-size: 15px;
+            color: var(--title-color);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .message-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        /* ===== ДЛЯ РЕГИСТРАЦИИ И ВОССТАНОВЛЕНИЯ ===== */
+        .input-hint {
+            font-size: 12px;
+            color: var(--text-secondary);
+            opacity: 0.6;
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+        
+        /* Убираем отступы для экрана входа */
+        #screen-login .form-content {
+            padding-bottom: 15px;
+        }
+        
+        #screen-login .input-group {
+            margin-bottom: 15px;
+        }
+        
+        #screen-login .form-btn {
+            margin-top: 10px;
+        }
+        
+        /* Убираем горизонтальный скролл для регистрации */
+        #screen-register .form-content {
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body class="dark-theme">
+    <!-- Фоны (автоматически выбирается тема из localStorage) -->
+    <div class="theme-bg dark active"></div>
+    <div class="theme-bg light"></div>
+    
+    <!-- Основной контейнер -->
+    <div class="app-container">
+        <!-- ЭКРАН 1: ВХОД В ПРОФИЛЬ -->
+        <div class="screen active" id="screen-login">
+            <div class="form-card">
+                <!-- Стрелка назад на главную - внутри карточки -->
+                <button class="back-arrow" onclick="window.location.href='index.html'">←</button>
+                
+                <div class="form-header">
+                    <h2 class="form-title">Вход в профиль</h2>
+                </div>
+                
+                <div class="form-wrapper">
+                    <div class="form-content">
+                        <div class="input-group">
+                            <label class="input-label">Логин</label>
+                            <input type="text" class="input-field" id="loginUsername" 
+                                   placeholder="Введите ваш логин">
+                        </div>
+                        
+                        <div class="input-group" id="loginPasswordGroup">
+                            <label class="input-label">Пароль</label>
+                            <div class="password-container">
+                                <div class="password-digits" id="loginPasswordInput">
+                                    <!-- Будет создано через JS -->
+                                </div>
+                                <button class="show-password-btn active" id="loginShowPasswordBtn">
+                                    <i class="bi bi-eye-slash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <button class="form-btn" onclick="loginUser()">
+                            ВОЙТИ В ПРОФИЛЬ
+                        </button>
+                        
+                        <div class="form-links">
+                            <a href="#" class="form-link" onclick="showScreen('recover')">
+                                Не помню пароль
+                            </a>
+                            <a href="#" class="form-link" onclick="showScreen('register')">
+                                Нет аккаунта?
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ЭКРАН 2: РЕГИСТРАЦИЯ -->
+        <div class="screen screen-needs-scroll" id="screen-register">
+            <div class="form-card">
+                <!-- Стрелка назад на вход - внутри карточки -->
+                <button class="back-arrow" onclick="showScreen('login')">←</button>
+                
+                <div class="form-header">
+                    <h2 class="form-title">Создание профиля</h2>
+                </div>
+                
+                <div class="form-wrapper">
+                    <div class="form-content">
+                        <div class="input-group">
+                            <label class="input-label">Имя</label>
+                            <input type="text" class="input-field" id="registerDisplayName" 
+                                   placeholder="Введите имя" maxlength="25">
+                            <div class="input-hint">До 25 символов</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label class="input-label">Логин</label>
+                            <input type="text" class="input-field" id="registerLogin" 
+                                   placeholder="Введите логин" pattern="[A-Za-z0-9_]+">
+                            <div class="input-hint">Только латиница, цифры и подчёркивание. 3-20 символов.</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label class="input-label">Пароль</label>
+                            <div class="password-container">
+                                <div class="password-digits" id="registerPasswordInput">
+                                    <!-- Будет создано через JS -->
+                                </div>
+                                <button class="show-password-btn active" id="registerShowPasswordBtn">
+                                    <i class="bi bi-eye-slash"></i>
+                                </button>
+                            </div>
+                            <div class="input-hint">Введите 5-значный пароль</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label class="input-label">Повторите пароль</label>
+                            <div class="password-container">
+                                <div class="password-digits" id="registerConfirmPasswordInput">
+                                    <!-- Будет создано через JS -->
+                                </div>
+                                <button class="show-password-btn active" id="registerConfirmShowPasswordBtn">
+                                    <i class="bi bi-eye-slash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label class="input-label">Контрольный вопрос</label>
+                            <input type="text" class="input-field" id="securityQuestion" 
+                                   placeholder="Какой аромат помню с детства?">
+                            <div class="input-hint">Придумайте вопрос для восстановления доступа</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label class="input-label">Ответ на вопрос</label>
+                            <input type="text" class="input-field" id="securityAnswer" 
+                                   placeholder="Шанель №5 от мамы" minlength="3">
+                            <div class="input-hint">Минимум 3 символа. Запомните этот ответ!</div>
+                        </div>
+                        
+                        <div class="message-box">
+                            <div class="message-title">⚠️ Важное предупреждение</div>
+                            <div class="message-text">
+                                Ваши данные хранятся только на этом устройстве. 
+                                Запомните ответ на контрольный вопрос — он нужен для восстановления доступа.
+                            </div>
+                        </div>
+                        
+                        <button class="form-btn" onclick="registerUser()">
+                            СОЗДАТЬ ПРОФИЛЬ
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ЭКРАН 3: ВОССТАНОВЛЕНИЯ ДОСТУПА -->
+        <div class="screen screen-needs-scroll" id="screen-recover">
+            <div class="form-card">
+                <!-- Стрелка назад на вход - внутри карточки -->
+                <button class="back-arrow" onclick="showScreen('login')">←</button>
+                
+                <div class="form-header">
+                    <h2 class="form-title">Восстановление доступа</h2>
+                </div>
+                
+                <div class="form-wrapper">
+                    <div class="form-content">
+                        <div class="input-group">
+                            <label class="input-label">Логин</label>
+                            <input type="text" class="input-field" id="recoverUsername" 
+                                   placeholder="Введите ваш логин" oninput="showSecurityQuestion()">
+                        </div>
+                        
+                        <div class="input-group" id="securityQuestionGroup">
+                            <label class="input-label" id="questionLabel">Контрольный вопрос</label>
+                            <div class="message-box">
+                                <div class="message-text" id="securityQuestionText">
+                                    Введите логин, чтобы увидеть контрольный вопрос
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label class="input-label">Ответ на вопрос</label>
+                            <input type="text" class="input-field" id="recoverAnswer" 
+                                   placeholder="Введите ответ">
+                        </div>
+                        
+                        <button class="form-btn" onclick="checkSecurityAnswer()">
+                            ПРОВЕРИТЬ ОТВЕТ
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ЭКРАН 4: УСТАНОВКА НОВОГО КЛЮЧА -->
+        <div class="screen screen-needs-scroll" id="screen-newkey">
+            <div class="form-card">
+                <!-- Стрелка назад на восстановление - внутри карточки -->
+                <button class="back-arrow" onclick="showScreen('recover')">←</button>
+                
+                <div class="form-header">
+                    <h2 class="form-title">Установите новый ключ</h2>
+                </div>
+                
+                <div class="form-wrapper">
+                    <div class="form-content">
+                        <div class="input-group">
+                            <label class="input-label">Пароль</label>
+                            <div class="password-container">
+                                <div class="password-digits" id="newPasswordInput">
+                                    <!-- Будет создано через JS -->
+                                </div>
+                                <button class="show-password-btn active" id="newPasswordShowBtn">
+                                    <i class="bi bi-eye-slash"></i>
+                                </button>
+                            </div>
+                            <div class="input-hint">Введите новый 5-значный пароль</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label class="input-label">Повторите пароль</label>
+                            <div class="password-container">
+                                <div class="password-digits" id="newConfirmPasswordInput">
+                                    <!-- Будет создано через JS -->
+                                </div>
+                                <button class="show-password-btn active" id="newConfirmShowPasswordBtn">
+                                    <i class="bi bi-eye-slash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <button class="form-btn" onclick="setNewSecurityKey()">
+                            УСТАНОВИТЬ КЛЮЧ
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ===== НАСТРОЙКА ТЕМЫ =====
+    
+    // Автоматически применяем тему из localStorage
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-theme');
+            document.querySelector('.theme-bg.dark').classList.remove('active');
+            document.querySelector('.theme-bg.light').classList.add('active');
+        } else {
+            document.body.classList.remove('light-theme');
+            document.querySelector('.theme-bg.light').classList.remove('active');
+            document.querySelector('.theme-bg.dark').classList.add('active');
+        }
+        
+        // Если пользователь уже авторизован
+        if (userManager.isRegistered()) {
+            // Проверяем, проходил ли он тест
+            if (userManager.isQuizCompleted()) {
+                window.location.href = 'main.html';
+            } else {
+                window.location.href = 'start.html';
+            }
+            return;
+        }
+        
+        // Инициализируем поля пароля (5 цифр)
+        setTimeout(() => {
+            createPasswordInput('loginPasswordInput', 'login');
+            createPasswordInput('registerPasswordInput', 'register');
+            createPasswordInput('registerConfirmPasswordInput', 'registerConfirm');
+            createPasswordInput('newPasswordInput', 'newkey');
+            createPasswordInput('newConfirmPasswordInput', 'newkeyConfirm');
+        }, 100);
+        
+        // Проверяем HTTPS для GitHub Pages
+        if (location.protocol === 'http:' && location.hostname.includes('github.io')) {
+            location.href = location.href.replace('http:', 'https:');
+        }
+    });
+    
+    // ===== ПЕРЕКЛЮЧЕНИЕ ЭКРАНОВ =====
+    
+    function showScreen(screenId) {
+        // Скрываем все экраны
+        document.querySelectorAll('.screen').forEach(screen => {
+            screen.classList.remove('active');
+        });
+        
+        // Показываем нужный экран
+        const targetScreen = document.getElementById(`screen-${screenId}`);
+        if (targetScreen) {
+            targetScreen.classList.add('active');
+            
+            // При показе экрана логина фокусируемся на первом поле пароля
+            if (screenId === 'login') {
+                setTimeout(() => {
+                    const firstDigit = document.querySelector('#loginPasswordInput .password-digit');
+                    if (firstDigit) {
+                        firstDigit.querySelector('input').focus();
+                    }
+                }, 300);
+            }
+        }
+    }
+    
+    // ===== СИСТЕМА ПАРОЛЯ С ЦВЕТОЧКАМИ И АВТОПЕРЕХОДОМ =====
+    
+    // Глобальные переменные для каждого типа поля пароля
+    const passwordData = {
+        login: { values: ['', '', '', '', ''], isVisible: false },
+        register: { values: ['', '', '', '', ''], isVisible: false },
+        registerConfirm: { values: ['', '', '', '', ''], isVisible: false },
+        newkey: { values: ['', '', '', '', ''], isVisible: false },
+        newkeyConfirm: { values: ['', '', '', '', ''], isVisible: false }
+    };
+    
+    // Создание полей пароля
+    function createPasswordInput(containerId, type) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        for (let i = 0; i < 5; i++) {
+            const digitContainer = document.createElement('div');
+            digitContainer.className = 'password-digit';
+            digitContainer.dataset.index = i;
+            
+            // Скрытый input для ввода
+            const input = document.createElement('input');
+            input.type = 'tel';
+            input.maxLength = 1;
+            input.pattern = '[0-9]';
+            input.dataset.index = i;
+            
+            // Элемент для цифры
+            const digitValue = document.createElement('div');
+            digitValue.className = 'digit-value';
+            digitValue.textContent = '';
+            
+            // Элемент для цветочка
+            const flower = document.createElement('div');
+            flower.className = 'password-flower';
+            flower.innerHTML = '<i class="bi bi-flower1"></i>';
+            
+            digitContainer.appendChild(input);
+            digitContainer.appendChild(digitValue);
+            digitContainer.appendChild(flower);
+            container.appendChild(digitContainer);
+            
+            // Настройка обработчиков
+            setupPasswordDigitHandlers(digitContainer, i, type);
+        }
+        
+        // Настройка кнопки показать пароль
+        setupShowPasswordButton(type);
+    }
+    
+    function setupPasswordDigitHandlers(digitContainer, index, type) {
+        const input = digitContainer.querySelector('input');
+        const digitValue = digitContainer.querySelector('.digit-value');
+        const flower = digitContainer.querySelector('.password-flower');
+        const allDigits = document.querySelectorAll(`#${type}PasswordInput .password-digit`);
+        
+        // При фокусе на клетке
+        input.addEventListener('focus', function() {
+            // Убираем активность со всех клеток этого типа
+            allDigits.forEach(d => d.classList.remove('active'));
+            // Делаем текущую клетку активной
+            digitContainer.classList.add('active');
+            
+            // Если в этой клетке уже есть цифра, обновляем отображение
+            updateDigitDisplay(digitContainer, index, type);
+        });
+        
+        // При потере фокуса
+        input.addEventListener('blur', function() {
+            setTimeout(() => {
+                if (document.activeElement !== input) {
+                    digitContainer.classList.remove('active');
+                }
+            }, 100);
+        });
+        
+        // Обработка ввода через keydown (основной метод)
+        input.addEventListener('keydown', function(e) {
+            // Ввод цифры
+            if (e.key >= '0' && e.key <= '9' && e.key.length === 1) {
+                e.preventDefault();
+                
+                // Сохраняем цифру
+                passwordData[type].values[index] = e.key;
+                
+                // Обновляем отображение
+                updateDigitDisplay(digitContainer, index, type);
+                
+                // Автоматически переходим к следующей клетке
+                moveToNextCell(index, type);
+            }
+            // Обработка Backspace
+            else if (e.key === 'Backspace') {
+                e.preventDefault();
+                
+                // Если в текущей клетке есть цифра - очищаем её
+                if (passwordData[type].values[index] !== '') {
+                    passwordData[type].values[index] = '';
+                    updateDigitDisplay(digitContainer, index, type);
+                } 
+                // Если клетка пустая, переходим к предыдущей и очищаем её
+                else if (index > 0) {
+                    const prevIndex = index - 1;
+                    passwordData[type].values[prevIndex] = '';
+                    
+                    const prevDigit = allDigits[prevIndex];
+                    updateDigitDisplay(prevDigit, prevIndex, type);
+                    
+                    // Фокус на предыдущую клетку
+                    setTimeout(() => {
+                        prevDigit.querySelector('input').focus();
+                    }, 10);
+                }
+            }
+            // Стрелки для навигации
+            else if (e.key === 'ArrowLeft' && index > 0) {
+                e.preventDefault();
+                setTimeout(() => {
+                    allDigits[index - 1].querySelector('input').focus();
+                }, 10);
+            }
+            else if (e.key === 'ArrowRight' && index < 4) {
+                e.preventDefault();
+                setTimeout(() => {
+                    allDigits[index + 1].querySelector('input').focus();
+                }, 10);
+            }
+            // Tab для перехода вперед
+            else if (e.key === 'Tab' && !e.shiftKey && index < 4) {
+                e.preventDefault();
+                moveToNextCell(index, type);
+            }
+        });
+        
+        // Дополнительный обработчик input для мобильных устройств
+        input.addEventListener('input', function(e) {
+            if (this.value.length === 1 && /^\d$/.test(this.value)) {
+                // Если цифра уже обработана keydown, игнорируем
+                if (passwordData[type].values[index] === this.value) {
+                    setTimeout(() => {
+                        this.value = '';
+                    }, 10);
+                    return;
+                }
+                
+                // Сохраняем цифру
+                passwordData[type].values[index] = this.value;
+                
+                // Обновляем отображение
+                updateDigitDisplay(digitContainer, index, type);
+                
+                // Автоматически переходим к следующей клетке
+                moveToNextCell(index, type);
+                
+                // Очищаем значение
+                setTimeout(() => {
+                    this.value = '';
+                }, 10);
+            }
+        });
+        
+        // Клик на клетку
+        digitContainer.addEventListener('click', function() {
+            input.focus();
+        });
+    }
+    
+    // Функция для перехода к следующей клетке
+    function moveToNextCell(currentIndex, type) {
+        const allDigits = document.querySelectorAll(`#${type}PasswordInput .password-digit`);
+        
+        if (currentIndex < 4) {
+            // Переход к следующей клетке
+            setTimeout(() => {
+                allDigits[currentIndex + 1].querySelector('input').focus();
+            }, 50);
+        } else {
+            // Если это последняя клетка, убираем фокус
+            setTimeout(() => {
+                document.activeElement.blur();
+                allDigits.forEach(d => d.classList.remove('active'));
+            }, 50);
+        }
+    }
+    
+    // Обновление отображения отдельной клетки
+    function updateDigitDisplay(digitContainer, index, type) {
+        const digitValue = digitContainer.querySelector('.digit-value');
+        const flower = digitContainer.querySelector('.password-flower');
+        const value = passwordData[type].values[index];
+        
+        if (value === '') {
+            // Клетка пустая
+            digitValue.textContent = '';
+            digitContainer.classList.remove('filled');
+            digitContainer.classList.remove('show-digit');
+            flower.style.opacity = '0';
+        } else {
+            // Клетка заполнена
+            digitValue.textContent = value;
+            
+            if (passwordData[type].isVisible) {
+                // Показываем цифру
+                digitContainer.classList.add('show-digit');
+                digitContainer.classList.remove('filled');
+                flower.style.opacity = '0';
+            } else {
+                // Показываем цветочек
+                digitContainer.classList.remove('show-digit');
+                digitContainer.classList.add('filled');
+                flower.style.opacity = '1';
+            }
+        }
+    }
+    
+    // Настройка кнопки показать пароль
+    function setupShowPasswordButton(type) {
+        let btnId;
+        if (type === 'login') btnId = 'loginShowPasswordBtn';
+        else if (type === 'register') btnId = 'registerShowPasswordBtn';
+        else if (type === 'registerConfirm') btnId = 'registerConfirmShowPasswordBtn';
+        else if (type === 'newkey') btnId = 'newPasswordShowBtn';
+        else if (type === 'newkeyConfirm') btnId = 'newConfirmShowPasswordBtn';
+        
+        const btn = document.getElementById(btnId);
+        if (!btn) return;
+        
+        btn.addEventListener('click', function() {
+            togglePasswordVisibility(type);
+        });
+    }
+    
+    // Переключение видимости пароля
+    function togglePasswordVisibility(type) {
+        let btn;
+        if (type === 'login') btn = document.getElementById('loginShowPasswordBtn');
+        else if (type === 'register') btn = document.getElementById('registerShowPasswordBtn');
+        else if (type === 'registerConfirm') btn = document.getElementById('registerConfirmShowPasswordBtn');
+        else if (type === 'newkey') btn = document.getElementById('newPasswordShowBtn');
+        else if (type === 'newkeyConfirm') btn = document.getElementById('newConfirmShowPasswordBtn');
+        
+        if (!btn) return;
+        
+        const icon = btn.querySelector('i');
+        passwordData[type].isVisible = !passwordData[type].isVisible;
+        
+        if (passwordData[type].isVisible) {
+            // Показываем цифры
+            btn.classList.remove('active');
+            icon.className = 'bi bi-eye';
+        } else {
+            // Показываем цветочки
+            btn.classList.add('active');
+            icon.className = 'bi bi-eye-slash';
+        }
+        
+        // Обновляем отображение всех клеток этого типа
+        updateAllDigitsDisplay(type);
+    }
+    
+    // Обновить отображение всех клеток типа
+    function updateAllDigitsDisplay(type) {
+        const containerId = type + 'PasswordInput';
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        
+        const allDigits = container.querySelectorAll('.password-digit');
+        allDigits.forEach((digit, index) => {
+            updateDigitDisplay(digit, index, type);
+        });
+    }
+    
+    // Получение значения пароля из полей
+    function getPasswordValue(type) {
+        return passwordData[type].values.join('');
+    }
+    
+    // ===== СИСТЕМА АВТОРИЗАЦИИ =====
+    
+    const authData = {
+        users: [],
+        recoverUser: null
+    };
+    
+    // Загрузка пользователей из localStorage
+    function loadUsers() {
+        try {
+            const usersJson = localStorage.getItem('scentme_users');
+            if (usersJson) {
+                authData.users = JSON.parse(usersJson);
+            }
+        } catch (e) {
+            console.error('Ошибка загрузки пользователей:', e);
+            authData.users = [];
+        }
+    }
+    
+    // Поиск пользователя по логину
+    function findUserByLogin(login) {
+        return authData.users.find(u => u.login === login.toLowerCase());
+    }
+    
+    // Проверка занят ли логин
+    function isLoginTaken(login) {
+        return authData.users.some(u => u.login === login.toLowerCase());
+    }
+    
+    // Генерация ID
+    function generateId() {
+        return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+    
+    // Сохранение пользователя
+    function saveUser(user) {
+        authData.users = authData.users.filter(u => u.login !== user.login);
+        authData.users.push(user);
+        localStorage.setItem('scentme_users', JSON.stringify(authData.users));
+    }
+    
+    // Обновление пользователя
+    function updateUser(updatedUser) {
+        const index = authData.users.findIndex(u => u.id === updatedUser.id);
+        if (index !== -1) {
+            authData.users[index] = updatedUser;
+            localStorage.setItem('scentme_users', JSON.stringify(authData.users));
+        }
+    }
+    
+    // ===== ОСНОВНЫЕ ФУНКЦИИ АВТОРИЗАЦИИ =====
+    
+    // Вход пользователя
+    function loginUser() {
+        const login = document.getElementById('loginUsername').value.trim().toLowerCase();
+        
+        if (!login) {
+            alert('Введите логин');
+            return;
+        }
+        
+        loadUsers();
+        const user = findUserByLogin(login);
+        
+        if (!user) {
+            alert('Пользователь с таким логином не найден');
+            return;
+        }
+        
+        // Проверка пароля (5 цифр)
+        const enteredPassword = getPasswordValue('login');
+        
+        if (enteredPassword.length !== 5) {
+            alert('Введите 5-значный пароль');
+            return;
+        }
+        
+        if (enteredPassword !== user.security.data) {
+            alert('Неверный пароль');
+            return;
+        }
+        
+        // Успешный вход
+        onLoginSuccess(false);
+    }
+    
+    // Функция успешного входа
+    function onLoginSuccess(isNewUser = false) {
+        // Устанавливаем режим "зарегистрирован" и запоминаем
+        userManager.setMode('registered', true);
+        
+        if (isNewUser) {
+            // Помечаем как нового пользователя
+            userManager.markAsNewUser();
+            // Перенаправляем на тест
+            window.location.href = 'start.html';
+        } else {
+            // Существующий пользователь
+            // Проверяем, проходил ли он тест
+            if (userManager.isQuizCompleted()) {
+                window.location.href = 'main.html';
+            } else {
+                // Если не проходил, тоже на тест
+                userManager.markAsNewUser();
+                window.location.href = 'start.html';
+            }
+        }
+    }
+    
+    // Регистрация пользователя
+    function registerUser() {
+        const displayName = document.getElementById('registerDisplayName').value.trim();
+        const login = document.getElementById('registerLogin').value.trim();
+        const securityQuestion = document.getElementById('securityQuestion').value.trim();
+        const securityAnswer = document.getElementById('securityAnswer').value.trim();
+        
+        if (!displayName || displayName.length > 25) {
+            alert('Имя должно быть от 1 до 25 символов');
+            return;
+        }
+        
+        if (!login || login.length < 3 || login.length > 20 || !/^[A-Za-z0-9_]+$/.test(login)) {
+            alert('Логин должен быть от 3 до 20 символов (латиница, цифры, подчёркивание)');
+            return;
+        }
+        
+        loadUsers();
+        if (isLoginTaken(login)) {
+            alert('Этот логин уже занят. Попробуйте другой.');
+            return;
+        }
+        
+        if (!securityQuestion || securityQuestion.length < 5) {
+            alert('Контрольный вопрос должен быть не менее 5 символов');
+            return;
+        }
+        
+        if (!securityAnswer || securityAnswer.length < 3) {
+            alert('Ответ на вопрос должен быть не менее 3 символов');
+            return;
+        }
+        
+        // Получаем пароли (5 цифр)
+        const password = getPasswordValue('register');
+        const confirmPassword = getPasswordValue('registerConfirm');
+        
+        if (password.length !== 5 || !/^\d+$/.test(password)) {
+            alert('Введите корректный 5-значный пароль');
+            return;
+        }
+        
+        if (confirmPassword.length !== 5 || !/^\d+$/.test(confirmPassword)) {
+            alert('Введите корректный 5-значный пароль для подтверждения');
+            return;
+        }
+        
+        if (password !== confirmPassword) {
+            alert('Пароли не совпадают');
+            return;
+        }
+        
+        // Создаем пользователя
+        const newUser = {
+            id: generateId(),
+            login: login.toLowerCase(),
+            displayName: displayName,
+            security: { type: 'password', data: password },
+            securityQuestion: securityQuestion,
+            securityAnswer: securityAnswer.toLowerCase(),
+            createdAt: new Date().toISOString(),
+            testsHistory: [],
+            collection: [],
+            settings: { theme: localStorage.getItem('theme') || 'dark' }
+        };
+        
+        saveUser(newUser);
+        
+        // Успешная регистрация
+        onRegistrationSuccess();
+    }
+    
+    // Успешная регистрация
+    function onRegistrationSuccess() {
+        // После успешной регистрации
+        onLoginSuccess(true); // true = новый пользователь
+    }
+    
+    // Восстановление доступа - показ контрольного вопроса
+    function showSecurityQuestion() {
+        const login = document.getElementById('recoverUsername').value.trim().toLowerCase();
+        
+        if (!login) {
+            return;
+        }
+        
+        loadUsers();
+        const user = findUserByLogin(login);
+        
+        if (!user) {
+            document.getElementById('securityQuestionText').textContent = 'Пользователь не найден';
+            return;
+        }
+        
+        authData.recoverUser = user;
+        document.getElementById('securityQuestionText').textContent = user.securityQuestion;
+        document.getElementById('questionLabel').textContent = 'Ваш контрольный вопрос';
+    }
+    
+    // Проверка ответа на контрольный вопрос
+    function checkSecurityAnswer() {
+        const answer = document.getElementById('recoverAnswer').value.trim().toLowerCase();
+        
+        if (!authData.recoverUser) {
+            alert('Сначала введите логин');
+            return;
+        }
+        
+        if (!answer) {
+            alert('Введите ответ на вопрос');
+            return;
+        }
+        
+        if (answer !== authData.recoverUser.securityAnswer.toLowerCase()) {
+            alert('Неверный ответ на контрольный вопрос');
+            return;
+        }
+        
+        alert('Ответ верный! Установите новый пароль.');
+        
+        setTimeout(() => {
+            showScreen('newkey');
+        }, 1000);
+    }
+    
+    // Установка нового ключа
+    function setNewSecurityKey() {
+        if (!authData.recoverUser) {
+            alert('Ошибка: пользователь не найден');
+            return;
+        }
+        
+        // Получаем новые пароли (5 цифр)
+        const password = getPasswordValue('newkey');
+        const confirmPassword = getPasswordValue('newkeyConfirm');
+        
+        if (password.length !== 5 || !/^\d+$/.test(password)) {
+            alert('Введите корректный 5-значный пароль');
+            return;
+        }
+        
+        if (confirmPassword.length !== 5 || !/^\d+$/.test(confirmPassword)) {
+            alert('Введите корректный 5-значный пароль для подтверждения');
+            return;
+        }
+        
+        if (password !== confirmPassword) {
+            alert('Пароли не совпадают');
+            return;
+        }
+        
+        // Обновляем пользователя
+        authData.recoverUser.security = { type: 'password', data: password };
+        updateUser(authData.recoverUser);
+        
+        // Автоматический вход
+        onLoginSuccess(false);
+    }
+</script>
+</body>
+</html>

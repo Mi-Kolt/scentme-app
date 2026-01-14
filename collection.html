@@ -1,0 +1,4009 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scentmé - Коллекция</title>
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        /* ===== СБРОС СТИЛЕЙ ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* ===== СВЕТЛАЯ ТЕМА ===== */
+        :root {
+            /* Цвета светлой темы */
+            --chocolate: #684627;
+            --roasted-peach: #E8A895;
+            --whole-wheat: #EFD2B0;
+            --milky-coffee: #B59272;
+            --cream: #FFE4B8;
+            --peony-pink: #E8A8B8;
+            --peony-dark-pink: #C97A8D;
+            --light-beige: #FFF8ED;
+            
+            /* Основные переменные светлой темы */
+            --bg-primary: #FFF8ED;
+            --bg-card: white;
+            --text-primary: #5C4A36;
+            --text-secondary: #7D6B57;
+            --border-color: rgba(104, 70, 39, 0.3);
+            --shadow-light: rgba(104, 70, 39, 0.1);
+            --shadow-medium: rgba(104, 70, 39, 0.2);
+            --button-bg: linear-gradient(135deg, var(--roasted-peach) 0%, var(--whole-wheat) 100%);
+            --button-text: #684627;
+            --title-color: #684627;
+            --header-bg: white;
+            --card-bg: white;
+            --scrollbar-track: rgba(232, 168, 149, 0.1);
+            --scrollbar-thumb: linear-gradient(135deg, var(--roasted-peach), var(--milky-coffee));
+            --tab-bg: white;
+            --tab-active-bg: rgba(232, 168, 149, 0.08);
+            --modal-bg: white;
+            --menu-bg: white;
+            
+            /* Новые переменные для статей */
+            --new-badge: #E8A895;
+            --read-badge: #B59272;
+            --collection-badge: #E8A895;
+        }
+        
+        /* ===== ТЕМНАЯ ТЕМА ===== */
+        .dark-theme {
+            /* Цвета темной темы */
+            --dark-chocolate: #3D1F12;
+            --walnut-brown: #584738;
+            --sand-beige: #98755B;
+            --cream-ivory: #F1EADA;
+            --pure-white: #FFFFFF;
+            --gold: #D4AF37;
+            --light-gold: #F4E4A6;
+            --dark-beige: #D8C9B0;
+            --warm-gray: #A99E8B;
+            
+            /* Основные переменные темной темы */
+            --bg-primary: #2A1A0F;
+            --bg-card: rgba(30, 23, 18, 0.95);
+            --text-primary: var(--light-gold);
+            --text-secondary: rgba(244, 228, 166, 0.9);
+            --border-color: rgba(212, 175, 55, 0.25);
+            --shadow-light: rgba(0, 0, 0, 0.2);
+            --shadow-medium: rgba(0, 0, 0, 0.3);
+            --button-bg: linear-gradient(135deg, rgba(61, 31, 18, 0.9), rgba(88, 71, 56, 0.9));
+            --button-text: var(--light-gold);
+            --title-color: var(--light-gold);
+            --header-bg: rgba(30, 23, 18, 0.95);
+            --card-bg: rgba(30, 23, 18, 0.9);
+            --scrollbar-track: rgba(212, 175, 55, 0.1);
+            --scrollbar-thumb: linear-gradient(135deg, rgba(212, 175, 55, 0.7), rgba(244, 228, 166, 0.7));
+            --tab-bg: rgba(30, 23, 18, 0.95);
+            --tab-active-bg: rgba(212, 175, 55, 0.15);
+            --modal-bg: rgba(30, 23, 18, 0.98);
+            --menu-bg: rgba(30, 23, 18, 0.98);
+            
+            /* Новые переменные для статей в темной теме */
+            --new-badge: #D4AF37;
+            --read-badge: #A99E8B;
+            --collection-badge: #D4AF37;
+        }
+        
+        /* ===== ОСНОВНЫЕ СТИЛИ ===== */
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        /* ===== ОСНОВНОЙ КОНТЕЙНЕР ===== */
+        .app-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* ===== ШАПКА ВЕРХНЕГО УРОВНЯ (sticky) ===== */
+        .main-header {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--header-bg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 15px var(--shadow-light);
+            transition: all 0.3s ease;
+        }
+        
+        /* Кнопка меню */
+        .menu-toggle {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--title-color);
+            cursor: pointer;
+            padding: 5px;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+        }
+        
+        .menu-toggle:hover {
+            opacity: 1;
+            background: rgba(104, 70, 39, 0.1);
+        }
+        
+        .dark-theme .menu-toggle:hover {
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        /* Заголовок */
+        .main-title {
+            font-size: 20px;
+            color: var(--title-color);
+            font-weight: 300;
+            font-family: 'Georgia', serif;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+        
+        /* Аватар профиля */
+        .profile-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+            position: relative;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .profile-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--roasted-peach), var(--whole-wheat));
+            color: var(--chocolate);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px var(--shadow-light);
+            transition: all 0.3s ease;
+        }
+        
+        .dark-theme .profile-avatar {
+            background: linear-gradient(135deg, var(--sand-beige), var(--gold));
+            color: var(--dark-chocolate);
+        }
+        
+        .profile-btn:hover .profile-avatar {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--shadow-medium);
+        }
+        
+        /* ===== ПАНЕЛЬ УПРАВЛЕНИЯ ===== */
+        .control-panel {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 20px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--header-bg);
+            box-shadow: 0 1px 10px var(--shadow-light);
+            gap: 12px;
+            height: 50px;
+            transition: all 0.3s ease;
+        }
+        
+        /* Поиск */
+        .search-container {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            height: 38px;
+            cursor: pointer;
+            min-width: 0;
+            padding-bottom: 0;
+        }
+        
+        .search-magnifier {
+            position: absolute;
+            right: 0;
+            bottom: 1px;
+            width: 20px;
+            height: 20px;
+            z-index: 2;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .search-magnifier::before {
+            content: "";
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            top: 0;
+            left: 0;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+        
+        .search-magnifier::after {
+            content: "";
+            position: absolute;
+            width: 8px;
+            height: 2px;
+            background: var(--border-color);
+            transform: rotate(45deg);
+            top: 14px;
+            left: 11px;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+        
+        .search-line {
+            flex: 1;
+            height: 1.5px;
+            background: var(--border-color);
+            position: relative;
+            transition: all 0.3s ease;
+            margin-right: 25px;
+            margin-left: 0;
+            align-self: flex-end;
+            margin-bottom: 0;
+        }
+        
+        .search-line.active {
+            height: 2px;
+            background: var(--title-color);
+        }
+        
+        .search-container.active .search-magnifier::before {
+            border-color: var(--title-color);
+            opacity: 1;
+        }
+        
+        .search-container.active .search-magnifier::after {
+            background: var(--title-color);
+            opacity: 1;
+        }
+        
+        .search-input {
+            position: absolute;
+            bottom: 6px;
+            left: 0;
+            right: 25px;
+            padding: 0;
+            background: transparent;
+            border: none;
+            font-size: 14px;
+            color: var(--text-primary);
+            opacity: 0;
+            transform: translateY(2px);
+            pointer-events: none;
+            transition: all 0.3s ease;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            z-index: 100;
+            outline: none;
+        }
+        
+        .search-input.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+        
+        .search-input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+        
+        /* ===== ТАБЫ КОЛЛЕКЦИИ ===== */
+        .collection-tabs {
+            display: flex;
+            background: var(--tab-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 105px;
+            z-index: 90;
+            transition: all 0.3s ease;
+        }
+        
+        .collection-tab {
+            flex: 1;
+            padding: 15px 20px;
+            text-align: center;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: var(--text-secondary);
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            position: relative;
+        }
+        
+        .collection-tab.active {
+            color: var(--title-color);
+            border-bottom-color: var(--roasted-peach);
+        }
+        
+        .dark-theme .collection-tab.active {
+            border-bottom-color: var(--gold);
+        }
+        
+        .collection-tab:hover {
+            color: var(--title-color);
+            background: var(--tab-active-bg);
+        }
+        
+        .tab-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--peony-pink);
+            color: white;
+            font-size: 11px;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        
+        .dark-theme .tab-badge {
+            background: var(--gold);
+            color: var(--dark-chocolate);
+        }
+        
+        /* ===== ОСНОВНОЙ КОНТЕНТ ===== */
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            -webkit-overflow-scrolling: touch;
+            background: var(--bg-primary);
+            transition: background-color 0.3s ease;
+        }
+        
+        /* Кастомный скроллбар в цветовой гамме */
+        .content-area::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .content-area::-webkit-scrollbar-track {
+            background: var(--scrollbar-track);
+            border-radius: 4px;
+            margin: 5px;
+        }
+        
+        .content-area::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: 4px;
+            border: 2px solid var(--bg-primary);
+        }
+        
+        .content-area::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--milky-coffee), var(--roasted-peach));
+        }
+        
+        .dark-theme .content-area::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, rgba(244, 228, 166, 0.8), rgba(212, 175, 55, 0.8));
+        }
+        
+        /* Сетка карточек для ароматов */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Список статей как в articles.html */
+        .articles-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .article-item {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px var(--shadow-light);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            padding-top: 55px; /* Увеличено для бейджей */
+        }
+        
+        .dark-theme .article-item {
+            background: #221810; /* промежуточный между walnut-brown и sand-beige */
+        }
+        
+        .article-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px var(--shadow-medium);
+        }
+        
+        /* Новые статьи - персиковый/золотой акцент слева */
+        .article-item.new-article {
+            border-left: 4px solid var(--new-badge);
+        }
+        
+        /* Прочитанные статьи - кофейный/серый акцент слева */
+        .article-item.read {
+            border-left: 4px solid var(--read-badge);
+        }
+        
+        /* Бейджи в правом верхнем углу */
+        .article-badge {
+            position: absolute;
+            top: 45px; /* Спущены ниже чтобы не перекрывались с закладкой */
+            right: 10px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            z-index: 2;
+        }
+        
+        .badge-new {
+            background: var(--new-badge);
+            color: var(--chocolate);
+        }
+        
+        .dark-theme .badge-new {
+            color: var(--dark-chocolate);
+        }
+        
+        .badge-read {
+            background: var(--read-badge);
+            color: white;
+        }
+        
+        /* Язычок закладки для коллекции */
+        .badge-collection {
+            position: absolute;
+            top: 5px; /* Оставлено выше */
+            right: 40px; /* Левее бейджа "прочитано" */
+            width: 28px;
+            height: 28px;
+            background: var(--collection-badge);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px 4px 0 4px;
+            transform: rotate(45deg);
+            transform-origin: bottom right;
+            z-index: 3;
+            box-shadow: -2px -2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .badge-collection i {
+            transform: rotate(-45deg);
+            font-size: 14px;
+            color: white;
+        }
+        
+        .article-tag {
+            display: inline-block;
+            padding: 6px 14px;
+            background: linear-gradient(135deg, rgba(232, 168, 149, 0.2), rgba(232, 168, 149, 0.2));
+            color: var(--chocolate);
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            border: 1px solid var(--border-color);
+            position: absolute; /* Делаем тэг абсолютным */
+            top: 15px; /* Позиционируем выше */
+            left: 20px;
+        }
+        
+        .dark-theme .article-tag {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.2));
+            color: var(--cream-ivory);
+        }
+        
+        .article-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            color: var(--text-primary);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            padding-right: 70px; /* Место для бейджа и закладки */
+        }
+        
+        .article-preview {
+            color: var(--text-secondary);
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .article-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: var(--milky-coffee);
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .dark-theme .article-meta {
+            color: var(--warm-gray);
+        }
+        
+        /* Блок вкладки */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* ===== КАРТОЧКИ МАСЕЛ ===== */
+        .oil-card-container {
+            width: 100%;
+            max-width: 320px;
+            height: 450px;
+            perspective: 1000px;
+            margin: 0 auto;
+        }
+        
+        .oil-card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+        }
+        
+        .oil-card.flipped {
+            transform: rotateY(180deg);
+        }
+        
+        .oil-card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .category-universal .oil-card-front,
+        .category-universal .oil-card-back {
+            border: 2px solid var(--milky-coffee);
+        }
+        
+        .category-rare .oil-card-front,
+        .category-rare .oil-card-back {
+            border: 2px solid var(--chocolate);
+        }
+        
+        .category-legendary .oil-card-front,
+        .category-legendary .oil-card-back {
+            border: 2px solid var(--peony-dark-pink);
+        }
+        
+        .dark-theme .category-universal .oil-card-front,
+        .dark-theme .category-universal .oil-card-back {
+            border: 2px solid var(--sand-beige);
+        }
+        
+        .dark-theme .category-rare .oil-card-front,
+        .dark-theme .category-rare .oil-card-back {
+            border: 2px solid var(--gold);
+        }
+        
+        .dark-theme .category-legendary .oil-card-front,
+        .dark-theme .category-legendary .oil-card-back {
+            border: 2px solid var(--light-gold);
+        }
+        
+        .oil-card-back {
+            transform: rotateY(180deg);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            background: var(--card-bg);
+        }
+        
+        .oil-card-image {
+            height: 80%;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            background-color: #f5f1e9;
+        }
+        
+        .dark-theme .oil-card-image {
+            background-color: #2A1A0F;
+        }
+        
+        .oil-collection-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+        }
+        
+        .oil-heart-icon {
+            font-size: 36px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-block;
+            line-height: 1;
+        }
+        
+        .oil-heart-icon.empty {
+            color: rgba(104, 70, 39, 0.3);
+            opacity: 0.5;
+        }
+        
+        .dark-theme .oil-heart-icon.empty {
+            color: rgba(244, 228, 166, 0.3);
+        }
+        
+        .oil-heart-icon.filled {
+            color: var(--peony-dark-pink);
+            transform: scale(1.2);
+        }
+        
+        .dark-theme .oil-heart-icon.filled {
+            color: var(--light-gold);
+        }
+        
+        .oil-card-title {
+            height: 20%;
+            padding: 10px 20px 15px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: var(--card-bg);
+        }
+        
+        .oil-card-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--title-color);
+            margin-bottom: 3px;
+            text-align: center;
+            line-height: 1.1;
+        }
+        
+        .oil-card-latin {
+            font-size: 14px;
+            font-style: italic;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        
+        .oil-back-content {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .oil-back-header {
+            margin-bottom: 15px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        
+        .oil-back-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--title-color);
+            margin-bottom: 3px;
+            text-align: center;
+        }
+        
+        .oil-back-category {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(232, 168, 149, 0.2);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--title-color);
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        
+        .dark-theme .oil-back-category {
+            background: rgba(212, 175, 55, 0.2);
+        }
+        
+        .oil-back-content-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        
+        .oil-back-description {
+            color: var(--text-primary);
+            line-height: 1.5;
+            font-size: 15px;
+            text-align: justify;
+            text-justify: inter-word;
+            margin-bottom: 20px;
+            flex-shrink: 0;
+            font-weight: 400;
+        }
+        
+        .oil-properties-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-shrink: 0;
+        }
+        
+        .oil-property {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            height: 32px;
+        }
+        
+        .oil-property-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: var(--title-color);
+            flex-shrink: 0;
+            border: 1.5px solid var(--title-color);
+            box-shadow: none;
+        }
+        
+        .oil-property-text {
+            font-size: 13px;
+            color: var(--text-primary);
+            text-align: left;
+            line-height: 1.2;
+            font-weight: 500;
+            flex: 1;
+        }
+        
+        .oil-details-btn-back {
+            display: block;
+            width: 85%;
+            padding: 12px;
+            background: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-align: center;
+            text-decoration: none;
+            margin-top: auto;
+            margin-left: auto;
+            margin-right: auto;
+            flex-shrink: 0;
+        }
+        
+        .oil-details-btn-back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+        }
+        
+        /* ===== КАРТОЧКИ ПАРФЮМОВ ===== */
+        .perfume-card-container {
+            width: 100%;
+            max-width: 320px;
+            height: 450px;
+            perspective: 1000px;
+            margin: 0 auto;
+        }
+        
+        .perfume-card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+        }
+        
+        .perfume-card.flipped {
+            transform: rotateY(180deg);
+        }
+        
+        .perfume-card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .perfume-card-front,
+        .perfume-card-back {
+            border: 2px solid var(--milky-coffee);
+        }
+        
+        .perfume-category-rare .perfume-card-front,
+        .perfume-category-rare .perfume-card-back {
+            border: 2px solid var(--chocolate);
+        }
+        
+        .perfume-category-legendary .perfume-card-front,
+        .perfume-category-legendary .perfume-card-back {
+            border: 2px solid var(--peony-dark-pink);
+        }
+        
+        .dark-theme .perfume-card-front,
+        .dark-theme .perfume-card-back {
+            border: 2px solid var(--sand-beige);
+        }
+        
+        .dark-theme .perfume-category-rare .perfume-card-front,
+        .dark-theme .perfume-category-rare .perfume-card-back {
+            border: 2px solid var(--gold);
+        }
+        
+        .dark-theme .perfume-category-legendary .perfume-card-front,
+        .dark-theme .perfume-category-legendary .perfume-card-back {
+            border: 2px solid var(--light-gold);
+        }
+        
+        .perfume-card-back {
+            transform: rotateY(180deg);
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            background: var(--card-bg);
+        }
+        
+        .perfume-card-image {
+            height: 80%;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            background-color: #f5f1e9;
+        }
+        
+        .dark-theme .perfume-card-image {
+            background-color: #2A1A0F;
+        }
+        
+        .perfume-collection-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+        }
+        
+        .perfume-heart-icon {
+            font-size: 36px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-block;
+            line-height: 1;
+        }
+        
+        .perfume-heart-icon.empty {
+            color: rgba(104, 70, 39, 0.3);
+            opacity: 0.5;
+        }
+        
+        .dark-theme .perfume-heart-icon.empty {
+            color: rgba(244, 228, 166, 0.3);
+        }
+        
+        .perfume-heart-icon.filled {
+            color: var(--peony-dark-pink);
+            transform: scale(1.2);
+        }
+        
+        .dark-theme .perfume-heart-icon.filled {
+            color: var(--light-gold);
+        }
+        
+        .perfume-card-title {
+            height: 20%;
+            padding: 10px 20px 15px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: var(--card-bg);
+            position: relative;
+        }
+        
+        .perfume-card-name {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--title-color);
+            margin-bottom: 8px;
+            text-align: center;
+            line-height: 1.1;
+        }
+        
+        .perfume-card-direction {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(232, 168, 149, 0.2);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--title-color);
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .dark-theme .perfume-card-direction {
+            background: rgba(212, 175, 55, 0.2);
+        }
+        
+        /* Обратная сторона парфюма */
+        .perfume-back-content {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 18px;
+        }
+        
+        /* Кастомный скроллбар для карточки парфюма */
+        .perfume-back-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .perfume-back-content::-webkit-scrollbar-track {
+            background: var(--scrollbar-track);
+            border-radius: 4px;
+            margin: 5px;
+        }
+        
+        .perfume-back-content::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: 4px;
+            border: 2px solid var(--card-bg);
+        }
+        
+        .perfume-back-content::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--milky-coffee), var(--roasted-peach));
+        }
+        
+        .dark-theme .perfume-back-content::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, rgba(244, 228, 166, 0.8), rgba(212, 175, 55, 0.8));
+        }
+        
+        .perfume-back-header {
+            margin-bottom: 12px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        
+        .perfume-back-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--title-color);
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        
+        .perfume-back-category {
+            display: inline-block;
+            padding: 5px 14px;
+            background: rgba(232, 168, 149, 0.2);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--title-color);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .dark-theme .perfume-back-category {
+            background: rgba(212, 175, 55, 0.2);
+        }
+        
+        .perfume-back-description {
+            color: var(--text-primary);
+            line-height: 1.5;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 20px;
+            flex-shrink: 0;
+            font-weight: 400;
+            padding: 0 10px;
+        }
+        
+        /* ПИРАМИДКА НОТ (перевернутая) */
+        .perfume-pyramid-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-shrink: 0;
+        }
+        
+        .perfume-pyramid-layer {
+            width: 90%;
+            padding: 8px 12px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .perfume-pyramid-top {
+            background: transparent;
+            border: 2px solid var(--milky-coffee);
+            border-radius: 10px 10px 5px 5px;
+            margin-bottom: -2px;
+            z-index: 3;
+            width: 70%;
+            color: var(--text-secondary);
+        }
+        
+        .dark-theme .perfume-pyramid-top {
+            border: 2px solid var(--sand-beige);
+            color: var(--sand-beige);
+        }
+        
+        .perfume-pyramid-heart {
+            background: var(--milky-coffee);
+            border: 2px solid var(--milky-coffee);
+            border-radius: 10px;
+            margin-bottom: -2px;
+            z-index: 2;
+            width: 85%;
+            color: white;
+        }
+        
+        .dark-theme .perfume-pyramid-heart {
+            background: var(--sand-beige);
+            border: 2px solid var(--sand-beige);
+        }
+        
+        .perfume-pyramid-base {
+            background: var(--roasted-peach);
+            border: 2px solid var(--roasted-peach);
+            border-radius: 5px 5px 10px 10px;
+            z-index: 1;
+            width: 100%;
+            color: white;
+        }
+        
+        .dark-theme .perfume-pyramid-base {
+            background: var(--gold);
+            border: 2px solid var(--gold);
+        }
+        
+        .perfume-pyramid-label {
+            font-size: 9px;
+            margin-bottom: 2px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .perfume-pyramid-notes {
+            font-size: 10px;
+            line-height: 1.3;
+        }
+        
+        /* Блок стойкости и типа */
+        .perfume-specs-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        
+        .perfume-spec-block {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border-radius: 12px;
+            background: rgba(232, 168, 149, 0.1);
+        }
+        
+        .dark-theme .perfume-spec-block {
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .perfume-spec-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .perfume-spec-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--title-color);
+            font-family: 'Georgia', serif;
+        }
+        
+        .perfume-spec-unit {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-left: 2px;
+        }
+        
+        /* Кнопка "Подробнее" */
+        .perfume-details-btn-back {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-align: center;
+            text-decoration: none;
+            flex-shrink: 0;
+            margin-top: auto;
+        }
+        
+        .perfume-details-btn-back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+        }
+        
+        /* ===== УВЕДОМЛЕНИЕ ===== */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 15px 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+            border: 1px solid var(--border-color);
+            max-width: 400px;
+            word-wrap: break-word;
+            white-space: normal;
+            overflow: visible;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification-icon {
+            font-size: 24px;
+            color: var(--peony-dark-pink);
+            flex-shrink: 0;
+        }
+        
+        .dark-theme .notification-icon {
+            color: var(--light-gold);
+        }
+        
+        .notification-text {
+            color: var(--text-primary);
+            font-size: 15px;
+            font-weight: 500;
+            flex: 1;
+            line-height: 1.4;
+        }
+        
+        /* ===== МОДАЛЬНЫЕ ОКНА ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            padding: 20px;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .details-modal {
+            background: var(--modal-bg);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            animation: modalAppear 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        @keyframes modalAppear {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .modal-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, var(--bg-primary), var(--modal-bg));
+        }
+        
+        .modal-title {
+            font-size: 24px;
+            color: var(--title-color);
+            font-weight: 300;
+            font-family: 'Georgia', serif;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 32px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 5px;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+        }
+        
+        .modal-close:hover {
+            opacity: 1;
+            background: rgba(104, 70, 39, 0.1);
+        }
+        
+        .dark-theme .modal-close:hover {
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .modal-content {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+        }
+        
+        /* Кастомный скроллбар модалки */
+        .modal-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .modal-content::-webkit-scrollbar-track {
+            background: var(--scrollbar-track);
+            border-radius: 4px;
+            margin: 5px;
+        }
+        
+        .modal-content::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: 4px;
+            border: 2px solid var(--modal-bg);
+        }
+        
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--milky-coffee), var(--roasted-peach));
+        }
+        
+        .dark-theme .modal-content::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, rgba(244, 228, 166, 0.8), rgba(212, 175, 55, 0.8));
+        }
+        
+        /* Контент модалки для масел */
+        .oil-modal-content {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .oil-modal-header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .oil-modal-title {
+            font-size: 28px;
+            color: var(--title-color);
+            margin-bottom: 10px;
+            font-family: 'Georgia', serif;
+            font-weight: 300;
+        }
+        
+        .oil-modal-category {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(232, 168, 149, 0.2);
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--title-color);
+            margin-bottom: 15px;
+        }
+        
+        .dark-theme .oil-modal-category {
+            background: rgba(212, 175, 55, 0.2);
+        }
+        
+        .oil-modal-description {
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: 16px;
+            text-align: justify;
+            margin-bottom: 20px;
+        }
+        
+        .oil-modal-section {
+            margin-bottom: 25px;
+        }
+        
+        .modal-section-title {
+            font-size: 18px;
+            color: var(--title-color);
+            margin-bottom: 15px;
+            font-family: 'Georgia', serif;
+            font-weight: 300;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 5px;
+        }
+        
+        .modal-tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .modal-tag {
+            background: linear-gradient(135deg, rgba(232, 168, 149, 0.2), rgba(239, 210, 176, 0.2));
+            color: var(--title-color);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid var(--border-color);
+        }
+        
+        .dark-theme .modal-tag {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(244, 228, 166, 0.2));
+        }
+        
+        .oil-modal-properties-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 10px;
+        }
+        
+        .oil-modal-property {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(232, 168, 149, 0.1);
+        }
+        
+        .dark-theme .oil-modal-property {
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .oil-modal-property-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--title-color);
+            border: 2px solid var(--title-color);
+        }
+        
+        .oil-modal-property-text {
+            flex: 1;
+            font-size: 15px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        
+        /* Контент модалки для парфюмов */
+        .perfume-modal-content {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .perfume-carousel-section {
+            padding: 30px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--modal-bg);
+        }
+        
+        .perfume-carousel-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .perfume-carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .perfume-carousel-slide.active {
+            opacity: 1;
+        }
+        
+        .perfume-carousel-nav {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            z-index: 10;
+        }
+        
+        .perfume-carousel-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .perfume-carousel-dot.active {
+            background: white;
+            transform: scale(1.2);
+        }
+        
+        .perfume-carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            color: var(--title-color);
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        
+        .perfume-carousel-btn:hover {
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .perfume-carousel-btn.prev {
+            left: 15px;
+        }
+        
+        .perfume-carousel-btn.next {
+            right: 15px;
+        }
+        
+        .perfume-info-section {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .perfume-info-column {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .perfume-info-block h3 {
+            font-size: 18px;
+            color: var(--title-color);
+            margin-bottom: 12px;
+            font-family: 'Georgia', serif;
+            font-weight: 300;
+        }
+        
+        .perfume-info-text {
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        
+        .perfume-specs-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .perfume-spec-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .perfume-spec-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .perfume-spec-value {
+            font-size: 14px;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .perfume-stores-block {
+            background: rgba(232, 168, 149, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 10px;
+        }
+        
+        .dark-theme .perfume-stores-block {
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .perfume-stores-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .perfume-store-badge {
+            background: var(--card-bg);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+        }
+        
+        .perfume-store-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            border-color: var(--roasted-peach);
+        }
+        
+        .dark-theme .perfume-store-badge:hover {
+            border-color: var(--gold);
+        }
+        
+        /* Маленькая пирамидка в модалке парфюма */
+        .perfume-modal-pyramid-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 10px 0 15px 0;
+        }
+        
+        .perfume-modal-pyramid-layer {
+            width: 80%;
+            padding: 6px 10px;
+            text-align: center;
+            font-size: 10px;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .perfume-modal-pyramid-top {
+            background: transparent;
+            border: 2px solid var(--milky-coffee);
+            border-radius: 8px 8px 4px 4px;
+            margin-bottom: -2px;
+            z-index: 3;
+            width: 60%;
+            color: var(--milky-coffee);
+        }
+        
+        .dark-theme .perfume-modal-pyramid-top {
+            border: 2px solid var(--sand-beige);
+            color: var(--sand-beige);
+        }
+        
+        .perfume-modal-pyramid-heart {
+            background: var(--milky-coffee);
+            border: 2px solid var(--milky-coffee);
+            border-radius: 8px;
+            margin-bottom: -2px;
+            z-index: 2;
+            width: 75%;
+            color: white;
+        }
+        
+        .dark-theme .perfume-modal-pyramid-heart {
+            background: var(--sand-beige);
+            border: 2px solid var(--sand-beige);
+        }
+        
+        .perfume-modal-pyramid-base {
+            background: var(--roasted-peach);
+            border: 2px solid var(--roasted-peach);
+            border-radius: 4px 4px 8px 8px;
+            z-index: 1;
+            width: 90%;
+            color: white;
+        }
+        
+        .dark-theme .perfume-modal-pyramid-base {
+            background: var(--gold);
+            border: 2px solid var(--gold);
+        }
+        
+        .perfume-modal-pyramid-label {
+            font-size: 8px;
+            margin-bottom: 2px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .perfume-modal-pyramid-notes {
+            font-size: 9px;
+            line-height: 1.3;
+        }
+        
+        /* Футер модалки */
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, var(--bg-primary), var(--modal-bg));
+        }
+        
+        .modal-action-btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+        
+        .modal-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+        }
+        
+        /* Боковое меню */
+        .side-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
+            backdrop-filter: blur(3px);
+        }
+        
+        .side-menu-overlay.active {
+            display: block;
+        }
+        
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100%;
+            background: var(--menu-bg);
+            z-index: 1001;
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .side-menu.active {
+            transform: translateX(280px);
+        }
+        
+        /* Сообщение при отсутствии результатов */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            grid-column: 1 / -1;
+        }
+        
+        .empty-state-icon {
+            font-size: 48px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        
+        .empty-state-title {
+            color: var(--title-color);
+            margin-bottom: 10px;
+            font-family: 'Georgia', serif;
+            font-size: 20px;
+        }
+        
+        .empty-state-text {
+            color: var(--text-secondary);
+            max-width: 300px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        
+        /* ===== СТИЛИ МЕНЮ ===== */
+        .menu-header {
+            padding: 25px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, var(--bg-primary), var(--menu-bg));
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .menu-buttons {
+            padding: 0;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .menu-btn {
+            width: 100%;
+            padding: 22px 25px;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: 17px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            text-align: left;
+            border-radius: 0;
+            position: relative;
+        }
+        
+        .menu-btn:last-child {
+            border-bottom: none;
+        }
+        
+        .menu-btn:hover {
+            background: rgba(232, 168, 149, 0.08);
+            color: var(--text-primary);
+        }
+        
+        .dark-theme .menu-btn:hover {
+            background: rgba(212, 175, 55, 0.08);
+        }
+        
+        .menu-btn.active {
+            font-weight: 600;
+            background: rgba(232, 168, 149, 0.08);
+            color: var(--text-primary);
+        }
+        
+        .dark-theme .menu-btn.active {
+            background: rgba(212, 175, 55, 0.08);
+        }
+        
+        .menu-btn.active i {
+            color: var(--roasted-peach) !important;
+        }
+        
+        .dark-theme .menu-btn.active i {
+            color: var(--gold) !important;
+        }
+        
+        .menu-btn i:first-child {
+            font-size: 22px;
+            width: 24px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+        
+        .menu-btn span {
+            flex: 1;
+        }
+        
+        .menu-btn.active::after {
+            content: '';
+            position: absolute;
+            right: 25px;
+            width: 8px;
+            height: 8px;
+            background: var(--roasted-peach);
+            border-radius: 50%;
+        }
+        
+        .dark-theme .menu-btn.active::after {
+            background: var(--gold);
+        }
+        
+        /* ===== АДАПТИВНОСТЬ ===== */
+        @media (max-width: 768px) {
+            .main-header {
+                padding: 12px 15px;
+            }
+            
+            .main-title {
+                font-size: 18px;
+            }
+            
+            .control-panel {
+                flex-direction: column;
+                height: auto;
+                padding: 8px 15px;
+                gap: 10px;
+                min-height: 70px;
+            }
+            
+            .search-row {
+                display: flex;
+                align-items: center;
+                width: 100%;
+                gap: 12px;
+            }
+            
+            .content-area {
+                padding: 15px;
+            }
+            
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .articles-list {
+                gap: 12px;
+            }
+            
+            .perfume-info-section {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .notification {
+                top: 80px;
+                right: 15px;
+                max-width: 350px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .oil-card-container,
+            .perfume-card-container {
+                max-width: 100%;
+                height: 420px;
+            }
+            
+            .notification {
+                top: 70px;
+                right: 10px;
+                max-width: 300px;
+                padding: 12px 20px;
+            }
+            
+            .perfume-carousel-container {
+                height: 250px;
+            }
+            
+            .article-item {
+                padding: 15px;
+                padding-top: 50px;
+            }
+            
+            .article-badge {
+                top: 40px;
+                font-size: 10px;
+                padding: 3px 8px;
+            }
+            
+            .badge-collection {
+                top: 3px;
+                right: 35px;
+                width: 24px;
+                height: 24px;
+            }
+            
+            .badge-collection i {
+                font-size: 12px;
+            }
+            
+            .article-tag {
+                top: 12px;
+                left: 15px;
+                font-size: 12px;
+                padding: 5px 12px;
+            }
+        }
+/* Добавьте в конец CSS файла */
+
+/* Стили для карусели в модальном окне */
+.perfume-carousel-section {
+    padding: 0;
+    margin-bottom: 25px;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.perfume-carousel-container {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.perfume-carousel-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.perfume-carousel-slide.active {
+    opacity: 1;
+}
+
+.perfume-carousel-nav {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    z-index: 10;
+}
+
+.perfume-carousel-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.perfume-carousel-dot.active {
+    background: white;
+    transform: scale(1.2);
+}
+
+.perfume-carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.8);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    color: var(--title-color);
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+
+.perfume-carousel-btn:hover {
+    background: white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.perfume-carousel-btn.prev {
+    left: 15px;
+}
+
+.perfume-carousel-btn.next {
+    right: 15px;
+}
+
+/* Адаптивность для карусели */
+@media (max-width: 768px) {
+    .perfume-carousel-container {
+        height: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    .perfume-carousel-container {
+        height: 200px;
+    }
+    
+    .perfume-carousel-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 18px;
+    }
+}
+    </style>
+</head>
+<body>
+    <!-- Основной контейнер -->
+    <div class="app-container">
+        <!-- Шапка -->
+        <div class="main-header">
+            <button class="menu-toggle" onclick="toggleSideMenu()">≡</button>
+            <a href="main.html" class="main-title" style="cursor: pointer; text-decoration: none;">Scentmé</a>
+            <button class="profile-btn" onclick="goToProfile()">
+                <div class="profile-avatar" id="headerAvatar">A</div>
+            </button>
+        </div>
+        
+        <!-- Панель управления -->
+        <div class="control-panel">
+            <div class="search-row">
+                <div class="search-container" onclick="activateSearch()" id="searchContainer">
+                    <div class="search-line" id="searchLine"></div>
+                    <div class="search-magnifier"></div>
+                    <input 
+                        type="text"
+                        class="search-input"
+                        id="searchInput"
+                        placeholder="Найти в коллекции..."
+                        onblur="deactivateSearch()"
+                    >
+                </div>
+            </div>
+        </div>
+        
+        <!-- Табы коллекции -->
+        <div class="collection-tabs">
+            <button class="collection-tab active" onclick="switchTab('scents')" id="scentsTab">
+                Ароматы
+                <span class="tab-badge" id="scentsBadge">0</span>
+            </button>
+            <button class="collection-tab" onclick="switchTab('articles')" id="articlesTab">
+                Статьи
+                <span class="tab-badge" id="articlesBadge">0</span>
+            </button>
+        </div>
+        
+        <!-- Основной контент -->
+        <div class="content-area" id="contentArea">
+            <!-- Вкладка Ароматы -->
+            <div class="tab-content active" id="scentsTabContent">
+                <div class="cards-grid" id="scentsGrid">
+                    <!-- Ароматы из коллекции будут добавлены через JavaScript -->
+                </div>
+            </div>
+            
+            <!-- Вкладка Статьи -->
+            <div class="tab-content" id="articlesTabContent">
+                <div class="articles-list" id="articlesGrid">
+                    <!-- Статьи из коллекции будут добавлены через JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Уведомление -->
+        <div class="notification" id="notification">
+            <div class="notification-icon" id="notificationIcon">♥</div>
+            <div class="notification-text" id="notificationText"></div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно деталей -->
+    <div class="modal-overlay" id="detailsModalOverlay" onclick="closeDetailsModal(event)">
+        <div class="details-modal" id="detailsModal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 class="modal-title" id="detailsModalTitle"></h2>
+                <button class="modal-close" onclick="closeDetailsModal(event)">×</button>
+            </div>
+            
+            <div class="modal-content" id="detailsModalContent">
+                <!-- Контент будет добавлен через JavaScript -->
+            </div>
+            
+            <div class="modal-footer">
+                <button class="modal-action-btn btn-secondary" id="modalCollectionBtn" onclick="removeFromCollectionFromModal()">
+                    <i class="bi bi-heart-fill"></i> Удалить из коллекции
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Боковое меню -->
+    <div class="side-menu-overlay" id="sideMenuOverlay" onclick="closeSideMenu()"></div>
+    <div class="side-menu" id="sideMenu">
+        <div class="menu-header">
+            <h2 class="modal-title">Меню</h2>
+            <button class="modal-close" onclick="closeSideMenu()">×</button>
+        </div>
+        <!-- Содержимое меню будет добавлено через JavaScript -->
+    </div>
+    <script>
+    // ===== ИНИЦИАЛИЗАЦИЯ =====
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeTheme();
+        renderMenuContent();
+        setupSearch();
+        loadCollectionData();
+    });
+
+    // ===== ТЕМА =====
+    function initializeTheme() {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+    }
+
+    // ===== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ =====
+    let searchQuery = '';
+    let currentTab = 'scents';
+    let allScents = [];
+    let allArticles = [];
+let currentDetailItemId = null;
+let currentDetailItemType = null;
+
+    // ===== ДАННЫЕ КОЛЛЕКЦИИ =====
+    async function loadCollectionData() {
+        console.log('=== НАЧИНАЕМ ЗАГРУЗКУ КОЛЛЕКЦИИ ===');
+        
+        try {
+            // Загружаем данные параллельно
+            await Promise.all([
+                loadScentsFromCollection(),
+                loadArticlesFromCollection()
+            ]);
+            
+            console.log('Данные загружены:');
+            console.log('- Ароматы:', allScents.length);
+            console.log('- Статьи:', allArticles.length);
+            
+            // Обновляем интерфейс
+            updateDisplay();
+            updateTabBadges();
+            
+        } catch (error) {
+            console.error('Ошибка при загрузке коллекции:', error);
+        }
+    }
+
+   function loadScentsFromCollection() {
+    return new Promise((resolve) => {
+        try {
+            // Получаем ID ароматов из коллекции
+            const savedScents = localStorage.getItem('scentme_collection_scents');
+            const scentIds = savedScents ? JSON.parse(savedScents) : [];
+            
+            console.log('ID ароматов в коллекции:', scentIds);
+            
+            if (scentIds.length === 0) {
+                allScents = [];
+                console.log('Нет ароматов в коллекции');
+                resolve();
+                return;
+            }
+            
+            // Получаем данные из нескольких источников
+            let scentsData = [];
+            
+            // 1. Попробуем из кэша библиотеки
+            const libraryCache = localStorage.getItem('scentme_library_cache');
+            if (libraryCache) {
+                try {
+                    const cache = JSON.parse(libraryCache);
+                    if (cache.oils || cache.perfumes) {
+                        scentsData = [
+                            ...(cache.oils || []).map(oil => ({ ...oil, type: 'oil' })),
+                            ...(cache.perfumes || []).map(perfume => ({ ...perfume, type: 'perfume' }))
+                        ];
+                        console.log('Загружено из кэша библиотеки:', scentsData.length);
+                    }
+                } catch (e) {
+                    console.warn('Ошибка парсинга кэша библиотеки:', e);
+                }
+            }
+            
+            // 2. Если кэш пуст, попробуем получить из отдельных сохраненных продуктов
+            if (scentsData.length === 0) {
+                console.log('Пробуем загрузить из сохраненных продуктов...');
+                scentsData = scentIds
+                    .map(id => {
+                        try {
+                            const productData = localStorage.getItem(`scentme_product_scent_${id}`);
+                            if (productData) {
+                                const parsed = JSON.parse(productData);
+                                return {
+                                    ...parsed,
+                                    type: id <= 100 ? 'oil' : 'perfume',
+                                    collection: true
+                                };
+                            }
+                        } catch (e) {
+                            console.warn('Ошибка загрузки продукта:', id, e);
+                        }
+                        return null;
+                    })
+                    .filter(item => item !== null);
+                
+                console.log('Загружено из сохраненных продуктов:', scentsData.length);
+            }
+            
+            // 3. Если всё ещё пусто, создаем базовую структуру
+            if (scentsData.length === 0 && scentIds.length > 0) {
+                console.log('Создаем базовую структуру...');
+                scentsData = scentIds.map(id => ({
+                    id: id,
+                    name: `Аромат #${id}`,
+                    type: id <= 100 ? 'oil' : 'perfume',
+                    category: 'universal',
+                    image: id <= 100 ? 
+                        'https://images.unsplash.com/photo-1561024356-9d4c5df2e69a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' :
+                        'https://images.unsplash.com/photo-1541643600914-78b084683601?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    description: 'Описание временно недоступно',
+                    collection: true
+                }));
+            }
+            
+            // Фильтруем только те, что есть в коллекции
+            allScents = scentsData.filter(scent => scentIds.includes(scent.id));
+            
+            console.log('Итоговые ароматы в коллекции:', allScents.length);
+            
+        } catch (error) {
+            console.error('Ошибка загрузки ароматов:', error);
+            allScents = [];
+        }
+        resolve();
+    });
+}
+
+    function loadArticlesFromCollection() {
+        return new Promise((resolve) => {
+            try {
+                // Получаем ID статей из коллекции
+                const articleIds = getArticleCollection();
+                console.log('ID статей в коллекции:', articleIds);
+                
+                if (articleIds.length === 0) {
+                    allArticles = [];
+                    console.log('Нет статей в коллекции');
+                    resolve();
+                    return;
+                }
+                
+                // Получаем все статьи
+                const articlesData = getArticlesData();
+                
+                if (!articlesData || articlesData.length === 0) {
+                    console.warn('Нет данных о статьях');
+                    allArticles = [];
+                    resolve();
+                    return;
+                }
+                
+                // Фильтруем только те, что есть в коллекции
+                allArticles = articlesData
+                    .filter(article => articleIds.includes(article.id))
+                    .map(article => ({
+                        ...article,
+                        collection: true
+                    }));
+                
+                console.log('Загруженные статьи:', allArticles);
+                
+            } catch (error) {
+                console.error('Ошибка загрузки статей:', error);
+                allArticles = [];
+            }
+            resolve();
+        });
+    }
+
+    // ===== ПОЛУЧЕНИЕ ДАННЫХ ИЗ ДРУГИХ ФАЙЛОВ =====
+    function getLibraryData() {
+        try {
+            // Пытаемся получить из кэша библиотеки
+            const libraryCache = localStorage.getItem('scentme_library_cache');
+            
+            if (libraryCache) {
+                const cache = JSON.parse(libraryCache);
+                if (cache.oils && cache.perfumes) {
+                    // Объединяем масла и парфюмы
+                    const allLibraryScents = [
+                        ...cache.oils.map(oil => ({ ...oil, type: 'oil' })),
+                        ...cache.perfumes.map(perfume => ({ ...perfume, type: 'perfume' }))
+                    ];
+                    console.log('Библиотека загружена из кэша:', allLibraryScents.length);
+                    return allLibraryScents;
+                }
+            }
+            
+            // Если нет кэша, возвращаем пустой массив
+            console.warn('Кэш библиотеки не найден');
+            return [];
+            
+        } catch (error) {
+            console.error('Ошибка получения данных библиотеки:', error);
+            return [];
+        }
+    }
+
+    function getArticlesData() {
+        try {
+            // Пытаемся получить из кэша статей
+            const articlesCache = localStorage.getItem('scentme_articles_cache');
+            
+            if (articlesCache) {
+                const cache = JSON.parse(articlesCache);
+                if (cache.articles && Array.isArray(cache.articles)) {
+                    console.log('Статьи загружены из кэша:', cache.articles.length);
+                    return cache.articles.map(article => ({
+                        id: article.id,
+                        name: article.title,
+                        type: article.tag || 'Статья',
+                        tag: article.tag,
+                        description: article.preview || '',
+                        fullDescription: article.content,
+                        date: article.date || 'Недавно',
+                        readTime: article.readTime || '5 мин',
+                        author: article.author || null,
+                        new: true // Все статьи в коллекции считаем новыми
+                    }));
+                }
+            }
+            
+            // Если нет кэша, возвращаем демо-статьи
+            console.warn('Кэш статей не найден, используем демо-данные');
+            return getDemoArticles();
+            
+        } catch (error) {
+            console.error('Ошибка получения данных статей:', error);
+            return getDemoArticles();
+        }
+    }
+
+    function getDemoArticles() {
+        return [
+            {
+                id: 1,
+                name: "Как выбрать свой первый парфюм: полное руководство",
+                type: "Гайд",
+                tag: "Гайд",
+                description: "Пошаговое руководство для тех, кто только начинает знакомство с миром ароматов.",
+                fullDescription: "Выбор первого парфюма — это как первое свидание: волнительно, немного страшно, но невероятно интересно.",
+                date: "28 декабря 2025",
+                readTime: "5 мин",
+                author: "Анна Парфюмерова",
+                new: true
+            },
+            {
+                id: 2,
+                name: "Секреты долгой стойкости: 10 техник для продления жизни аромата",
+                type: "Совет",
+                tag: "Совет",
+                description: "10 профессиональных техник, которые продлят жизнь вашему парфюму на коже.",
+                fullDescription: "Вы когда-нибудь замечали, что ваш любимый парфюм исчезает уже через пару часов?",
+                date: "5 января 2026",
+                readTime: "7 мин",
+                author: "Мария Сомелье",
+                new: true
+            },
+            {
+                id: 3,
+                name: "Парфюмерные семьи: полный гид по классификации ароматов",
+                type: "Образование",
+                tag: "Образование",
+                description: "Цитрусовые, шипровые, ориентальные, фужерные — разбираемся в классификации.",
+                fullDescription: "Мир парфюмерии имеет свою сложную систему классификации, которая помогает ориентироваться.",
+                date: "12 января 2026",
+                readTime: "10 мин",
+                author: null,
+                new: true
+            }
+        ];
+    }
+
+    function getArticleCollection() {
+    try {
+        // Пробуем получить из нескольких возможных мест
+        const keys = [
+            'scentme_collection_articles',  // Основной ключ
+            'scentme_collected_articles',   // Альтернативный ключ
+            'collected_articles'            // Еще один возможный ключ
+        ];
+        
+        for (const key of keys) {
+            const collection = localStorage.getItem(key);
+            if (collection) {
+                console.log('Коллекция найдена в ключе:', key);
+                return JSON.parse(collection);
+            }
+        }
+        
+        console.log('Коллекция статей не найдена в localStorage');
+        return [];
+        
+    } catch (e) {
+        console.error('Ошибка чтения коллекции статей:', e);
+        return [];
+    }
+}
+    // ===== ОТОБРАЖЕНИЕ =====
+    function updateDisplay() {
+        console.log('Обновляем отображение для вкладки:', currentTab);
+        
+        if (currentTab === 'scents') {
+            displayScentsCollection();
+        } else {
+            displayArticlesCollection();
+        }
+    }
+
+    function displayScentsCollection() {
+        const grid = document.getElementById('scentsGrid');
+        if (!grid) return;
+        
+        console.log('Отображаем ароматы, количество:', allScents.length);
+        
+        if (allScents.length === 0) {
+            grid.innerHTML = createEmptyState('🌿', 'В коллекции пока нет ароматов', 'Добавляйте ароматы в коллекцию из библиотеки');
+            return;
+        }
+
+        grid.innerHTML = '';
+        allScents.forEach(scent => {
+            console.log('Создаем карточку для аромата:', scent.name);
+            const card = createScentCard(scent);
+            grid.appendChild(card);
+        });
+    }
+
+    function displayArticlesCollection() {
+        const grid = document.getElementById('articlesGrid');
+        if (!grid) return;
+        
+        console.log('Отображаем статьи, количество:', allArticles.length);
+        
+        if (allArticles.length === 0) {
+            grid.innerHTML = createEmptyState('📚', 'В коллекции пока нет статей', 'Добавляйте статьи в коллекцию со страницы статей');
+            return;
+        }
+
+        grid.innerHTML = '';
+        allArticles.forEach(article => {
+            console.log('Создаем карточку для статьи:', article.name);
+            const card = createArticleCard(article);
+            grid.appendChild(card);
+        });
+    }
+
+    function createEmptyState(icon, title, text) {
+        return `
+            <div class="empty-state">
+                <div class="empty-state-icon">${icon}</div>
+                <h3 class="empty-state-title">${title}</h3>
+                <p class="empty-state-text">${text}</p>
+            </div>
+        `;
+    }
+
+    // ===== СОЗДАНИЕ КАРТОЧЕК =====
+    function createScentCard(scent) {
+        const container = document.createElement('div');
+        
+        // Определяем тип карточки
+        if (scent.type === 'oil' || scent.id <= 100) {
+            container.className = `oil-card-container category-${scent.category || 'universal'}`;
+            container.innerHTML = createOilCardHTML(scent);
+        } else {
+            const categoryClass = scent.category === 'rare' ? 'perfume-category-rare' : 
+                                scent.category === 'legendary' ? 'perfume-category-legendary' : '';
+            container.className = `perfume-card-container ${categoryClass}`;
+            container.innerHTML = createPerfumeCardHTML(scent);
+        }
+        
+        return container;
+    }
+
+    function createOilCardHTML(scent) {
+        let benefitsHTML = '';
+        if (scent.benefits) {
+            scent.benefits.forEach((benefit, index) => {
+                const iconClass = scent.icons && scent.icons[index] ? scent.icons[index] : 'bi-lightning-charge';
+                benefitsHTML += `
+                    <div class="oil-property">
+                        <div class="oil-property-icon">
+                            <i class="bi ${iconClass}"></i>
+                        </div>
+                        <span class="oil-property-text">${benefit}</span>
+                    </div>
+                `;
+            });
+        }
+        
+        return `
+            <div class="oil-card" id="card-${scent.id}" onclick="flipCard(${scent.id}, 'oil')">
+                <!-- Лицевая сторона -->
+                <div class="oil-card-face oil-card-front">
+                    <div class="oil-card-image" style="background-image: url('${scent.image || 'https://images.unsplash.com/photo-1561024356-9d4c5df2e69a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'}')">
+                        <button class="oil-collection-btn" onclick="removeFromCollection(event, ${scent.id}, 'scent')">
+                            <span class="oil-heart-icon filled">♥</span>
+                        </button>
+                    </div>
+                    <div class="oil-card-title">
+                        <h2 class="oil-card-name">${scent.name}</h2>
+                        ${scent.latin ? `<p class="oil-card-latin">${scent.latin}</p>` : ''}
+                    </div>
+                </div>
+                
+                <!-- Обратная сторона -->
+                <div class="oil-card-face oil-card-back">
+                    <div class="oil-back-content">
+                        <div class="oil-back-header">
+                            <h2 class="oil-back-title">${scent.name}</h2>
+                            <div class="oil-back-category">${getCategoryName(scent.category)}</div>
+                        </div>
+                        
+                        <div class="oil-back-content-main">
+                            <p class="oil-back-description">${scent.description || ''}</p>
+                            
+                            ${benefitsHTML ? `
+                            <div class="oil-properties-grid">
+                                ${benefitsHTML}
+                            </div>
+                            ` : ''}
+                        </div>
+                        
+                        <button class="oil-details-btn-back" onclick="event.stopPropagation(); showDetailsModal(${scent.id}, 'scent')">Подробнее</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function createPerfumeCardHTML(scent) {
+        const notesHTML = scent.notes ? `
+            <!-- Пирамидка нот -->
+            <div class="perfume-pyramid-container">
+                <div class="perfume-pyramid-layer perfume-pyramid-top">
+                    <div class="perfume-pyramid-label">Верхние ноты</div>
+                    <div class="perfume-pyramid-notes">${scent.notes.top || ''}</div>
+                </div>
+                
+                <div class="perfume-pyramid-layer perfume-pyramid-heart">
+                    <div class="perfume-pyramid-label">Ноты сердца</div>
+                    <div class="perfume-pyramid-notes">${scent.notes.heart || ''}</div>
+                </div>
+                
+                <div class="perfume-pyramid-layer perfume-pyramid-base">
+                    <div class="perfume-pyramid-label">Базовые ноты</div>
+                    <div class="perfume-pyramid-notes">${scent.notes.base || ''}</div>
+                </div>
+            </div>
+        ` : '';
+        
+        return `
+            <div class="perfume-card" id="card-${scent.id}" onclick="flipCard(${scent.id}, 'perfume')">
+                <!-- Лицевая сторона -->
+                <div class="perfume-card-face perfume-card-front">
+                    <div class="perfume-card-image" style="background-image: url('${scent.image || 'https://images.unsplash.com/photo-1541643600914-78b084683601?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'}')">
+                        <button class="perfume-collection-btn" onclick="removeFromCollection(event, ${scent.id}, 'scent')">
+                            <span class="perfume-heart-icon filled">♥</span>
+                        </button>
+                    </div>
+                    <div class="perfume-card-title">
+                        <h2 class="perfume-card-name">${scent.name}</h2>
+                        ${scent.type ? `<div class="perfume-card-direction">${scent.type}</div>` : ''}
+                    </div>
+                </div>
+                
+                <!-- Обратная сторона -->
+                <div class="perfume-card-face perfume-card-back">
+                    <div class="perfume-back-content">
+                        <div class="perfume-back-header">
+                            <h2 class="perfume-back-title">${scent.name}</h2>
+                            <div class="perfume-back-category">${getCategoryName(scent.category)}</div>
+                        </div>
+                        
+                        <p class="perfume-back-description">
+                            ${scent.description || ''}
+                        </p>
+                        
+                        ${notesHTML}
+                        
+                        <!-- Стойкость и тип -->
+                        <div class="perfume-specs-row">
+                            ${scent.longevity ? `
+                            <div class="perfume-spec-block">
+                                <div class="perfume-spec-label">Стойкость</div>
+                                <div>
+                                    <span class="perfume-spec-value">${scent.longevity}</span>
+                                    <span class="perfume-spec-unit">ч</span>
+                                </div>
+                            </div>
+                            ` : ''}
+                            
+                            ${scent.type ? `
+                            <div class="perfume-spec-block">
+                                <div class="perfume-spec-label">Тип</div>
+                                <div class="perfume-spec-value">${scent.type}</div>
+                            </div>
+                            ` : ''}
+                        </div>
+                        
+                        <button class="perfume-details-btn-back" onclick="event.stopPropagation(); showDetailsModal(${scent.id}, 'scent')">Подробнее</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function createArticleCard(article) {
+        const container = document.createElement('div');
+        container.className = 'article-item';
+        container.setAttribute('data-article-id', article.id);
+        container.onclick = () => openArticle(article);
+        
+        const badgesHTML = `<div class="badge-collection"><i class="bi bi-bookmark-fill"></i></div>`;
+        
+        container.innerHTML = `
+            ${badgesHTML}
+            
+            <span class="article-tag">${article.tag || article.type || 'Статья'}</span>
+            <h3 class="article-title">${article.name}</h3>
+            <p class="article-preview">${article.description || ''}</p>
+            <div class="article-meta">
+                <span>${article.date || 'Недавно'}</span>
+                <span>${article.readTime || '5 мин'}</span>
+            </div>
+        `;
+        
+        return container;
+    }
+
+    // ===== ОТКРЫТИЕ СТАТЬИ =====
+    function openArticle(article) {
+        // Сохраняем данные статьи для поиска в articles.html
+        localStorage.setItem('open_article_data', JSON.stringify({
+            id: article.id,
+            name: article.name,
+            searchTerm: article.name
+        }));
+        
+        // Переходим на страницу статей
+        window.location.href = 'articles.html';
+    }
+
+    // ===== УДАЛЕНИЕ ИЗ КОЛЛЕКЦИИ =====
+    function removeFromCollection(event, itemId, itemType) {
+        event.stopPropagation();
+        event.preventDefault();
+        
+        if (itemType === 'scent') {
+            removeScentFromCollection(itemId);
+        } else if (itemType === 'article') {
+            removeArticleFromCollection(itemId);
+        }
+        
+        showNotification('Удалено из коллекции');
+        loadCollectionData(); // Перезагружаем данные
+    }
+
+    function removeScentFromCollection(scentId) {
+        try {
+            const savedScents = localStorage.getItem('scentme_collection_scents');
+            if (savedScents) {
+                const scentIds = JSON.parse(savedScents);
+                const newScentIds = scentIds.filter(id => id !== scentId);
+                localStorage.setItem('scentme_collection_scents', JSON.stringify(newScentIds));
+            }
+        } catch (e) {
+            console.error('Ошибка удаления аромата:', e);
+        }
+    }
+
+    function removeArticleFromCollection(articleId) {
+        try {
+            const articleIds = getArticleCollection();
+            const newArticleIds = articleIds.filter(id => id !== articleId);
+            localStorage.setItem('scentme_collection_articles', JSON.stringify(newArticleIds));
+        } catch (e) {
+            console.error('Ошибка удаления статьи:', e);
+        }
+    }
+
+    // ===== ПОИСК =====
+    function setupSearch() {
+        const searchInput = document.getElementById('searchInput');
+        if (!searchInput) return;
+        
+        searchInput.addEventListener('input', function(e) {
+            searchQuery = e.target.value.trim();
+            filterCollection();
+        });
+    }
+
+    function filterCollection() {
+        if (currentTab === 'scents') {
+            filterScents();
+        } else {
+            filterArticles();
+        }
+    }
+
+    function filterScents() {
+        const grid = document.getElementById('scentsGrid');
+        if (!grid) return;
+        
+        if (!searchQuery) {
+            displayScentsCollection();
+            return;
+        }
+        
+        const query = searchQuery.toLowerCase();
+        const filteredScents = allScents.filter(scent => {
+            const searchFields = [
+                scent.name?.toLowerCase() || '',
+                scent.latin?.toLowerCase() || '',
+                scent.description?.toLowerCase() || '',
+                ...(scent.tags || []).map(t => t.toLowerCase()),
+                ...(scent.benefits || []).map(b => b.toLowerCase()),
+                scent.type?.toLowerCase() || ''
+            ];
+            return searchFields.some(field => field.includes(query));
+        });
+        
+        if (filteredScents.length === 0) {
+            grid.innerHTML = createEmptyState('🔍', 'Ароматы не найдены', 'Попробуйте изменить поисковый запрос');
+        } else {
+            grid.innerHTML = '';
+            filteredScents.forEach(scent => {
+                const card = createScentCard(scent);
+                grid.appendChild(card);
+            });
+        }
+    }
+
+    function filterArticles() {
+        const grid = document.getElementById('articlesGrid');
+        if (!grid) return;
+        
+        if (!searchQuery) {
+            displayArticlesCollection();
+            return;
+        }
+        
+        const query = searchQuery.toLowerCase();
+        const filteredArticles = allArticles.filter(article => {
+            const searchFields = [
+                article.name?.toLowerCase() || '',
+                article.type?.toLowerCase() || '',
+                article.description?.toLowerCase() || '',
+                article.tag?.toLowerCase() || ''
+            ];
+            return searchFields.some(field => field.includes(query));
+        });
+        
+        if (filteredArticles.length === 0) {
+            grid.innerHTML = createEmptyState('🔍', 'Статьи не найдены', 'Попробуйте изменить поисковый запрос');
+        } else {
+            grid.innerHTML = '';
+            filteredArticles.forEach(article => {
+                const card = createArticleCard(article);
+                grid.appendChild(card);
+            });
+        }
+    }
+
+    // ===== ТАБЫ =====
+    function switchTab(tabName) {
+        currentTab = tabName;
+        
+        // Обновляем активные табы
+        document.querySelectorAll('.collection-tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        
+        const tabElement = document.getElementById(`${tabName}Tab`);
+        const contentElement = document.getElementById(`${tabName}TabContent`);
+        
+        if (tabElement) tabElement.classList.add('active');
+        if (contentElement) contentElement.classList.add('active');
+        
+        // Сбрасываем поиск
+        searchQuery = '';
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.value = '';
+            deactivateSearch();
+        }
+        
+        // Обновляем отображение
+        updateDisplay();
+    }
+
+    function updateTabBadges() {
+        const scentsCount = allScents ? allScents.length : 0;
+        const articlesCount = allArticles ? allArticles.length : 0;
+        
+        const scentsBadge = document.getElementById('scentsBadge');
+        const articlesBadge = document.getElementById('articlesBadge');
+        
+        if (scentsBadge) {
+            scentsBadge.textContent = scentsCount;
+            scentsBadge.style.display = scentsCount > 0 ? 'flex' : 'none';
+        }
+        
+        if (articlesBadge) {
+            articlesBadge.textContent = articlesCount;
+            articlesBadge.style.display = articlesCount > 0 ? 'flex' : 'none';
+        }
+    }
+
+    // ===== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =====
+    function getCategoryName(categoryId) {
+        const categories = {
+            'universal': 'Универсальные',
+            'rare': 'Редкие',
+            'legendary': 'Легендарные'
+        };
+        return categories[categoryId] || 'Универсальные';
+    }
+
+    function showNotification(text) {
+        const notification = document.getElementById('notification');
+        const notificationText = document.getElementById('notificationText');
+        
+        if (notification && notificationText) {
+            notificationText.textContent = text;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+    }
+
+    function flipCard(cardId, type) {
+        const card = document.getElementById(`card-${cardId}`);
+        if (card) {
+            card.classList.toggle('flipped');
+        }
+    }
+
+    function activateSearch() {
+        const container = document.getElementById('searchContainer');
+        const line = document.getElementById('searchLine');
+        const input = document.getElementById('searchInput');
+        
+        if (!container || !line || !input) return;
+        
+        container.classList.add('active');
+        line.classList.add('active');
+        input.classList.add('active');
+        input.focus();
+    }
+
+    function deactivateSearch() {
+        const container = document.getElementById('searchContainer');
+        const line = document.getElementById('searchLine');
+        const input = document.getElementById('searchInput');
+        
+        if (!container || !line || !input) return;
+        
+        container.classList.remove('active');
+        line.classList.remove('active');
+        input.classList.remove('active');
+    }
+
+    // ===== ОТЛАДКА =====
+    function debugCollection() {
+        console.log('=== DEBUG КОЛЛЕКЦИЯ ===');
+        console.log('Ароматы в localStorage:', JSON.parse(localStorage.getItem('scentme_collection_scents') || '[]'));
+        console.log('Статьи в localStorage:', JSON.parse(localStorage.getItem('scentme_collection_articles') || '[]'));
+        console.log('Кэш библиотеки:', localStorage.getItem('scentme_library_cache') ? 'есть' : 'нет');
+        console.log('Кэш статей:', localStorage.getItem('scentme_articles_cache') ? 'есть' : 'нет');
+        console.log('Загруженные ароматы:', allScents);
+        console.log('Загруженные статьи:', allArticles);
+        
+        // Перезагружаем
+        loadCollectionData();
+    }
+
+    // ===== ОБНОВЛЕНИЕ ПРИ ВОЗВРАЩЕНИИ =====
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            loadCollectionData();
+        }
+    });
+
+    window.addEventListener('focus', function() {
+        loadCollectionData();
+    });
+
+    // ===== МЕНЮ =====
+    function renderMenuContent() {
+        const menu = document.getElementById('sideMenu');
+        if (!menu) return;
+        
+        menu.innerHTML = '';
+        
+        const menuHeader = document.createElement('div');
+        menuHeader.className = 'menu-header';
+        menuHeader.innerHTML = `
+            <h2 class="modal-title">Меню</h2>
+            <button class="modal-close" onclick="closeSideMenu()">×</button>
+        `;
+        menu.appendChild(menuHeader);
+        
+        const menuButtons = document.createElement('div');
+        menuButtons.className = 'menu-buttons';
+        
+        const menuItems = [
+            {
+                id: 'library',
+                name: 'Библиотека ароматов',
+                icon: 'bi-book',
+                active: false,
+                onClick: 'closeSideMenu(); window.location.href = "library.html"'
+            },
+            {
+                id: 'test',
+                name: 'Новый тест',
+                icon: 'bi-clipboard-check',
+                active: false,
+                onClick: 'closeSideMenu(); window.location.href = "start.html"'
+            },
+            {
+                id: 'articles',
+                name: 'Статьи',
+                icon: 'bi-newspaper',
+                active: false,
+                onClick: 'closeSideMenu(); window.location.href = "articles.html"'
+            },
+            {
+                id: 'collection',
+                name: 'Коллекция',
+                icon: 'bi-heart',
+                active: true,
+                onClick: 'closeSideMenu()'
+            },
+            {
+                id: 'profile',
+                name: 'Профиль',
+                icon: 'bi-person',
+                active: false,
+                onClick: 'closeSideMenu(); window.location.href = "profile.html"'
+            }
+        ];
+        
+        menuItems.forEach((item, index) => {
+            const button = document.createElement('button');
+            button.className = `menu-btn ${item.active ? 'active' : ''}`;
+            button.id = `menu-btn-${item.id}`;
+            button.onclick = () => {
+                eval(item.onClick);
+            };
+            
+            button.innerHTML = `
+                <i class="bi ${item.icon}"></i>
+                <span>${item.name}</span>
+            `;
+            
+            menuButtons.appendChild(button);
+        });
+        
+        menu.appendChild(menuButtons);
+    }
+    
+    function toggleSideMenu() {
+        const overlay = document.getElementById('sideMenuOverlay');
+        const menu = document.getElementById('sideMenu');
+        
+        if (overlay && menu) {
+            overlay.classList.toggle('active');
+            menu.classList.toggle('active');
+        }
+    }
+
+    function closeSideMenu() {
+        const overlay = document.getElementById('sideMenuOverlay');
+        const menu = document.getElementById('sideMenu');
+        
+        if (overlay && menu) {
+            overlay.classList.remove('active');
+            menu.classList.remove('active');
+        }
+    }
+
+    function goToProfile() {
+        window.location.href = 'profile.html';
+    }
+
+    // ===== КАРУСЕЛЬ =====
+    let currentSlide = 0;
+
+    function nextSlide() {
+        // Заглушка для карусели
+    }
+
+    function prevSlide() {
+        // Заглушка для карусели
+    }
+
+    function goToSlide(index) {
+        // Заглушка для карусели
+    }
+// ===== МОДАЛЬНЫЕ ОКНА =====
+function showDetailsModal(itemId, itemType = 'scent') {
+    currentDetailItemId = itemId;
+    currentDetailItemType = itemType;
+    
+    console.log('Открываем детали:', { itemId, itemType });
+    
+    let item;
+    
+    if (itemType === 'scent') {
+        item = allScents.find(p => p.id === itemId);
+    } else {
+        item = allArticles.find(a => a.id === itemId);
+    }
+    
+    if (!item) {
+        console.error('Объект не найден:', itemId);
+        showNotification('Ошибка загрузки данных');
+        return;
+    }
+    
+    const modalTitle = document.getElementById('detailsModalTitle');
+    const modalContent = document.getElementById('detailsModalContent');
+    const modalBtn = document.getElementById('modalCollectionBtn');
+    
+    if (!modalTitle || !modalContent || !modalBtn) {
+        console.error('Элементы модалки не найдены');
+        return;
+    }
+    
+    modalTitle.textContent = item.name;
+    
+    if (itemType === 'scent') {
+        // Определяем тип аромата: масло или парфюм
+        if (item.type === 'oil' || item.id <= 100) {
+            modalContent.innerHTML = createOilModalContent(item);
+        } else {
+            modalContent.innerHTML = createPerfumeModalContent(item);
+        }
+    } else {
+        modalContent.innerHTML = createArticleModalContent(item);
+    }
+    
+    // Обновляем кнопку в модалке
+    updateModalCollectionButton();
+    
+    // Показываем модальное окно
+    document.getElementById('detailsModalOverlay').classList.add('active');
+}
+
+function closeDetailsModal(event) {
+    if (event) {
+        event.stopPropagation();
+    }
+    document.getElementById('detailsModalOverlay').classList.remove('active');
+    currentDetailItemId = null;
+    currentDetailItemType = null;
+}
+
+function updateModalCollectionButton() {
+    const btn = document.getElementById('modalCollectionBtn');
+    if (btn && currentDetailItemId) {
+        if (currentDetailItemType === 'scent') {
+            btn.innerHTML = '<i class="bi bi-heart-fill"></i> Удалить из коллекции';
+            btn.onclick = () => removeFromCollectionFromModal();
+        } else {
+            btn.innerHTML = '<i class="bi bi-bookmark-fill"></i> Удалить из коллекции';
+            btn.onclick = () => removeArticleFromCollectionFromModal();
+        }
+    }
+}
+// ===== ФУНКЦИИ ДЛЯ МОДАЛЬНЫХ ОКОН =====
+function createOilModalContent(oil) {
+    // Подготавливаем изображения для карусели
+    const images = oil.images || [oil.image].filter(img => img);
+    
+    // Создаем HTML для свойств масла
+    let benefitsHTML = '';
+    if (oil.benefits && oil.benefits.length > 0) {
+        benefitsHTML = `
+            <div class="oil-modal-section">
+                <h3 class="modal-section-title">Свойства</h3>
+                <div class="oil-modal-properties-grid">
+                    ${oil.benefits.map((benefit, index) => {
+                        const iconClass = oil.icons && oil.icons[index] ? oil.icons[index] : 'bi-lightning-charge';
+                        return `
+                            <div class="oil-modal-property">
+                                <div class="oil-modal-property-icon">
+                                    <i class="bi ${iconClass}"></i>
+                                </div>
+                                <span class="oil-modal-property-text">${benefit}</span>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+    }
+    
+    // Создаем HTML для тегов
+    let tagsHTML = '';
+    if (oil.tags && oil.tags.length > 0) {
+        tagsHTML = `
+            <div class="oil-modal-section">
+                <h3 class="modal-section-title">Теги</h3>
+                <div class="modal-tags-container">
+                    ${oil.tags.map(tag => `
+                        <span class="modal-tag">${tag}</span>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+    
+    // Карусель изображений (если есть изображения)
+    let carouselHTML = '';
+    if (images.length > 0) {
+        if (images.length === 1) {
+            // Если только одно изображение - просто показываем его
+            carouselHTML = `
+                <div class="perfume-carousel-section" style="padding: 0; margin-bottom: 25px;">
+                    <div class="perfume-carousel-container">
+                        <div class="perfume-carousel-slide active" 
+                             style="background-image: url('${images[0]}')">
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            // Если несколько изображений - карусель
+            carouselHTML = `
+                <div class="perfume-carousel-section" style="padding: 0; margin-bottom: 25px;">
+                    <div class="perfume-carousel-container">
+                        ${images.map((img, index) => `
+                            <div class="perfume-carousel-slide ${index === 0 ? 'active' : ''}" 
+                                 style="background-image: url('${img}')"
+                                 data-index="${index}">
+                            </div>
+                        `).join('')}
+                        
+                        <button class="perfume-carousel-btn prev" onclick="prevModalSlide()">‹</button>
+                        <button class="perfume-carousel-btn next" onclick="nextModalSlide()">›</button>
+                        
+                        <div class="perfume-carousel-nav">
+                            ${images.map((img, index) => `
+                                <div class="perfume-carousel-dot ${index === 0 ? 'active' : ''}" 
+                                     onclick="goToModalSlide(${index})">
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    }
+    
+    return `
+        <div class="oil-modal-content">
+            <div class="oil-modal-header">
+                <h2 class="oil-modal-title">${oil.name}</h2>
+                ${oil.latin ? `<p style="color: var(--text-secondary); font-style: italic; margin-bottom: 10px;">${oil.latin}</p>` : ''}
+                <div class="oil-modal-category">${getCategoryName(oil.category)}</div>
+            </div>
+            
+            ${carouselHTML}
+            
+            ${oil.description ? `
+            <div class="oil-modal-section">
+                <h3 class="modal-section-title">Описание</h3>
+                <p class="oil-modal-description">${oil.description}</p>
+            </div>
+            ` : ''}
+            
+            ${benefitsHTML}
+            ${tagsHTML}
+            
+            ${oil.directions ? `
+            <div class="oil-modal-section">
+                <h3 class="modal-section-title">Применение</h3>
+                <p class="oil-modal-description">${oil.directions}</p>
+            </div>
+            ` : ''}
+        </div>
+    `;
+}
+
+function createPerfumeModalContent(perfume) {
+    // Подготавливаем изображения для карусели
+    const images = perfume.images || [perfume.image].filter(img => img);
+    
+    // Создаем HTML для карусели
+    let carouselHTML = '';
+    if (images.length > 0) {
+        if (images.length === 1) {
+            // Если только одно изображение
+            carouselHTML = `
+                <div class="perfume-carousel-section">
+                    <div class="perfume-carousel-container">
+                        <div class="perfume-carousel-slide active" 
+                             style="background-image: url('${images[0]}')">
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            // Если несколько изображений
+            carouselHTML = `
+                <div class="perfume-carousel-section">
+                    <div class="perfume-carousel-container">
+                        ${images.map((img, index) => `
+                            <div class="perfume-carousel-slide ${index === 0 ? 'active' : ''}" 
+                                 style="background-image: url('${img}')"
+                                 data-index="${index}">
+                            </div>
+                        `).join('')}
+                        
+                        <button class="perfume-carousel-btn prev" onclick="prevModalSlide()">‹</button>
+                        <button class="perfume-carousel-btn next" onclick="nextModalSlide()">›</button>
+                        
+                        <div class="perfume-carousel-nav">
+                            ${images.map((img, index) => `
+                                <div class="perfume-carousel-dot ${index === 0 ? 'active' : ''}" 
+                                     onclick="goToModalSlide(${index})">
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    }
+    
+    // Создаем HTML для пирамидки нот
+    let notesHTML = '';
+    if (perfume.notes) {
+        notesHTML = `
+            <div class="oil-modal-section">
+                <h3 class="modal-section-title">Пирамида аромата</h3>
+                <div class="perfume-modal-pyramid-container">
+                    <div class="perfume-modal-pyramid-layer perfume-modal-pyramid-top">
+                        <div class="perfume-modal-pyramid-label">Верхние ноты</div>
+                        <div class="perfume-modal-pyramid-notes">${perfume.notes.top || 'Не указано'}</div>
+                    </div>
+                    
+                    <div class="perfume-modal-pyramid-layer perfume-modal-pyramid-heart">
+                        <div class="perfume-modal-pyramid-label">Ноты сердца</div>
+                        <div class="perfume-modal-pyramid-notes">${perfume.notes.heart || 'Не указано'}</div>
+                    </div>
+                    
+                    <div class="perfume-modal-pyramid-layer perfume-modal-pyramid-base">
+                        <div class="perfume-modal-pyramid-label">Базовые ноты</div>
+                        <div class="perfume-modal-pyramid-notes">${perfume.notes.base || 'Не указано'}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    // Создаем HTML для спецификаций
+    let specsHTML = '';
+    if (perfume.longevity || perfume.type || perfume.concentration) {
+        specsHTML = `
+            <div class="oil-modal-section">
+                <h3 class="modal-section-title">Характеристики</h3>
+                <div class="perfume-specs-grid">
+                    ${perfume.longevity ? `
+                        <div class="perfume-spec-item">
+                            <div class="perfume-spec-label">Стойкость</div>
+                            <div class="perfume-spec-value">${perfume.longevity} часов</div>
+                        </div>
+                    ` : ''}
+                    
+                    ${perfume.type ? `
+                        <div class="perfume-spec-item">
+                            <div class="perfume-spec-label">Тип</div>
+                            <div class="perfume-spec-value">${perfume.type}</div>
+                        </div>
+                    ` : ''}
+                    
+                    ${perfume.concentration ? `
+                        <div class="perfume-spec-item">
+                            <div class="perfume-spec-label">Концентрация</div>
+                            <div class="perfume-spec-value">${perfume.concentration}</div>
+                        </div>
+                    ` : ''}
+                    
+                    ${perfume.season ? `
+                        <div class="perfume-spec-item">
+                            <div class="perfume-spec-label">Сезон</div>
+                            <div class="perfume-spec-value">${perfume.season}</div>
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+    }
+    
+    // Создаем HTML для тегов
+    let tagsHTML = '';
+    if (perfume.tags && perfume.tags.length > 0) {
+        tagsHTML = `
+            <div class="oil-modal-section">
+                <h3 class="modal-section-title">Теги</h3>
+                <div class="modal-tags-container">
+                    ${perfume.tags.map(tag => `
+                        <span class="modal-tag">${tag}</span>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+    
+    // Создаем HTML для магазинов
+    let storesHTML = '';
+    if (perfume.stores && perfume.stores.length > 0) {
+        storesHTML = `
+            <div class="oil-modal-section">
+                <h3 class="modal-section-title">Где купить</h3>
+                <div class="perfume-stores-block">
+                    <div class="perfume-stores-list">
+                        ${perfume.stores.map(store => `
+                            <span class="perfume-store-badge">${store}</span>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    return `
+        <div class="perfume-modal-content">
+            ${carouselHTML}
+            
+            <div class="perfume-info-section">
+                <div class="perfume-info-column">
+                    <div class="perfume-info-block">
+                        <h3>${perfume.name}</h3>
+                        <p class="perfume-info-text">${perfume.description || ''}</p>
+                        <div class="oil-modal-category" style="margin-top: 15px;">${getCategoryName(perfume.category)}</div>
+                    </div>
+                    
+                    ${notesHTML}
+                </div>
+                
+                <div class="perfume-info-column">
+                    ${specsHTML}
+                    ${tagsHTML}
+                    ${storesHTML}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function createArticleModalContent(article) {
+    return `
+        <div class="oil-modal-content">
+            <div class="oil-modal-header">
+                <h2 class="oil-modal-title">${article.name}</h2>
+                <div class="oil-modal-category" style="background: var(--collection-badge);">
+                    ${article.tag || article.type || 'Статья'}
+                </div>
+            </div>
+            
+            <div class="oil-modal-section">
+                <div style="display: flex; justify-content: space-between; color: var(--text-secondary); margin-bottom: 15px; font-size: 14px;">
+                    <span>${article.date || 'Недавно'}</span>
+                    <span>${article.readTime || '5 мин'} чтения</span>
+                </div>
+                
+                ${article.author ? `
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                    <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--roasted-peach); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                        ${article.author.charAt(0)}
+                    </div>
+                    <div>
+                        <div style="font-weight: 500; color: var(--text-primary);">${article.author}</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">Автор</div>
+                    </div>
+                </div>
+                ` : ''}
+            </div>
+            
+            <div class="oil-modal-section">
+                <h3 class="modal-section-title">Содержание</h3>
+                <div class="oil-modal-description">
+                    ${article.fullDescription || article.description || 'Полное описание временно недоступно.'}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// ===== ФУНКЦИИ ДЛЯ КАРУСЕЛИ МОДАЛЬНОГО ОКНА =====
+let currentModalSlide = 0;
+let totalModalSlides = 0;
+
+function initModalCarousel() {
+    const slides = document.querySelectorAll('.perfume-carousel-slide');
+    const dots = document.querySelectorAll('.perfume-carousel-dot');
+    
+    totalModalSlides = slides.length;
+    currentModalSlide = 0;
+    
+    // Активируем первый слайд
+    if (slides.length > 0) {
+        updateModalCarousel();
+    }
+}
+
+function updateModalCarousel() {
+    const slides = document.querySelectorAll('.perfume-carousel-slide');
+    const dots = document.querySelectorAll('.perfume-carousel-dot');
+    
+    // Скрываем все слайды
+    slides.forEach(slide => slide.classList.remove('active'));
+    dots.forEach(dot => dot.classList.remove('active'));
+    
+    // Показываем текущий слайд
+    if (slides[currentModalSlide]) {
+        slides[currentModalSlide].classList.add('active');
+    }
+    
+    if (dots[currentModalSlide]) {
+        dots[currentModalSlide].classList.add('active');
+    }
+}
+
+function nextModalSlide() {
+    currentModalSlide = (currentModalSlide + 1) % totalModalSlides;
+    updateModalCarousel();
+}
+
+function prevModalSlide() {
+    currentModalSlide = (currentModalSlide - 1 + totalModalSlides) % totalModalSlides;
+    updateModalCarousel();
+}
+
+function goToModalSlide(index) {
+    if (index >= 0 && index < totalModalSlides) {
+        currentModalSlide = index;
+        updateModalCarousel();
+    }
+}
+
+// Обновляем функцию showDetailsModal, чтобы инициализировать карусель
+function showDetailsModal(itemId, itemType = 'scent') {
+    currentDetailItemId = itemId;
+    currentDetailItemType = itemType;
+    
+    console.log('Открываем детали:', { itemId, itemType });
+    
+    let item;
+    
+    if (itemType === 'scent') {
+        item = allScents.find(p => p.id === itemId);
+    } else {
+        item = allArticles.find(a => a.id === itemId);
+    }
+    
+    if (!item) {
+        console.error('Объект не найден:', itemId);
+        showNotification('Ошибка загрузки данных');
+        return;
+    }
+    
+    const modalTitle = document.getElementById('detailsModalTitle');
+    const modalContent = document.getElementById('detailsModalContent');
+    const modalBtn = document.getElementById('modalCollectionBtn');
+    
+    if (!modalTitle || !modalContent || !modalBtn) {
+        console.error('Элементы модалки не найдены');
+        return;
+    }
+    
+    modalTitle.textContent = item.name;
+    
+    if (itemType === 'scent') {
+        if (item.type === 'oil' || item.id <= 100) {
+            modalContent.innerHTML = createOilModalContent(item);
+        } else {
+            modalContent.innerHTML = createPerfumeModalContent(item);
+        }
+        
+        // Инициализируем карусель после добавления HTML
+        setTimeout(() => {
+            initModalCarousel();
+        }, 50);
+    } else {
+        modalContent.innerHTML = createArticleModalContent(item);
+    }
+    
+    updateModalCollectionButton();
+    document.getElementById('detailsModalOverlay').classList.add('active');
+}
+// ===== ФУНКЦИИ ДЛЯ МОДАЛЬНЫХ ОКОН =====
+function createOilModalContent(oil) {
+    // Создаем HTML для свойств масла
+    let benefitsHTML = '';
+    if (oil.benefits && oil.benefits.length > 0) {
+        benefitsHTML = `
+            <div class="oil-modal-section">
+                <h3 class="modal-section-title">Свойства</h3>
+                <div class="oil-modal-properties-grid">
+                    ${oil.benefits.map((benefit, index) => {
+                        const iconClass = oil.icons && oil.icons[index] ? oil.icons[index] : 'bi-lightning-charge';
+                        return `
+                            <div class="oil-modal-property">
+                                <div class="oil-modal-property-icon">
+                                    <i class="bi ${iconClass}"></i>
+                                </div>
+                                <span class="oil-modal-property-text">${benefit}</span>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+    }
+    
+    // Создаем HTML для тегов
+    let tagsHTML = '';
+    if (oil.tags && oil.tags.length > 0) {
+        tagsHTML = `
+            <div class="oil-modal-section">
+                <h3 class="modal-section-title">Теги</h3>
+                <div class="modal-tags-container">
+                    ${oil.tags.map(tag => `
+                        <span class="modal-tag">${tag}</span>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+    
+    return `
+        <div class="oil-modal-content">
+            <div class="oil-modal-header">
+                <h2 class="oil-modal-title">${oil.name}</h2>
+                ${oil.latin ? `<p style="color: var(--text-secondary); font-style: italic; margin-bottom: 10px;">${oil.latin}</p>` : ''}
+                <div class="oil-modal-category">${getCategoryName(oil.category)}</div>
+            </div>
+            
+            ${oil.image ? `
+            <div style="margin-bottom: 25px; border-radius: 15px; overflow: hidden;">
+                <img src="${oil.image}" 
+                     alt="${oil.name}" 
+                     style="width: 100%; height: 300px; object-fit: cover;">
+            </div>
+            ` : ''}
+            
+            ${oil.description ? `
+            <div class="oil-modal-section">
+                <h3 class="modal-section-title">Описание</h3>
+                <p class="oil-modal-description">${oil.description}</p>
+            </div>
+            ` : ''}
+            
+            ${benefitsHTML}
+            ${tagsHTML}
+            
+            ${oil.directions ? `
+            <div class="oil-modal-section">
+                <h3 class="modal-section-title">Применение</h3>
+                <p class="oil-modal-description">${oil.directions}</p>
+            </div>
+            ` : ''}
+        </div>
+    `;
+}
+
+function createPerfumeModalContent(perfume) {
+    // Создаем HTML для пирамидки нот
+    let notesHTML = '';
+    if (perfume.notes) {
+        notesHTML = `
+            <div class="oil-modal-section">
+                <h3 class="modal-section-title">Пирамида аромата</h3>
+                <div class="perfume-modal-pyramid-container">
+                    <div class="perfume-modal-pyramid-layer perfume-modal-pyramid-top">
+                        <div class="perfume-modal-pyramid-label">Верхние ноты</div>
+                        <div class="perfume-modal-pyramid-notes">${perfume.notes.top || 'Не указано'}</div>
+                    </div>
+                    
+                    <div class="perfume-modal-pyramid-layer perfume-modal-pyramid-heart">
+                        <div class="perfume-modal-pyramid-label">Ноты сердца</div>
+                        <div class="perfume-modal-pyramid-notes">${perfume.notes.heart || 'Не указано'}</div>
+                    </div>
+                    
+                    <div class="perfume-modal-pyramid-layer perfume-modal-pyramid-base">
+                        <div class="perfume-modal-pyramid-label">Базовые ноты</div>
+                        <div class="perfume-modal-pyramid-notes">${perfume.notes.base || 'Не указано'}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    // Создаем HTML для спецификаций
+    let specsHTML = '';
+    if (perfume.longevity || perfume.type || perfume.concentration) {
+        specsHTML = `
+            <div class="oil-modal-section">
+                <h3 class="modal-section-title">Характеристики</h3>
+                <div class="perfume-specs-grid">
+                    ${perfume.longevity ? `
+                        <div class="perfume-spec-item">
+                            <div class="perfume-spec-label">Стойкость</div>
+                            <div class="perfume-spec-value">${perfume.longevity} часов</div>
+                        </div>
+                    ` : ''}
+                    
+                    ${perfume.type ? `
+                        <div class="perfume-spec-item">
+                            <div class="perfume-spec-label">Тип</div>
+                            <div class="perfume-spec-value">${perfume.type}</div>
+                        </div>
+                    ` : ''}
+                    
+                    ${perfume.concentration ? `
+                        <div class="perfume-spec-item">
+                            <div class="perfume-spec-label">Концентрация</div>
+                            <div class="perfume-spec-value">${perfume.concentration}</div>
+                        </div>
+                    ` : ''}
+                    
+                    ${perfume.season ? `
+                        <div class="perfume-spec-item">
+                            <div class="perfume-spec-label">Сезон</div>
+                            <div class="perfume-spec-value">${perfume.season}</div>
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+    }
+    
+    // Создаем HTML для тегов
+    let tagsHTML = '';
+    if (perfume.tags && perfume.tags.length > 0) {
+        tagsHTML = `
+            <div class="oil-modal-section">
+                <h3 class="modal-section-title">Теги</h3>
+                <div class="modal-tags-container">
+                    ${perfume.tags.map(tag => `
+                        <span class="modal-tag">${tag}</span>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+    
+    return `
+        <div class="oil-modal-content">
+            <div class="oil-modal-header">
+                <h2 class="oil-modal-title">${perfume.name}</h2>
+                <div class="oil-modal-category">${getCategoryName(perfume.category)}</div>
+            </div>
+            
+            ${perfume.image ? `
+            <div style="margin-bottom: 25px; border-radius: 15px; overflow: hidden;">
+                <img src="${perfume.image}" 
+                     alt="${perfume.name}" 
+                     style="width: 100%; height: 300px; object-fit: cover;">
+            </div>
+            ` : ''}
+            
+            ${perfume.description ? `
+            <div class="oil-modal-section">
+                <h3 class="modal-section-title">Описание</h3>
+                <p class="oil-modal-description">${perfume.description}</p>
+            </div>
+            ` : ''}
+            
+            ${notesHTML}
+            ${specsHTML}
+            ${tagsHTML}
+        </div>
+    `;
+}
+
+function createArticleModalContent(article) {
+    return `
+        <div class="oil-modal-content">
+            <div class="oil-modal-header">
+                <h2 class="oil-modal-title">${article.name}</h2>
+                <div class="oil-modal-category" style="background: var(--collection-badge);">
+                    ${article.tag || article.type || 'Статья'}
+                </div>
+            </div>
+            
+            <div class="oil-modal-section">
+                <div style="display: flex; justify-content: space-between; color: var(--text-secondary); margin-bottom: 15px; font-size: 14px;">
+                    <span>${article.date || 'Недавно'}</span>
+                    <span>${article.readTime || '5 мин'} чтения</span>
+                </div>
+                
+                ${article.author ? `
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                    <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--roasted-peach); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                        ${article.author.charAt(0)}
+                    </div>
+                    <div>
+                        <div style="font-weight: 500; color: var(--text-primary);">${article.author}</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">Автор</div>
+                    </div>
+                </div>
+                ` : ''}
+            </div>
+            
+            <div class="oil-modal-section">
+                <h3 class="modal-section-title">Содержание</h3>
+                <div class="oil-modal-description">
+                    ${article.fullDescription || article.description || 'Полное описание временно недоступно.'}
+                </div>
+            </div>
+        </div>
+    `;
+}
+function removeFromCollectionFromModal() {
+    if (currentDetailItemId && currentDetailItemType === 'scent') {
+        // Создаем фейковый event для removeFromCollection
+        const fakeEvent = {
+            stopPropagation: () => {},
+            preventDefault: () => {}
+        };
+        removeFromCollection(fakeEvent, currentDetailItemId, 'scent');
+        closeDetailsModal();
+    }
+}
+
+function removeArticleFromCollectionFromModal() {
+    if (currentDetailItemId && currentDetailItemType === 'article') {
+        // Создаем фейковый event для removeFromCollection
+        const fakeEvent = {
+            stopPropagation: () => {},
+            preventDefault: () => {}
+        };
+        removeFromCollection(fakeEvent, currentDetailItemId, 'article');
+        closeDetailsModal();
+    }
+}
+// Функция для принудительного обновления коллекции (можно вызвать из консоли браузера)
+function debugCollection() {
+    console.log('=== ОТЛАДКА КОЛЛЕКЦИИ ===');
+    console.log('Ароматы в localStorage:', JSON.parse(localStorage.getItem('scentme_collection_scents') || '[]'));
+    console.log('Статьи в localStorage:', JSON.parse(localStorage.getItem('scentme_collection_articles') || '[]'));
+    console.log('Загруженные ароматы:', window.allScents);
+    console.log('Загруженные статьи:', window.allArticles);
+    loadCollectionData();
+}
+// Функция для полной очистки и проверки
+function debugAll() {
+    console.log('=== ПОЛНАЯ ОТЛАДКА ===');
+    
+    // Проверяем все ключи в localStorage
+    console.log('Все ключи в localStorage:');
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        try {
+            const value = localStorage.getItem(key);
+            if (key.includes('article') || key.includes('collection')) {
+                console.log(`- ${key}:`, JSON.parse(value));
+            }
+        } catch (e) {
+            console.log(`- ${key}: (не JSON)`);
+        }
+    }
+    
+    // Перезагружаем данные
+    loadCollectionData();
+}
+
+    // ===== ОБРАБОТКА КЛАВИШ =====
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeSideMenu();
+            
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput === document.activeElement && !searchInput.value) {
+                deactivateSearch();
+            }
+        }
+        
+        if (e.ctrlKey && e.key === 'f') {
+            e.preventDefault();
+            activateSearch();
+        }
+    });
+</script>
+    </body>
+</html>
