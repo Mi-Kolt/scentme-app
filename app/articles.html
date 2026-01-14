@@ -1,0 +1,2469 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Статьи - Scentmé</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        /* === СБРОС СТИЛЕЙ === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* === ПЕРЕМЕННЫЕ ЦВЕТОВЫХ ТЕМ === */
+        :root {
+            /* ===== СВЕТЛАЯ ТЕМА ===== */
+            --chocolate: #684627;
+            --roasted-peach: #E8A895;
+            --whole-wheat: #EFD2B0;
+            --milky-coffee: #B59272;
+            --cream: #FFE4B8;
+            --peony-pink: #E8A8B8;
+            --light-beige: #FFF8ED;
+            --border-light: rgba(104, 70, 39, 0.3);
+            --shadow-light: rgba(104, 70, 39, 0.1);
+            --shadow-medium: rgba(104, 70, 39, 0.2);
+            
+            /* Для интерфейса (светлая) */
+            --background: #FFF8ED;
+            --card-bg: white;
+            --text-primary: #5C4A36;
+            --text-secondary: #7D6B57;
+            --new-badge: #E8A895;      /* roasted-peach */
+            --read-badge: #B59272;     /* milky-coffee */
+            --collection-badge: #E8A895; /* roasted-peach для флажка коллекции */
+            --menu-active: #E8A895;    /* цвет активного пункта меню */
+            --modal-bg: white;         /* фон модального окна */
+            --header-bg: white;        /* цвет шапки */
+        }
+        
+        /* ===== ТЁМНАЯ ТЕМА ===== */
+        .dark-theme {
+            /* Цвета из тёмной темы */
+            --dark-chocolate: #3D1F12;
+            --walnut-brown: #584738;
+            --sand-beige: #98755B;
+            --cream-ivory: #F1EADA;
+            --pure-white: #FFFFFF;
+            --gold: #D4AF37;
+            --light-gold: #F4E4A6;
+            --dark-beige: #D8C9B0;
+            --warm-gray: #A99E8B;
+            
+            /* Для интерфейса (тёмная) - ИЗМЕНЕНИЯ ЗДЕСЬ */
+            --background: #3D1F12;     /* dark-chocolate */
+            --card-bg: #584738;        /* walnut-brown */
+            --text-primary: #F1EADA;   /* cream-ivory */
+            --text-secondary: #D8C9B0; /* dark-beige */
+            --new-badge: #D4AF37;      /* gold - вместо roasted-peach */
+            --read-badge: #A99E8B;     /* warm-gray - вместо milky-coffee */
+            --collection-badge: #D4AF37; /* gold для флажка коллекции */
+            --menu-active: #D4AF37;    /* gold для активного пункта меню */
+            --border-light: rgba(241, 234, 218, 0.2); /* cream-ivory 20% */
+            --shadow-light: rgba(0, 0, 0, 0.4);
+            --shadow-medium: rgba(0, 0, 0, 0.6);
+            --modal-bg: #221810;       /* на пару тонов светлее шапки */
+            --header-bg: #221810;      /* ТЁМНЫЙ цвет шапки как указано */
+        }
+        
+        /* === ОСНОВНЫЕ СТИЛИ === */
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        /* === ШАПКА (как в main.html) === */
+        .app-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .main-header {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-light);
+            background: var(--header-bg);      /* Используем отдельную переменную для шапки */
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 15px var(--shadow-light);
+        }
+        
+        .menu-toggle {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--chocolate);
+            cursor: pointer;
+            padding: 5px;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+        }
+        
+        .dark-theme .menu-toggle {
+            color: var(--cream-ivory);
+        }
+        
+        .menu-toggle:hover {
+            opacity: 1;
+            background: rgba(104, 70, 39, 0.1);
+        }
+        
+        .dark-theme .menu-toggle:hover {
+            background: rgba(241, 234, 218, 0.1);
+        }
+        
+        .main-title {
+            font-size: 20px;
+            color: var(--chocolate);
+            font-weight: 300;
+            font-family: 'Georgia', serif;
+            letter-spacing: 1px;
+        }
+        
+        .dark-theme .main-title {
+            color: var(--cream-ivory);
+        }
+        
+        .profile-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+            position: relative;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .profile-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--roasted-peach), var(--whole-wheat));
+            color: var(--chocolate);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 600;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 2px 8px var(--shadow-light);
+            transition: all 0.3s ease;
+        }
+        
+        .dark-theme .profile-avatar {
+            background: linear-gradient(135deg, var(--gold), var(--sand-beige));
+            color: var(--dark-chocolate);
+        }
+        
+        .profile-btn:hover .profile-avatar {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--shadow-medium);
+        }
+        
+        /* === ОСНОВНОЙ КОНТЕНТ === */
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            -webkit-overflow-scrolling: touch;
+            background: var(--background);
+        }
+        
+        /* Кастомный скроллбар */
+        .content-area::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .content-area::-webkit-scrollbar-track {
+            background: rgba(232, 168, 149, 0.1);
+            border-radius: 4px;
+            margin: 5px;
+        }
+        
+        .dark-theme .content-area::-webkit-scrollbar-track {
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .content-area::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--roasted-peach), var(--milky-coffee));
+            border-radius: 4px;
+            border: 2px solid var(--light-beige);
+        }
+        
+        .dark-theme .content-area::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--gold), var(--warm-gray));
+            border: 2px solid var(--dark-chocolate);
+        }
+        
+        .content-area::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--milky-coffee), var(--roasted-peach));
+        }
+        
+        .dark-theme .content-area::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--warm-gray), var(--gold));
+        }
+        
+        /* === СТИЛИ ДЛЯ СТАТЕЙ === */
+        .articles-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .article-item {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px var(--shadow-light);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: 1px solid var(--border-light);
+            position: relative;
+            overflow: hidden;
+            padding-top: 55px; /* Увеличено для бейджей */
+        }
+        
+        /* В тёмной теме карточки чуть светлее фона */
+        .dark-theme .article-item {
+            background: #221810; /* промежуточный между walnut-brown и sand-beige */
+        }
+        
+        .article-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px var(--shadow-medium);
+        }
+        
+        /* Новые статьи - персиковый/золотой акцент слева */
+        .article-item.new-article {
+            border-left: 4px solid var(--new-badge);
+        }
+        
+        /* Прочитанные статьи - кофейный/серый акцент слева */
+        .article-item.read {
+            border-left: 4px solid var(--read-badge);
+        }
+        
+        /* Бейджи в правом верхнем углу - ИСПРАВЛЕНЫ ОТСТУПЫ (ниже) */
+        .article-badge {
+            position: absolute;
+            top: 45px; /* Спущены ниже чтобы не перекрывались с закладкой */
+            right: 10px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            z-index: 2;
+        }
+        
+        .badge-new {
+            background: var(--new-badge);
+            color: var(--chocolate);
+        }
+        
+        .dark-theme .badge-new {
+            color: var(--dark-chocolate);
+        }
+        
+        .badge-read {
+            background: var(--read-badge);
+            color: white;
+        }
+        
+        /* Язычок закладки для коллекции - ИСПРАВЛЕНЫ ОТСТУПЫ (выше) */
+        .badge-collection {
+            position: absolute;
+            top: 5px; /* Оставлено выше */
+            right: 40px; /* Левее бейджа "прочитано" */
+            width: 28px;
+            height: 28px;
+            background: var(--collection-badge);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px 4px 0 4px;
+            transform: rotate(45deg);
+            transform-origin: bottom right;
+            z-index: 3;
+            box-shadow: -2px -2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .badge-collection i {
+            transform: rotate(-45deg);
+            font-size: 14px;
+            color: white;
+        }
+        
+        .article-tag {
+            display: inline-block;
+            padding: 6px 14px;
+            background: linear-gradient(135deg, rgba(232, 168, 149, 0.2), rgba(232, 168, 149, 0.2));
+            color: var(--chocolate);
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            border: 1px solid var(--border-light);
+            position: absolute; /* Делаем тэг абсолютным */
+            top: 15px; /* Позиционируем выше */
+            left: 20px;
+        }
+        
+        .dark-theme .article-tag {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.2));
+            color: var(--cream-ivory);
+        }
+        
+        .article-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            color: var(--text-primary);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            padding-right: 70px; /* Место для бейджа и закладки */
+        }
+        
+        .article-preview {
+            color: var(--text-secondary);
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .article-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: var(--milky-coffee);
+            padding-top: 15px;
+            border-top: 1px solid var(--border-light);
+        }
+        
+        .dark-theme .article-meta {
+            color: var(--warm-gray);
+        }
+        
+        /* === МОДАЛЬНОЕ ОКНО (НА ВЕСЬ ЭКРАН) === */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            display: none;
+            animation: fadeIn 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--modal-bg);
+            z-index: 1001;
+            display: none;
+            flex-direction: column;
+            animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .modal-header {
+            padding: 20px;
+            position: relative;
+            border-bottom: 1px solid var(--border-light);
+            background: var(--modal-bg);
+            flex-shrink: 0;
+        }
+        
+        /* КРЕСТИК БЕЗ ЗАЛИВКИ И ОБВОДКИ */
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 24px;
+            transition: all 0.3s ease;
+            z-index: 1002;
+            opacity: 0.7;
+        }
+        
+        .modal-close:hover {
+            opacity: 1;
+            transform: rotate(90deg);
+        }
+        
+        .modal-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            line-height: 1.3;
+            padding-right: 60px;
+            color: var(--text-primary);
+            font-family: 'Georgia', serif;
+        }
+        
+        .modal-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            -webkit-overflow-scrolling: touch;
+            background: var(--modal-bg);
+        }
+        
+        /* Кастомный скроллбар для модалки */
+        .modal-body::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .modal-body::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .modal-body::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--roasted-peach), var(--milky-coffee));
+            border-radius: 3px;
+        }
+        
+        .dark-theme .modal-body::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--gold), var(--warm-gray));
+        }
+        
+        .article-full-content {
+            font-size: 17px;
+            line-height: 1.7;
+            color: var(--text-primary);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .article-full-content h3 {
+            font-size: 20px;
+            margin: 30px 0 15px;
+            font-weight: 600;
+            color: var(--chocolate);
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border-light);
+            font-family: 'Georgia', serif;
+        }
+        
+        .dark-theme .article-full-content h3 {
+            color: var(--gold);
+        }
+        
+        .article-full-content p {
+            margin-bottom: 20px;
+            text-align: justify;
+            text-justify: inter-word;
+        }
+        
+        .article-full-content ul {
+            margin: 0 0 20px 20px;
+            list-style: none;
+        }
+        
+        .article-full-content li {
+            margin-bottom: 12px;
+            position: relative;
+            padding-left: 24px;
+        }
+        
+        .article-full-content li:before {
+            content: "•";
+            position: absolute;
+            left: 8px;
+            color: var(--roasted-peach);
+            font-size: 24px;
+        }
+        
+        .dark-theme .article-full-content li:before {
+            color: var(--gold);
+        }
+        
+        /* Нумерованные списки - исправлен отступ */
+        .article-full-content ol {
+            margin: 0 0 20px 40px; /* Увеличен отступ слева */
+            padding-left: 10px;
+        }
+        
+        .article-full-content ol li {
+            margin-bottom: 12px;
+            padding-left: 0; /* Убираем левый отступ для ol li */
+        }
+        
+        .article-full-content ol li:before {
+            display: none; /* Убираем точки для ol */
+        }
+        
+        /* Стили для картинок в статьях */
+        .article-image {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px var(--shadow-medium);
+            border: 1px solid var(--border-light);
+        }
+        
+        .article-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+        
+        .article-image:hover img {
+            transform: scale(1.02);
+        }
+        
+        .image-caption {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            font-style: italic;
+            padding: 0 10px;
+        }
+        
+        .modal-actions {
+            padding: 20px;
+            border-top: 1px solid var(--border-light);
+            background: var(--modal-bg);
+            display: flex;
+            gap: 12px;
+            flex-shrink: 0;
+            /* Обе кнопки в одну строку */
+            flex-direction: row;
+            justify-content: space-between;
+        }
+        
+        /* КНОПКИ КАК "ПОДЕЛИТЬСЯ" (одинаковые) - КОМПАКТНЫЕ */
+        .modal-btn {
+            flex: 1;
+            padding: 12px 16px; /* Уменьшен padding */
+            border-radius: 12px;
+            border: 2px solid var(--border-light);
+            font-size: 14px; /* Уменьшен шрифт */
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px; /* Уменьшен gap */
+            background: var(--modal-bg);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 44px; /* Минимальная высота для тач-устройств */
+        }
+        
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--shadow-medium);
+        }
+        
+        /* === УВЕДОМЛЕНИЯ === */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            border: 1px solid var(--border-light);
+            max-width: 400px;
+            width: calc(100% - 40px);
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification-icon {
+            font-size: 24px;
+            color: var(--roasted-peach);
+            flex-shrink: 0;
+        }
+        
+        .dark-theme .notification-icon {
+            color: var(--gold);
+        }
+        
+        .notification-content {
+            flex: 1;
+        }
+        
+        .notification-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .notification-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+        
+        .notification-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .notification-close:hover {
+            background: rgba(232, 168, 149, 0.1);
+            color: var(--text-primary);
+        }
+        
+        .dark-theme .notification-close:hover {
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        /* === БОКОВОЕ МЕНЮ === */
+        .side-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
+            backdrop-filter: blur(3px);
+        }
+        
+        .side-menu-overlay.active {
+            display: block;
+        }
+        
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100%;
+            background: var(--header-bg); /* Цвет шапки для меню */
+            z-index: 1001;
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .side-menu.active {
+            transform: translateX(280px);
+        }
+        
+        .menu-header {
+            padding: 25px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, var(--background), var(--header-bg));
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        /* Слово "Меню" в боковом меню - gold цвет в темной теме */
+        .menu-header h2 {
+            font-family: 'Georgia', serif;
+            font-weight: 300;
+            font-size: 20px;
+            color: var(--chocolate); /* Светлый цвет в светлой теме */
+        }
+        
+        .dark-theme .menu-header h2 {
+            color: #D4AF37; /* Gold цвет в темной теме как указано */
+        }
+        
+        .menu-buttons {
+            padding: 0;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .menu-btn {
+            width: 100%;
+            padding: 22px 25px;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border-light);
+            color: var(--text-primary);
+            font-size: 17px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            text-align: left;
+            border-radius: 0;
+            position: relative;
+        }
+        
+        .menu-btn:last-child {
+            border-bottom: none;
+        }
+        
+        .menu-btn:hover {
+            background: rgba(232, 168, 149, 0.08);
+        }
+        
+        .dark-theme .menu-btn:hover {
+            background: rgba(212, 175, 55, 0.08);
+        }
+        
+        /* АКТИВНАЯ КНОПКА - ТОЛЬКО ЦВЕТ ИКОНКИ И ТОЧКА СПРАВА (БЕЗ ЗАЛИВКИ) */
+        .menu-btn.active {
+            font-weight: 600;
+        }
+        
+        .menu-btn.active i:first-child {
+            color: var(--menu-active) !important;
+        }
+        
+        /* Точка справа для активного пункта */
+        .menu-btn.active::after {
+            content: "";
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--menu-active);
+        }
+        
+        .menu-btn i:first-child {
+            font-size: 22px;
+            width: 24px;
+            text-align: center;
+            color: var(--milky-coffee);
+            transition: color 0.3s ease;
+        }
+        
+        .dark-theme .menu-btn i:first-child {
+            color: var(--warm-gray);
+        }
+        
+        .menu-btn span {
+            flex: 1;
+        }
+        
+        /* === ЗАГРУЗКА === */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+        
+        .loading::after {
+            content: "";
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-light);
+            border-top-color: var(--roasted-peach);
+            border-radius: 50%;
+            margin-left: 10px;
+            animation: spin 1s linear infinite;
+            vertical-align: middle;
+        }
+        
+        .dark-theme .loading::after {
+            border-top-color: var(--gold);
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* === АДАПТИВНОСТЬ === */
+        @media (max-width: 768px) {
+            .main-header {
+                padding: 12px 15px;
+            }
+            
+            .main-title {
+                font-size: 18px;
+            }
+            
+            .content-area {
+                padding: 15px;
+            }
+            
+            .modal-header {
+                padding: 15px;
+            }
+            
+            .modal-title {
+                font-size: 20px;
+                padding-right: 50px;
+            }
+            
+            .modal-body {
+                padding: 15px;
+            }
+            
+            .modal-actions {
+                padding: 15px;
+                flex-direction: row; /* Всегда в строку */
+                gap: 10px;
+            }
+            
+            .article-full-content {
+                font-size: 16px;
+            }
+            
+            .menu-btn {
+                padding: 18px 20px;
+                font-size: 16px;
+            }
+            
+            .article-badge {
+                top: 40px; /* Адаптивное выравнивание */
+                right: 8px;
+                font-size: 10px;
+                padding: 3px 8px;
+            }
+            
+            .badge-collection {
+                top: 3px; /* Адаптивное выравнивание */
+                right: 35px;
+                width: 24px;
+                height: 24px;
+            }
+            
+            .badge-collection i {
+                font-size: 12px;
+            }
+            
+            .article-title {
+                padding-right: 60px;
+            }
+            
+            .article-item {
+                padding-top: 50px; /* Меньше на мобильных */
+            }
+            
+            .article-tag {
+                top: 12px;
+                left: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .article-item {
+                padding: 18px;
+                padding-top: 48px;
+            }
+            
+            .modal-header {
+                padding: 12px;
+            }
+            
+            .modal-title {
+                font-size: 18px;
+            }
+            
+            .modal-subtitle {
+                font-size: 13px;
+            }
+            
+            .article-full-content h3 {
+                font-size: 18px;
+            }
+            
+            .menu-btn {
+                padding: 16px 18px;
+                gap: 15px;
+            }
+            
+            .article-title {
+                padding-right: 50px;
+            }
+            
+            .badge-collection {
+                right: 30px;
+                width: 22px;
+                height: 22px;
+            }
+            
+            .article-badge {
+                top: 38px; /* Адаптивное выравнивание */
+            }
+            
+            .modal-btn {
+                padding: 10px 12px;
+                font-size: 13px;
+                gap: 6px;
+            }
+            
+            .article-tag {
+                top: 10px;
+                left: 12px;
+                font-size: 12px;
+                padding: 5px 12px;
+            }
+        }
+    </style>
+</head>
+<body class="light-theme">
+    <!-- Основной контейнер как в main.html -->
+    <div class="app-container">
+        <!-- Шапка как в main.html -->
+        <div class="main-header">
+            <button class="menu-toggle" onclick="toggleSideMenu()">≡</button>
+            <a href="main.html" class="main-title" style="cursor: pointer; text-decoration: none;">Scentmé </a>
+
+            <button class="profile-btn" onclick="goToProfile()">
+                <div class="profile-avatar" id="headerAvatar">A</div>
+            </button>
+        </div>
+        
+        <!-- Основной контент -->
+        <div class="content-area" id="contentArea">
+            <div class="articles-list" id="articlesList">
+                <div class="loading">Загрузка статей...</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно для статьи -->
+    <div class="modal-overlay" id="articleModalOverlay"></div>
+    
+    <div class="modal-content" id="articleModal">
+        <div class="modal-header">
+            <!-- Крестик без заливки и обводки -->
+            <button class="modal-close" onclick="closeArticleModal()">
+                <i class="bi bi-x-lg"></i>
+            </button>
+            <h2 class="modal-title" id="modalArticleTitle">Заголовок статьи</h2>
+            <div class="modal-subtitle">
+                <span id="modalArticleDate">Дата</span>
+                <span>•</span>
+                <span id="modalArticleReadTime">Время чтения</span>
+                <span>•</span>
+                <span id="modalArticleAuthor" style="display: none;">Автор</span>
+            </div>
+        </div>
+        
+        <div class="modal-body" id="modalArticleBody">
+            <div class="article-full-content" id="modalArticleContent">
+                Содержание статьи загружается...
+            </div>
+        </div>
+        
+        <div class="modal-actions">
+            <button class="modal-btn" onclick="shareArticle()">
+                <i class="bi bi-share"></i> Поделиться
+            </button>
+            <!-- Кнопка "В коллекцию" такая же как "Поделиться" -->
+            <button class="modal-btn" onclick="toggleCollectArticle()" id="collectArticleBtn">
+                <i class="bi bi-bookmark"></i> В коллекцию
+            </button>
+        </div>
+    </div>
+    
+    <!-- Боковое меню -->
+    <div class="side-menu-overlay" id="sideMenuOverlay" onclick="closeSideMenu()"></div>
+    <div class="side-menu" id="sideMenu">
+        <div class="menu-header">
+            <h2 style="font-family: 'Georgia', serif; font-weight: 300; font-size: 20px;">Меню</h2>
+            <button class="modal-close" onclick="closeSideMenu()" style="background: none; color: var(--milky-coffee); font-size: 24px; width: 30px; height: 30px;">×</button>
+        </div>
+        <!-- Содержимое меню будет добавлено через JavaScript -->
+    </div>
+    
+    <!-- Уведомление -->
+    <div class="notification" id="notification">
+        <div class="notification-icon">
+            <i class="bi bi-bell"></i>
+        </div>
+        <div class="notification-content">
+            <div class="notification-title" id="notificationTitle"></div>
+            <div class="notification-text" id="notificationText"></div>
+        </div>
+        <button class="notification-close" onclick="closeNotification()">
+            <i class="bi bi-x"></i>
+        </button>
+    </div>
+
+    <script>
+        // ===== КОНСТАНТЫ И ПЕРЕМЕННЫЕ =====
+        const CACHE_KEY = 'scentme_articles_cache';
+        const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 часа
+        const READ_ARTICLES_KEY = 'scentme_read_articles';
+        const COLLECTED_ARTICLES_KEY = 'scentme_collected_articles';
+        const NOTIFICATION_PREF_KEY = 'scentme_notifications';
+        const LAST_CHECK_KEY = 'scentme_last_check';
+        
+        // Текущая открытая статья
+        let currentArticle = null;
+        
+        // ===== ИНИЦИАЛИЗАЦИЯ =====
+        document.addEventListener('DOMContentLoaded', async function() {
+            await initializeApp();
+        });
+        
+        // ===== ОСНОВНЫЕ ФУНКЦИИ =====
+        async function initializeApp() {
+            // === ДЛЯ ТЕСТИРОВАНИЯ: ПРИНУДИТЕЛЬНО СБРАСЫВАЕМ КЭШ ===
+            localStorage.removeItem(CACHE_KEY);
+            console.log('Кэш сброшен, загружаем новые статьи');
+            
+            // Загружаем настройки темы
+            loadTheme();
+            
+            // Загружаем статьи (из кэша или API)
+            const articles = await loadArticles();
+            
+            console.log('Загружено статей:', articles?.length || 0);
+            console.log('Статьи:', articles?.map(a => ({id: a.id, title: a.title.substr(0, 30) + '...'})));
+            
+            // Отображаем статьи
+            displayArticles(articles);
+            
+            // Настраиваем модальное окно
+            setupModal();
+            
+            // Настраиваем боковое меню
+            setupSideMenu();
+            
+            // Интеграция с Telegram
+            initTelegramWebApp();
+            
+            // Проверяем новые статьи
+            checkForNewArticles();
+            
+            // Обновляем аватар
+            updateAvatar();
+        }
+        
+        // ===== ЗАГРУЗКА СТАТЕЙ =====
+        async function loadArticles() {
+            // Пытаемся загрузить из кэша
+            const cachedData = getCachedArticles();
+            
+            if (cachedData && cachedData.articles && Date.now() - cachedData.timestamp < CACHE_DURATION) {
+                console.log('Загружено из кэша:', cachedData.articles.length, 'статей');
+                return cachedData.articles;
+            }
+            
+            // Загружаем новые данные
+            const articles = await fetchArticlesFromAPI();
+            
+            // Сохраняем в кэш
+            cacheArticles(articles);
+            
+            return articles;
+        }
+        
+        function cacheArticles(articles) {
+            const cacheData = {
+                articles: articles,
+                timestamp: Date.now(),
+                version: '2.1'
+            };
+            
+            try {
+                localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
+            } catch (e) {
+                console.error('Ошибка кэширования:', e);
+                try {
+                    localStorage.removeItem(CACHE_KEY);
+                    localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
+                } catch (e2) {
+                    console.error('Не удалось кэшировать статьи');
+                }
+            }
+        }
+        
+        function getCachedArticles() {
+            try {
+                const cached = localStorage.getItem(CACHE_KEY);
+                return cached ? JSON.parse(cached) : null;
+            } catch (e) {
+                console.error('Ошибка чтения кэша:', e);
+                return null;
+            }
+        }
+        
+        async function fetchArticlesFromAPI() {
+            // В реальном приложении здесь будет fetch запрос
+            return [
+                {
+                    id: 1,
+                    title: "Как выбрать свой первый парфюм: полное руководство",
+                    tag: "Гайд",
+                    preview: "Пошаговое руководство для тех, кто только начинает знакомство с миром ароматов. Узнайте, как избежать распространенных ошибок при выборе первого парфюма.",
+                    date: "28 декабря 2025",
+                    readTime: "5 мин",
+                    author: "Анна Парфюмерова",
+                    content: `
+                        <p>Выбор первого парфюма — это как первое свидание: волнительно, немного страшно, но невероятно интересно. Многие совершают ошибку, покупая самый популярный или дорогой аромат, но ваш идеальный парфюм — это тот, который резонирует с вашей личностью.</p>
+                        
+                        <div class="article-image">
+                            <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Коллекция парфюмов">
+                            <div class="image-caption">Коллекция парфюмов для новичков</div>
+                        </div>
+                        
+                        <h3>Шаг 1: Определите свои предпочтения</h3>
+                        <p>Подумайте, какие запахи вам нравятся в повседневной жизни:</p>
+                        <ul>
+                            <li><strong>Свежескошенная трава</strong> — возможно, вам понравятся зеленые или фужерные ароматы</li>
+                            <li><strong>Морской бриз</strong> — обратите внимание на водные и свежие композиции</li>
+                            <li><strong>Цветущая сирень</strong> — вас могут привлечь цветочные парфюмы</li>
+                            <li><strong>Запах старых книг</strong> — попробуйте древесные или кожистые ароматы</li>
+                        </ul>
+                        
+                        <div class="article-image">
+                            <img src="https://images.unsplash.com/photo-1590736966893-905eba2c5a01?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Тестирование парфюмов">
+                            <div class="image-caption">Тестирование ароматов в бутике</div>
+                        </div>
+                        
+                        <h3>Шаг 2: Посетите бутик в правильное время</h3>
+                        <p>Лучшее время для тестирования парфюмов — утро, когда ваше обоняние наиболее чувствительно. Приходите в парфюмерный бутик, где консультант поможет вам подобрать несколько вариантов.</p>
+                        
+                        <h3>Шаг 3: Тестируйте правильно</h3>
+                        <p>Нанесите не более 2-3 ароматов на бумажные полоски или разные участки кожи (запястья, внутренние стороны локтей). Дайте каждому аромату раскрыться в течение 2-3 часов.</p>
+                        
+                        <p><em>Важный совет: не спешите с покупкой. Возьмите образцы понравившихся ароматов домой и протестируйте их в разных обстоятельствах.</em></p>
+                        
+                        <h3>Шаг 4: Прислушайтесь к своей интуиции</h3>
+                        <p>В конечном счете, лучший парфюм — тот, который заставляет вас чувствовать себя уверенно и комфортно. Если аромат вызывает у вас положительные эмоции и ассоциации — это ваш выбор!</p>
+                    `,
+                    isNew: true,
+                    hasImages: true
+                },
+                {
+                    id: 2,
+                    title: "Секреты долгой стойкости: 10 техник для продления жизни аромата",
+                    tag: "Совет",
+                    preview: "10 профессиональных техник, которые продлят жизнь вашему парфюму на коже. Узнайте, как правильно наносить парфюм, чтобы он держался весь день.",
+                    date: "5 января 2026",
+                    readTime: "7 мин",
+                    author: "Мария Сомелье",
+                    content: `
+                        <p>Вы когда-нибудь замечали, что ваш любимый парфюм исчезает уже через пару часов? Не спешите винить производителя — возможно, вы просто неправильно его наносите. Стойкость аромата зависит не только от его концентрации, но и от правильной техники нанесения.</p>
+                        
+                        <div class="article-image">
+                            <img src="https://images.unsplash.com/photo-1556228578-8c8ae9cfa8e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Нанесение парфюма">
+                            <div class="image-caption">Правильная техника нанесения парфюма</div>
+                        </div>
+                        
+                        <h3>1. Подготовка кожи — основа долгой стойкости</h3>
+                        <p>Ароматы лучше держатся на увлажненной коже. Наносите парфюм сразу после душа на слегка влажную кожу. Используйте увлажняющий лосьон без запаха или специальный бальзам для тела.</p>
+                        
+                        <h3>2. Точки пульсации — ваши секретные зоны</h3>
+                        <p>Теплые зоны с активным кровообращением усиливают испарение аромата:</p>
+                        <ul>
+                            <li><strong>Запястья</strong> — классическая точка нанесения</li>
+                            <li><strong>Внутренние стороны локтей</strong> — тепло усиливает аромат</li>
+                            <li><strong>Шея за ушами</strong> — для близкого контакта</li>
+                            <li><strong>Декольте</strong> — для женщин</li>
+                        </ul>
+                        
+                        <div class="article-image">
+                            <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Точки нанесения парфюма">
+                            <div class="image-caption">Оптимальные точки для нанесения парфюма</div>
+                        </div>
+                        
+                        <h3>3. Самая распространенная ошибка</h3>
+                        <p>Не трите запястья друг о друга после нанесения парфюма! Это разрушает верхние ноты и ускоряет испарение. Просто дайте аромату высохнуть естественным образом.</p>
+                        
+                        <h3>4. Слоеный метод</h3>
+                        <p>Используйте средства для ухода (гель для душа, лосьон) из одной парфюмерной линии. Это создаст многослойный эффект и значительно продлит стойкость.</p>
+                        
+                        <p>Следуя этим советам, вы сможете наслаждаться своим любимым ароматом от 6 до 12 часов! Экспериментируйте и находите свои идеальные комбинации.</p>
+                    `,
+                    isNew: true,
+                    hasImages: true
+                },
+                {
+                    id: 3,
+                    title: "Парфюмерные семьи: полный гид по классификации ароматов",
+                    tag: "Образование",
+                    preview: "Цитрусовые, шипровые, ориентальные, фужерные — разбираемся в сложной системе классификации ароматов. Узнайте, к какой семье относится ваш любимый парфюм и как это помогает в подборе новых.",
+                    date: "12 января 2026",
+                    readTime: "10 мин",
+                    author: null,
+                    content: `
+                        <p>Мир парфюмерии имеет свою сложную систему классификации, которая помогает ориентироваться в тысячах ароматов. Понимание парфюмерных семей — ключ к осознанному выбору парфюма.</p>
+                        
+                        <div class="article-image">
+                            <img src="https://images.unsplash.com/photo-1595428773927-68e8c4c8c65b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Парфюмерные семьи">
+                            <div class="image-caption">Основные парфюмерные семьи</div>
+                        </div>
+                        
+                        <h3>Система классификация</h3>
+                        <p>Современная классификация основана на системе, разработанной Французским обществом парфюмеров в 1990 году. Она включает 7 основных семей, которые делятся на подгруппы.</p>
+                        
+                        <h3>1. Цитрусовые (Fresh Citrus)</h3>
+                        <p><strong>Характеристика:</strong> Свежие, бодрящие, легкие ароматы на основе лимона, апельсина, бергамота, грейпфрута.</p>
+                        <p><strong>Когда носить:</strong> Идеальны для лета, офиса, спорта.</p>
+                        <p><strong>Примеры:</strong> Dior Eau Sauvage, Chanel Allure Homme Sport</p>
+                        
+                        <h3>2. Цветочные (Floral)</h3>
+                        <p><strong>Характеристика:</strong> Самая большая и популярная семья. Романтичные, женственные, нежные ароматы с нотами розы, жасмина, сирени, туберозы.</p>
+                        
+                        <h3>3. Древесные (Woody)</h3>
+                        <p><strong>Характеристика:</strong> Теплые, землистые, уютные ароматы: сандал, кедр, ветивер, пачули. Часто сочетаются с пряными нотами.</p>
+                        
+                        <div class="article-image">
+                            <img src="https://images.unsplash.com/photo-1599457386887-23f5d7720f5c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Древесные ароматы">
+                            <div class="image-caption">Древесные ноты в парфюмерии</div>
+                        </div>
+                        
+                        <h3>4. Ориентальные (Oriental)</h3>
+                        <p><strong>Характеристика:</strong> Чувственные, сладковатые, экзотичные ароматы с ванилью, амброй, бензоином, ладаном.</p>
+                        
+                        <h3>Как использовать эти знания?</h3>
+                        <ol>
+                            <li>Определите, к какой семье относятся ваши любимые парфюмы</li>
+                            <li>Исследуйте другие ароматы в этой семье</li>
+                            <li>Экспериментируйте со смежными семьями</li>
+                            <li>Составляйте "парфюмерную карту" своих предпочтений</li>
+                        </ol>
+                        
+                        <p>Зная эти семьи, вы сможете не только осознанно выбирать ароматы, но и грамотно описывать свои предпочтения консультантам. Это язык, на котором говорят все парфюмеры мира!</p>
+                    `,
+                    isNew: true,
+                    hasImages: true
+                },
+                {
+                    id: 4,
+                    title: "Эфирное масло vs Ароматическое масло: в чём разница?",
+                    tag: "Образование",
+                    preview: "Разбираемся в ключевых отличиях эфирных и ароматических масел, их производстве, применении и терапевтических свойствах.",
+                    date: "8 января 2026",
+                    readTime: "8 мин",
+                    author: "Екатерина Ароматерапевт",
+                    content: `
+                        <p><strong>Эфирное масло</strong> – это высококонцентрированный натуральный продукт с терапевтическим эффектом, без синтетических добавок, который получают из цветов, плодов и растений.</p>
+                        
+                        <p><strong>Ароматическое масло</strong> – это масло с ароматом, которое может быть натуральным, но почти всегда является синтетическим, то есть получаются из химических веществ.</p>
+                        
+                        <p>Из чего следует, что <strong>любое эфирное масло можно назвать ароматическим, но НЕ любое ароматическое масло является эфирным</strong>.</p>
+                        
+                        <div class="article-image">
+                            <img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Эфирные масла">
+                            <div class="image-caption">Натуральные эфирные масла</div>
+                        </div>
+                        
+                        <h3>Процесс производства</h3>
+                        <p>Есть три основных метода получения эфирных масел:</p>
+                        
+                        <ol>
+                            <li><strong>Перегонка, или дистилляция:</strong> самый древний метод, сводящийся к пропусканию через сырье водяного пара. Эфирные масла не растворяются в воде, поэтому после конденсации их легко отделить.</li>
+                            
+                            <li><strong>Экстракция:</strong> применяют для масел из цветов и смол. На сырье воздействуют растворителями углеводорода, затем нагревают, очищают и получают готовый продукт.</li>
+                            
+                            <li><strong>Холодный отжим, или центрифугирование:</strong> применяется только для цитрусовых и жожоба. Сырье (цедру) просто как следует надрезают и отжимают, получая практически чистое эфирное масло.</li>
+                        </ol>
+                        
+                        <p>Всё это щадящие процессы, которые гарантируют, что чувствительные соединения не будут разрушаться.</p>
+                        
+                        <p>Ароматические же масла производятся путем смешения синтетических соединений, которые содержат мало или вообще не содержат натуральных ингредиентов. А это значит, что такие масла не имеют никакой ценности в части терапевтического эффекта. Хотя некоторые поставщики и называют свой продукт звучащими названиями, такими как лаванда, роза или орхидея, но они, как правило, совсем не содержат натуральных компонентов.</p>
+                        
+                        <div class="article-image">
+                            <img src="https://images.unsplash.com/photo-1590502593746-8b3b0c049c27?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Производство масел">
+                            <div class="image-caption">Процесс дистилляции эфирных масел</div>
+                        </div>
+                        
+                        <h3>Разница в применении</h3>
+                        <p>Итак, мы разобрались, чем аромамасла отличаются от эфирных.</p>
+                        
+                        <p><strong>Эфирные масла</strong> используются в чистом и в разбавленном виде.</p>
+                        
+                        <p>В чистом виде их применяют для ароматизации и ингаляций, добавляя несколько капель масла в аромалампу или аромадиффузор.</p>
+                        
+                        <p>В разбавленном виде их наносят на кожу для лечения её несовершенств или используют для аромаванн и спа-процедур. Так как эти масла способствуют сохранению и восстановлению эпидермиса и волос.</p>
+                        
+                        <p>В отличие от эфирных, область применения <strong>ароматических масел</strong> значительно скромнее.</p>
+                        
+                        <p>Если они синтетические, то не рекомендуем использовать их для ароматерапии или наносить на кожу. Лучше оставить их в качестве отдушки, например, для приготовления мыла ручной работы.</p>
+                        
+                        <p>Ароматические масла не обладают теми же преимуществами, что и эфирные, поскольку они предназначены только для имитации запахов.</p>
+                        
+                        <h3>Аромат</h3>
+                        <p>Поскольку эфирное масло — натуральный чистый продукт, то оно сохраняет природный, полезный для здоровья запах. В то время как многие ароматические масла имеют слишком насыщенный и искусственный запах-имитатор.</p>
+                        
+                        <h3>Противопоказания</h3>
+                        <p>У эфирных масел есть ограничения и противопоказания к применению. Например:</p>
+                        
+                        <ul>
+                            <li><strong>Базилик и кипарис</strong> — могут повышать свёртываемость крови, их не следует применять при инсульте, инфаркте, тромбофлебите.</li>
+                            <li><strong>Бергамот, иланг-иланг, лимон, грейпфрут, апельсин</strong> — обладают фотосенсибилизирующими свойствами, то есть повышают чувствительность кожи к УФ-излучению.</li>
+                            <li><strong>Можжевельник, пихта, сандал</strong> — не применяют при нефрите.</li>
+                        </ul>
+                        
+                        <p>Ароматические масла, как правило, не имеют таких противопоказаний, но и не обладают терапевтическими свойствами.</p>
+                    `,
+                    isNew: true,
+                    hasImages: true
+                },
+                {
+                    id: 5,
+                    title: "Shalimar от Guerlain: история самого чувственного аромата XX века",
+                    tag: "История",
+                    preview: "История создания легендарных духов Shalimar — от любви индийского шаха к прекрасной принцессе до всемирной славы парфюмерного шедевра.",
+                    date: "2 января 2026",
+                    readTime: "6 мин",
+                    author: "Историк парфюмерии",
+                    content: `
+                        <p>В 1925 году мир парфюмерии обогатился одним из своих величайших шедевров — духами Shalimar от дома Guerlain. Этот аромат стал не просто парфюмом, а символом роскоши, страсти и вечной любви.</p>
+                        
+                        <div class="article-image">
+                            <img src="https://images.unsplash.com/photo-1590736966893-905eba2c5a01?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Shalimar Guerlain">
+                            <div class="image-caption">Легендарные духи Shalimar от Guerlain</div>
+                        </div>
+                        
+                        <h3>Легенда о любви</h3>
+                        <p>Название Shalimar происходит от персидского слова, означающего "обитель любви". В основу аромата легла романтическая история любви индийского шаха Джахана к своей жене Мумтаз-Махал.</p>
+                        
+                        <p>После её смерти в 1631 году, безутешный шах приказал построить в её честь мавзолей, который мы знаем сегодня как Тадж-Махал. Но мало кто знает, что незадолго до этого он построил для неё сады Шалимар в Лахоре — место их тайных встреч.</p>
+                        
+                        <h3>Рождение аромата</h3>
+                        <p>В 1921 году Жак Герлен, внук основателя дома Guerlain, путешествовал по Индии. Услышав историю о садах Шалимар и вечной любви, он был настолько впечатлён, что решил создать аромат, который передал бы эту страсть.</p>
+                        
+                        <p>Четыре года ушло на разработку. Результатом стал первый в мире ориентальный парфюм с аккордом ванили — тогда революционное решение.</p>
+                        
+                        <div class="article-image">
+                            <img src="https://images.unsplash.com/photo-1591085686350-798c0f9faa7f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Старинные духи">
+                            <div class="image-caption">Винтажная упаковка Shalimar 1925 года</div>
+                        </div>
+                        
+                        <h3>Парфюмерная революция</h3>
+                        <p>Shalimar стали первыми духами, в которых ваниль использовалась не как второстепенная нота, а как центральный аккорд. Композиция построена на контрасте:</p>
+                        
+                        <ul>
+                            <li><strong>Верхние ноты:</strong> цитрусовые (бергамот, лимон)</li>
+                            <li><strong>Сердце:</strong> ирис, жасмин, роза</li>
+                            <li><strong>База:</strong> ваниль, опопонакс, сандал, бензоин</li>
+                        </ul>
+                        
+                        <h3>Знаменитые поклонницы</h3>
+                        <p>За почти 100 лет существования у Shalimar появились миллионы поклонниц по всему миру. Среди самых известных:</p>
+                        
+                        <ol>
+                            <li><strong>Марлен Дитрих</strong> — называла Shalimar своими "ночными духами"</li>
+                            <li><strong>Грейс Келли</strong> — принцесса Монако обожала этот аромат</li>
+                            <li><strong>Жаклин Кеннеди</strong> — часто носила Shalimar на официальных мероприятиях</li>
+                            <li><strong>Мадонна</strong> — в 1990-х признавалась в любви к этому классическому аромату</li>
+                        </ol>
+                        
+                        <h3>Наследие</h3>
+                        <p>Сегодня Shalimar по-прежнему остаётся в топе продаж Guerlain. Парфюмерный дом регулярно выпускает лимитированные версии, но оригинальная формула 1925 года остаётся неизменной.</p>
+                        
+                        <p>Интересный факт: каждые 3 секунды в мире продаётся один флакон Shalimar. Это настоящий парфюмерный бестселлер, который уже почти век остаётся символом элегантности и страсти.</p>
+                        
+                        <p><em>"Shalimar — это не просто духи, это обещание вечной любви в каждой капле"</em> — так говорил о своём творении Жак Герлен.</p>
+                    `,
+                    isNew: true,
+                    hasImages: true
+                }
+            ];
+        }
+        
+        // ===== ОТОБРАЖЕНИЕ СТАТЕЙ =====
+      function displayArticles(articles) {
+    const container = document.getElementById('articlesList');
+    
+    console.log('Отображаем статьи:', articles.length, 'шт');
+    
+    if (!articles || articles.length === 0) {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 60px 20px; color: var(--text-secondary);">
+                <i class="bi bi-journal" style="font-size: 48px; margin-bottom: 20px; opacity: 0.5;"></i>
+                <p>Статей пока нет</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // Получаем прочитанные статьи
+    const readArticles = getReadArticles();
+    
+    // Используем ПРАВИЛЬНУЮ функцию для коллекции статей
+    let collectedArticles = [];
+    try {
+        const collectionStr = localStorage.getItem('scentme_collection_articles');
+        if (collectionStr) {
+            collectedArticles = JSON.parse(collectionStr);
+        }
+    } catch (e) {
+        console.error('Ошибка чтения коллекции статей:', e);
+    }
+    
+    console.log('Статьи в коллекции (IDs):', collectedArticles);
+    
+    container.innerHTML = articles.map(article => {
+        const isRead = readArticles.includes(article.id);
+        const isNew = article.isNew && !isRead;
+        
+        // ВАЖНО: Используем collectedArticles из ПРАВИЛЬНОГО localStorage
+        const isCollected = collectedArticles.includes(article.id);
+        
+        console.log(`Статья ${article.id} "${article.title.substring(0, 20)}...": collected=${isCollected}`);
+        
+        let badgesHTML = '';
+        
+        // Язычок закладки коллекции - ТОЛЬКО если isCollected = true
+        if (isCollected) {
+            badgesHTML += `<div class="badge-collection"><i class="bi bi-bookmark-fill"></i></div>`;
+        }
+        
+        // Бейджи справа сверху
+        if (isNew) {
+            badgesHTML += `<div class="article-badge badge-new">НОВОЕ</div>`;
+        } else if (isRead) {
+            badgesHTML += `<div class="article-badge badge-read">ПРОЧИТАНО</div>`;
+        }
+        
+        return `
+            <div class="article-item ${isRead ? 'read' : ''} ${isNew ? 'new-article' : ''}" 
+                 onclick="openArticleModal(${article.id})"
+                 data-article-id="${article.id}">
+                
+                ${badgesHTML}
+                
+                <span class="article-tag">${article.tag}</span>
+                <h3 class="article-title">${article.title}</h3>
+                <p class="article-preview">${article.preview}</p>
+                <div class="article-meta">
+                    <span>${article.date}</span>
+                    <span>${article.readTime}</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+        // ===== МОДАЛЬНОЕ ОКНО =====
+        function openArticleModal(articleId) {
+            const articles = getCachedArticles()?.articles || [];
+            const article = articles.find(a => a.id === articleId);
+            
+            if (!article) return;
+            
+            currentArticle = article;
+            
+            // Заполняем модалку
+            document.getElementById('modalArticleTitle').textContent = article.title;
+            document.getElementById('modalArticleDate').textContent = article.date;
+            document.getElementById('modalArticleReadTime').textContent = article.readTime + ' чтения';
+            document.getElementById('modalArticleContent').innerHTML = article.content;
+            
+            // Показываем автора, если есть
+            const authorElement = document.getElementById('modalArticleAuthor');
+            if (article.author) {
+                authorElement.textContent = article.author;
+                authorElement.style.display = 'inline';
+            } else {
+                authorElement.style.display = 'none';
+            }
+            
+            // Обновляем кнопку коллекции
+            updateCollectButton(article.id);
+            
+            // Показываем модалку
+            document.getElementById('articleModalOverlay').style.display = 'block';
+            document.getElementById('articleModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            
+            // Отмечаем статью как прочитанную при открытии
+            markArticleAsRead(articleId);
+        }
+        
+        function closeArticleModal() {
+            // Закрываем модалку
+            document.getElementById('articleModalOverlay').style.display = 'none';
+            document.getElementById('articleModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            currentArticle = null;
+        }
+        
+        function setupModal() {
+            const overlay = document.getElementById('articleModalOverlay');
+            const modal = document.getElementById('articleModal');
+            
+            // Закрытие по клику на оверлей
+            overlay.addEventListener('click', closeArticleModal);
+            
+            // Предотвращаем закрытие при клике на саму модалку
+            modal.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+            
+            // Закрытие по ESC
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.style.display === 'flex') {
+                    closeArticleModal();
+                }
+            });
+        }
+        
+        // ===== КОЛЛЕКЦИЯ =====
+        function toggleCollectArticle() {
+            if (!currentArticle) return;
+            
+            const articleId = currentArticle.id;
+            const collectedArticles = getCollectedArticles();
+            const index = collectedArticles.indexOf(articleId);
+            
+            if (index === -1) {
+                // Добавляем в коллекцию
+                collectedArticles.push(articleId);
+                updateCollectButton(articleId, true);
+                showNotification('Добавлено в коллекцию', 'Статья сохранена в вашу коллекцию');
+                
+                // Сохраняем в коллекцию для collection.html
+                saveToCollection(articleId);
+            } else {
+                // Удаляем из коллекции
+                collectedArticles.splice(index, 1);
+                updateCollectButton(articleId, false);
+                showNotification('Удалено из коллекции', 'Статья удалена из вашей коллекции');
+                
+                // Удаляем из коллекции
+                removeFromCollection(articleId);
+            }
+            
+            saveCollectedArticles(collectedArticles);
+            
+            // Обновляем отображение в списке
+            updateArticleCard(articleId, index === -1);
+        }
+        
+       function updateCollectButton(articleId, isCollected = null) {
+    const button = document.getElementById('collectArticleBtn');
+    if (!button) {
+        console.log('Кнопка коллекции не найдена');
+        return;
+    }
+    
+    // Получаем состояние коллекции напрямую из localStorage
+    const collection = getArticleCollection();
+    const isInCollection = collection.includes(articleId);
+    
+    console.log('Обновление кнопки для статьи', articleId, 'В коллекции:', isInCollection);
+    
+    if (isInCollection) {
+        button.innerHTML = '<i class="bi bi-bookmark-fill"></i> В коллекции';
+        button.style.color = 'var(--roasted-peach)';
+        button.style.borderColor = 'var(--roasted-peach)';
+    } else {
+        button.innerHTML = '<i class="bi bi-bookmark"></i> В коллекцию';
+        button.style.color = 'var(--text-primary)';
+        button.style.borderColor = 'var(--border-light)';
+    }
+}
+
+// И убедитесь, что у вас есть эта функция для получения коллекции:
+function getArticleCollection() {
+    try {
+        const collection = localStorage.getItem('scentme_collection_articles');
+        return collection ? JSON.parse(collection) : [];
+    } catch (e) {
+        console.error('Ошибка чтения коллекции статей:', e);
+        return [];
+    }
+}
+        
+        function updateArticleCard(articleId, isCollected) {
+            const articleElement = document.querySelector(`[data-article-id="${articleId}"]`);
+            if (!articleElement) return;
+            
+            // Удаляем старый язычок закладки
+            const oldBadge = articleElement.querySelector('.badge-collection');
+            if (oldBadge) oldBadge.remove();
+            
+            // Добавляем новый язычок, если нужно
+            if (isCollected) {
+                const badge = document.createElement('div');
+                badge.className = 'badge-collection';
+                badge.innerHTML = '<i class="bi bi-bookmark-fill"></i>';
+                articleElement.prepend(badge);
+            }
+        }
+        
+        // ===== ПРОЧИТАННЫЕ СТАТЬИ =====
+        function markArticleAsRead(articleId) {
+            const readArticles = getReadArticles();
+            if (!readArticles.includes(articleId)) {
+                readArticles.push(articleId);
+                saveReadArticles(readArticles);
+                
+                // Обновляем отображение в списке
+                const articleElement = document.querySelector(`[data-article-id="${articleId}"]`);
+                if (articleElement) {
+                    // Добавляем класс read для боковой полоски
+                    articleElement.classList.add('read');
+                    articleElement.classList.remove('new-article');
+                    
+                    // Удаляем бейдж "НОВОЕ" если был
+                    const newBadge = articleElement.querySelector('.badge-new');
+                    if (newBadge) newBadge.remove();
+                    
+                    // Добавляем бейдж "ПРОЧИТАНО"
+                    const readBadge = document.createElement('div');
+                    readBadge.className = 'article-badge badge-read';
+                    readBadge.textContent = 'ПРОЧИТАНО';
+                    articleElement.appendChild(readBadge);
+                }
+            }
+        }
+        
+        // ===== УПРАВЛЕНИЕ ДАННЫМИ =====
+        function getReadArticles() {
+            try {
+                const read = localStorage.getItem(READ_ARTICLES_KEY);
+                return read ? JSON.parse(read) : [];
+            } catch (e) {
+                console.error('Ошибка чтения прочитанных статей:', e);
+                return [];
+            }
+        }
+        
+        function saveReadArticles(articles) {
+            try {
+                localStorage.setItem(READ_ARTICLES_KEY, JSON.stringify(articles));
+            } catch (e) {
+                console.error('Ошибка сохранения прочитанных статей:', e);
+            }
+        }
+        
+        function getCollectedArticles() {
+            try {
+                const collected = localStorage.getItem(COLLECTED_ARTICLES_KEY);
+                return collected ? JSON.parse(collected) : [];
+            } catch (e) {
+                console.error('Ошибка чтения коллекции:', e);
+                return [];
+            }
+        }
+        
+        function saveCollectedArticles(articles) {
+            try {
+                localStorage.setItem(COLLECTED_ARTICLES_KEY, JSON.stringify(articles));
+            } catch (e) {
+                console.error('Ошибка сохранения коллекции:', e);
+            }
+        }
+        
+        // Сохранение в коллекцию (для collection.html)
+        function saveToCollection(articleId) {
+            try {
+                const articles = getCachedArticles()?.articles || [];
+                const article = articles.find(a => a.id === articleId);
+                
+                if (!article) return;
+                
+                const collection = {
+                    id: 'article_' + articleId,
+                    type: 'article',
+                    title: article.title,
+                    tag: article.tag,
+                    date: article.date,
+                    readTime: article.readTime,
+                    savedAt: new Date().toISOString()
+                };
+                
+                // Сохраняем в общую коллекцию
+                const allCollection = JSON.parse(localStorage.getItem('scentme_collection') || '[]');
+                const exists = allCollection.find(item => item.id === collection.id);
+                
+                if (!exists) {
+                    allCollection.push(collection);
+                    localStorage.setItem('scentme_collection', JSON.stringify(allCollection));
+                }
+            } catch (e) {
+                console.error('Ошибка сохранения в коллекцию:', e);
+            }
+        }
+        
+        function removeFromCollection(articleId) {
+            try {
+                const collectionId = 'article_' + articleId;
+                const allCollection = JSON.parse(localStorage.getItem('scentme_collection') || '[]');
+                const filtered = allCollection.filter(item => item.id !== collectionId);
+                localStorage.setItem('scentme_collection', JSON.stringify(filtered));
+            } catch (e) {
+                console.error('Ошибка удаления из коллекции:', e);
+            }
+        }
+        
+        // ===== ПОДЕЛИТЬСЯ (с ссылкой на Telegram бота) =====
+        function shareArticle() {
+            if (!currentArticle) return;
+            
+            const telegramBotLink = 'https://t.me/scentme_bot';
+            const shareText = `${currentArticle.title}\n\n${currentArticle.preview}\n\nЧитать в Scentmé: ${telegramBotLink}`;
+            
+            // Для Telegram WebApp
+            if (window.Telegram?.WebApp) {
+                const telegramShareUrl = `https://t.me/share/url?url=${encodeURIComponent(telegramBotLink)}&text=${encodeURIComponent(currentArticle.title + '\n\n' + currentArticle.preview)}`;
+                
+                Telegram.WebApp.openLink(telegramShareUrl);
+            } 
+            // Для браузеров с поддержкой Web Share API
+            else if (navigator.share) {
+                navigator.share({
+                    title: currentArticle.title,
+                    text: currentArticle.preview,
+                    url: telegramBotLink
+                })
+                .then(() => console.log('Успешный шаринг'))
+                .catch((error) => {
+                    console.log('Ошибка шаринга:', error);
+                    copyToClipboard(shareText);
+                });
+            } 
+            // Fallback - копируем текст с ссылкой
+            else {
+                copyToClipboard(shareText);
+            }
+        }
+        
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('Скопировано', 'Ссылка на статью скопирована в буфер обмена');
+            }).catch(() => {
+                // Старый способ для старых браузеров
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showNotification('Скопировано', 'Ссылка на статью скопирована');
+            });
+        }
+        
+        // ===== УВЕДОМЛЕНИЯ =====
+        function showNotification(title, text) {
+            const notification = document.getElementById('notification');
+            const notificationTitle = document.getElementById('notificationTitle');
+            const notificationText = document.getElementById('notificationText');
+            
+            notificationTitle.textContent = title;
+            notificationText.textContent = text;
+            
+            notification.classList.add('show');
+            
+            // Автоматическое скрытие через 5 секунд
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+        
+        function closeNotification() {
+            document.getElementById('notification').classList.remove('show');
+        }
+        
+        // ===== ПРОВЕРКА НОВЫХ СТАТЕЙ =====
+        async function checkForNewArticles() {
+            // Проверяем не чаще чем раз в час
+            const lastCheck = parseInt(localStorage.getItem(LAST_CHECK_KEY) || '0');
+            const now = Date.now();
+            
+            if (now - lastCheck < 60 * 60 * 1000) {
+                return; // Не проверяем, если прошло меньше часа
+            }
+            
+            // Сохраняем время проверки
+            localStorage.setItem(LAST_CHECK_KEY, now.toString());
+            
+            // Проверяем настройки уведомлений
+            const notificationsEnabled = localStorage.getItem(NOTIFICATION_PREF_KEY) === 'true';
+            
+            if (!notificationsEnabled) {
+                return; // Уведомления отключены
+            }
+            
+            // В реальном приложении здесь будет запрос к API
+            // Для демонстрации имитируем получение новых статей
+            setTimeout(() => {
+                // С вероятностью 30% показываем уведомление о новой статье
+                if (Math.random() < 0.3) {
+                    const titles = [
+                        "Новая статья: Весенние тренды в парфюмерии 2026",
+                        "Вышла статья: Как создаются нишевые ароматы",
+                        "Новинка: Гид по летним ароматам"
+                    ];
+                    
+                    const randomTitle = titles[Math.floor(Math.random() * titles.length)];
+                    showNotification('Новая статья!', randomTitle);
+                }
+            }, 3000);
+        }
+        
+        // ===== БОКОВОЕ МЕНЮ =====
+       // === ИСПРАВЛЕННАЯ ВЕРСИЯ ФУНКЦИИ setupSideMenu ===
+function setupSideMenu() {
+    const menu = document.getElementById('sideMenu');
+    
+    const menuItems = [
+        {
+            id: 'library',
+            name: 'Библиотека ароматов',
+            icon: 'bi-book',
+            active: false,
+            url: 'library.html'
+        },
+        {
+            id: 'test',
+            name: 'Новый тест',
+            icon: 'bi-clipboard-check',
+            active: false,
+            url: 'start.html'
+        },
+        {
+            id: 'articles',
+            name: 'Статьи',
+            icon: 'bi-newspaper',
+            active: true,
+            url: 'articles.html'  // или текущая страница
+        },
+        {
+            id: 'collection',
+            name: 'Коллекция',
+            icon: 'bi-heart',
+            active: false,
+            url: 'collection.html'
+        },
+        {
+            id: 'profile',
+            name: 'Профиль',
+            icon: 'bi-person',
+            active: false,
+            url: 'profile.html'
+        }
+    ];
+    
+    menu.innerHTML = `
+        <div class="menu-header">
+            <h2 style="font-family: 'Georgia', serif; color: var(--chocolate); font-weight: 300; font-size: 20px;">Меню</h2>
+            <button class="modal-close" onclick="closeSideMenu()" style="background: none; color: var(--milky-coffee); font-size: 24px; width: 30px; height: 30px;">×</button>
+        </div>
+        <div class="menu-buttons" id="menuButtons">
+            ${menuItems.map(item => `
+                <button class="menu-btn ${item.active ? 'active' : ''}" 
+                        data-url="${item.url}" 
+                        data-id="${item.id}">
+                    <i class="bi ${item.icon}"></i>
+                    <span>${item.name}</span>
+                </button>
+            `).join('')}
+        </div>
+    `;
+    
+    // НАЗНАЧАЕМ ОБРАБОТЧИКИ ПОСЛЕ СОЗДАНИЯ МЕНЮ
+    document.getElementById('menuButtons').addEventListener('click', function(e) {
+        const button = e.target.closest('.menu-btn');
+        if (button) {
+            const url = button.getAttribute('data-url');
+            closeSideMenu();
+            
+            // Добавляем небольшую задержку для плавности
+            setTimeout(() => {
+                window.location.href = url;
+            }, 200);
+        }
+    });
+}
+function navigateTo(url) {
+    closeSideMenu();
+    setTimeout(() => {
+        window.location.href = url;
+    }, 200);
+}
+        
+        function toggleSideMenu() {
+            document.getElementById('sideMenuOverlay').classList.toggle('active');
+            document.getElementById('sideMenu').classList.toggle('active');
+        }
+        
+        function closeSideMenu() {
+            document.getElementById('sideMenuOverlay').classList.remove('active');
+            document.getElementById('sideMenu').classList.remove('active');
+        }
+        
+        // ===== TELEGRAM ИНТЕГРАЦИЯ =====
+        function initTelegramWebApp() {
+            if (window.Telegram?.WebApp) {
+                // Расширяем на весь экран
+                Telegram.WebApp.expand();
+                
+                // Устанавливаем цветовую тему
+                const theme = Telegram.WebApp.colorScheme;
+                if (theme === 'dark') {
+                    document.body.classList.add('dark-theme');
+                    document.body.classList.remove('light-theme');
+                }
+                
+                // Настройка основной кнопки
+                Telegram.WebApp.MainButton.setText("Главная");
+                Telegram.WebApp.MainButton.onClick(() => {
+                    window.location.href = "main.html";
+                });
+                Telegram.WebApp.MainButton.show();
+                
+                // Обработка нажатия кнопки "Назад" в Telegram
+                Telegram.WebApp.BackButton.onClick(goBack);
+                Telegram.WebApp.BackButton.show();
+                
+                // Получаем информацию о пользователе
+                const user = Telegram.WebApp.initDataUnsafe.user;
+                if (user) {
+                    localStorage.setItem('tg_user_id', user.id.toString());
+                    localStorage.setItem('tg_username', user.username || '');
+                    localStorage.setItem('tg_first_name', user.first_name || '');
+                    
+                    // Обновляем аватар
+                    updateAvatar(user.first_name);
+                }
+            }
+        }
+        
+        // ===== ТЕМА =====
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-theme');
+                document.body.classList.remove('light-theme');
+            }
+        }
+        
+        // ===== АВАТАР =====
+        function updateAvatar(name) {
+            const avatar = document.getElementById('headerAvatar');
+            if (avatar && name) {
+                // Берем первую букву имени
+                avatar.textContent = name.charAt(0).toUpperCase();
+            }
+        }
+        
+        // ===== ДРУГИЕ ФУНКЦИИ =====
+        function goBack() {
+            if (window.Telegram?.WebApp) {
+                Telegram.WebApp.close();
+            } else if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = 'main.html';
+            }
+        }
+        
+        function goToProfile() {
+            window.location.href = 'profile.html';
+        }
+        
+        function startNewTest() {
+            window.location.href = "start.html";
+        }
+        
+        // ===== ПРОФИЛЬ И НАСТРОЙКИ =====
+        function setNotificationPreference(enabled) {
+            localStorage.setItem(NOTIFICATION_PREF_KEY, enabled.toString());
+            
+            if (enabled) {
+                showNotification('Уведомления включены', 'Вы будете получать уведомления о новых статьях');
+            } else {
+                showNotification('Уведомления отключены', 'Вы не будете получать уведомления о новых статьях');
+            }
+        }
+        
+        // ===== ЭКСПОРТ ДЛЯ ИСПОЛЬЗОВАНИЯ В ДРУГИХ ФАЙЛАХ =====
+        window.articlesModule = {
+            getReadArticles,
+            getCollectedArticles,
+            markArticleAsRead,
+            setNotificationPreference,
+            checkForNewArticles
+        };
+  // ===== ПРОСТЫЕ ФУНКЦИИ ДЛЯ КОЛЛЕКЦИИ СТАТЕЙ =====
+    
+    // Получить коллекцию статей из localStorage
+    function getArticleCollection() {
+        const collection = localStorage.getItem('scentme_collection_articles');
+        return collection ? JSON.parse(collection) : [];
+    }
+    
+    // Сохранить коллекцию статей в localStorage
+    function saveArticleCollection(collection) {
+        localStorage.setItem('scentme_collection_articles', JSON.stringify(collection));
+    }
+    
+    // Проверить, есть ли статья в коллекции
+    function isArticleInCollection(articleId) {
+        const collection = getArticleCollection();
+        return collection.includes(articleId);
+    }
+    
+    // Добавить статью в коллекцию
+    function addArticleToCollection(articleId) {
+        const collection = getArticleCollection();
+        if (!collection.includes(articleId)) {
+            collection.push(articleId);
+            saveArticleCollection(collection);
+            return true;
+        }
+        return false;
+    }
+    
+    // Удалить статью из коллекции
+    function removeArticleFromCollection(articleId) {
+        const collection = getArticleCollection();
+        const index = collection.indexOf(articleId);
+        if (index !== -1) {
+            collection.splice(index, 1);
+            saveArticleCollection(collection);
+            return true;
+        }
+        return false;
+    }
+    
+    // ===== ОБРАБОТЧИКИ ДЛЯ СТРАНИЦЫ =====
+    
+    // Инициализация при загрузке
+    document.addEventListener('DOMContentLoaded', function() {
+        // Обновляем все сердечки на странице
+        updateAllArticleHearts();
+        
+        // Назначаем обработчики на кнопки сердечек
+        setupArticleHeartListeners();
+    });
+    
+    // Обновить все сердечки на странице
+    function updateAllArticleHearts() {
+        document.querySelectorAll('.article-heart-btn').forEach(btn => {
+            const articleId = btn.getAttribute('data-article-id');
+            if (articleId) {
+                updateHeartIcon(btn, isArticleInCollection(parseInt(articleId)));
+            }
+        });
+    }
+    
+    // Назначить обработчики на кнопки сердечек
+    function setupArticleHeartListeners() {
+        document.addEventListener('click', function(e) {
+            const heartBtn = e.target.closest('.article-heart-btn');
+            if (heartBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const articleId = parseInt(heartBtn.getAttribute('data-article-id'));
+                if (articleId) {
+                    toggleArticleCollection(articleId, heartBtn);
+                }
+            }
+        });
+    }
+    
+    // Переключить состояние коллекции для статьи
+    function toggleArticleCollection(articleId, heartBtn) {
+        const wasInCollection = isArticleInCollection(articleId);
+        
+        if (wasInCollection) {
+            // Удаляем из коллекции
+            removeArticleFromCollection(articleId);
+            updateHeartIcon(heartBtn, false);
+            showNotification('Статья удалена из коллекции');
+        } else {
+            // Добавляем в коллекцию
+            addArticleToCollection(articleId);
+            updateHeartIcon(heartBtn, true);
+            showNotification('Статья добавлена в коллекцию');
+        }
+    }
+    
+    // Обновить иконку сердечка
+    function updateHeartIcon(heartBtn, isFilled) {
+        const heartIcon = heartBtn.querySelector('.bi');
+        if (heartIcon) {
+            if (isFilled) {
+                heartIcon.classList.remove('bi-heart');
+                heartIcon.classList.add('bi-heart-fill');
+            } else {
+                heartIcon.classList.remove('bi-heart-fill');
+                heartIcon.classList.add('bi-heart');
+            }
+        }
+    }
+    
+    // Показать уведомление
+    function showNotification(message) {
+        // Простое уведомление
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        `;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        // Показать
+        setTimeout(() => notification.style.opacity = '1', 10);
+        
+        // Скрыть через 3 секунды
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+    
+    // ===== ФУНКЦИИ ДЛЯ МОДАЛЬНОГО ОКНА (если есть) =====
+    
+    // Для модального окна статьи
+    function toggleArticleInModal(articleId) {
+        const wasInCollection = isArticleInCollection(articleId);
+        
+        if (wasInCollection) {
+            removeArticleFromCollection(articleId);
+            showNotification('Статья удалена из коллекции');
+        } else {
+            addArticleToCollection(articleId);
+            showNotification('Статья добавлена в коллекцию');
+        }
+        
+        // Обновить сердечко в модальном окне
+        updateModalHeartIcon(articleId, !wasInCollection);
+        // Обновить сердечко в карточке
+        updateHeartIconOnCard(articleId, !wasInCollection);
+    }
+    
+    // Обновить иконку в модальном окне
+    function updateModalHeartIcon(articleId, isFilled) {
+        const modalHeart = document.querySelector(`.modal-article-heart[data-article-id="${articleId}"]`);
+        if (modalHeart) {
+            updateHeartIcon(modalHeart, isFilled);
+        }
+    }
+    
+    // Обновить иконку в карточке
+    function updateHeartIconOnCard(articleId, isFilled) {
+        const cardHeart = document.querySelector(`.article-heart-btn[data-article-id="${articleId}"]`);
+        if (cardHeart) {
+            updateHeartIcon(cardHeart, isFilled);
+        }
+    }
+// ============================================================================
+// СИСТЕМА КОЛЛЕКЦИИ СТАТЕЙ - ПРОСТАЯ ВЕРСИЯ
+// ============================================================================
+
+// 1. БАЗОВЫЕ ФУНКЦИИ ДЛЯ КОЛЛЕКЦИИ
+function getArticleCollection() {
+    try {
+        const collection = localStorage.getItem('scentme_collection_articles');
+        return collection ? JSON.parse(collection) : [];
+    } catch (e) {
+        return [];
+    }
+}
+
+function saveArticleCollection(collection) {
+    localStorage.setItem('scentme_collection_articles', JSON.stringify(collection));
+}
+
+function isArticleInCollection(articleId) {
+    const collection = getArticleCollection();
+    return collection.includes(articleId);
+}
+// Функция для поиска и открытия статьи
+function findAndOpenArticleFromCollection() {
+    try {
+        const openArticleData = localStorage.getItem('open_article_data');
+        if (!openArticleData) return;
+        
+        const data = JSON.parse(openArticleData);
+        
+        // Очищаем сразу, чтобы не открывалось при следующей загрузке
+        localStorage.removeItem('open_article_data');
+        
+        // Ищем статью по названию (самый надежный способ)
+        const articles = getCachedArticles()?.articles || [];
+        
+        // Сначала ищем по ID (если есть)
+        if (data.id) {
+            const articleById = articles.find(a => a.id == data.id);
+            if (articleById) {
+                openArticleModal(articleById.id);
+                scrollToArticleInList(articleById.id);
+                return;
+            }
+        }
+        
+        // Если не нашли по ID, ищем по названию
+        if (data.name) {
+            // Ищем точное совпадение
+            let article = articles.find(a => 
+                a.title.toLowerCase() === data.name.toLowerCase()
+            );
+            
+            // Если нет точного совпадения, ищем частичное
+            if (!article) {
+                article = articles.find(a => 
+                    a.title.toLowerCase().includes(data.name.toLowerCase()) ||
+                    data.name.toLowerCase().includes(a.title.toLowerCase())
+                );
+            }
+            
+            if (article) {
+                openArticleModal(article.id);
+                scrollToArticleInList(article.id);
+            }
+        }
+        
+    } catch (e) {
+        console.error('Ошибка поиска статьи:', e);
+    }
+}
+
+// Функция для прокрутки к статье в списке
+function scrollToArticleInList(articleId) {
+    setTimeout(() => {
+        const articleElement = document.querySelector(`[data-article-id="${articleId}"]`);
+        if (articleElement) {
+            articleElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
+            
+            // Добавляем подсветку
+            articleElement.style.backgroundColor = 'rgba(232, 168, 149, 0.2)';
+            articleElement.style.transition = 'background-color 0.5s ease';
+            
+            setTimeout(() => {
+                articleElement.style.backgroundColor = '';
+            }, 2000);
+        }
+    }, 500); // Даем время для загрузки списка
+}
+
+// Вызываем эту функцию при загрузке страницы статей
+document.addEventListener('DOMContentLoaded', async function() {
+    await initializeApp();
+    // Ждем немного, чтобы статьи отобразились
+    setTimeout(findAndOpenArticleFromCollection, 300);
+});
+
+// 2. ОСНОВНАЯ ФУНКЦИЯ ДЛЯ КНОПКИ В МОДАЛЬНОМ ОКНЕ
+function toggleCollectArticle() {
+    // Проверяем, есть ли открытая статья
+    if (!currentArticle) {
+        console.log('Нет открытой статьи');
+        return;
+    }
+    
+    const articleId = currentArticle.id;
+    const collection = getArticleCollection();
+    const isInCollection = collection.includes(articleId);
+    
+    if (isInCollection) {
+        // УДАЛЯЕМ из коллекции
+        const index = collection.indexOf(articleId);
+        collection.splice(index, 1);
+        saveArticleCollection(collection);
+        
+        // Обновляем кнопку
+        updateCollectButton(false);
+        
+        // Обновляем значок на карточке
+        updateArticleBadge(articleId, false);
+        
+        // Показываем уведомление
+        showNotification('Удалено из коллекции', 'Статья удалена из коллекции');
+        
+        console.log('Статья удалена из коллекции, ID:', articleId);
+    } else {
+        // ДОБАВЛЯЕМ в коллекцию
+        collection.push(articleId);
+        saveArticleCollection(collection);
+        
+        // Обновляем кнопку
+        updateCollectButton(true);
+        
+        // Обновляем значок на карточке
+        updateArticleBadge(articleId, true);
+        
+        // Показываем уведомление
+        showNotification('Добавлено в коллекцию', 'Статья сохранена в коллекцию');
+        
+        console.log('Статья добавлена в коллекцию, ID:', articleId);
+    }
+    
+    console.log('Текущая коллекция:', collection);
+}
+
+// 3. ОБНОВЛЕНИЕ КНОПКИ В МОДАЛЬНОМ ОКНЕ
+function updateCollectButton(isInCollection) {
+    const button = document.getElementById('collectArticleBtn');
+    if (!button) return;
+    
+    if (isInCollection) {
+        button.innerHTML = '<i class="bi bi-bookmark-fill"></i> В коллекции';
+    } else {
+        button.innerHTML = '<i class="bi bi-bookmark"></i> В коллекцию';
+    }
+}
+
+// 4. ОБНОВЛЕНИЕ ЗНАЧКА НА КАРТОЧКЕ СТАТЬИ
+function updateArticleBadge(articleId, showBadge) {
+    // Находим карточку статьи
+    const articleCard = document.querySelector(`.article-item[data-article-id="${articleId}"]`);
+    if (!articleCard) return;
+    
+    // Ищем существующий значок
+    let badge = articleCard.querySelector('.badge-collection');
+    
+    if (showBadge) {
+        // Добавляем значок, если его нет
+        if (!badge) {
+            badge = document.createElement('div');
+            badge.className = 'badge-collection';
+            badge.innerHTML = '<i class="bi bi-bookmark-fill"></i>';
+            articleCard.appendChild(badge);
+        }
+    } else {
+        // Удаляем значок, если он есть
+        if (badge) {
+            badge.remove();
+        }
+    }
+}
+
+// 5. ФУНКЦИЯ ДЛЯ ПОДГОТОВКИ КНОПКИ ПРИ ОТКРЫТИИ МОДАЛКИ
+function prepareCollectButton(articleId) {
+    const isInCollection = isArticleInCollection(articleId);
+    updateCollectButton(isInCollection);
+}
+
+// 6. ДОБАВЛЯЕМ ВЫЗОВ ПРИ ОТКРЫТИИ МОДАЛЬНОГО ОКНА
+// Находим функцию openArticleModal и добавляем вызов prepareCollectButton
+const originalOpenArticleModal = window.openArticleModal;
+window.openArticleModal = function(articleId) {
+    // Вызываем оригинальную функцию
+    if (typeof originalOpenArticleModal === 'function') {
+        originalOpenArticleModal(articleId);
+    }
+    
+    // Обновляем кнопку коллекции
+    setTimeout(() => {
+        prepareCollectButton(articleId);
+    }, 50);
+};
+
+// 7. ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ СТРАНИЦЫ
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('✅ Система коллекции статей инициализирована');
+    
+    // Выводим отладочную информацию
+    const collection = getArticleCollection();
+    console.log('📚 Статей в коллекции:', collection.length);
+    console.log('📋 ID статей в коллекции:', collection);
+    
+    // Назначаем обработчик на кнопку (на всякий случай)
+    const collectBtn = document.getElementById('collectArticleBtn');
+    if (collectBtn) {
+        collectBtn.onclick = toggleCollectArticle;
+    }
+});
+    </script>
+</body>
+</html>

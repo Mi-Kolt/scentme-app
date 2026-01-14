@@ -1,0 +1,2412 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль - Scentmé</title>
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        /* ===== СБРОС СТИЛЕЙ ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* ===== ОСНОВНЫЕ СТИЛИ ===== */
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+        
+        /* ===== СВЕТЛАЯ ТЕМА (ПО УМОЛЧАНИЮ) ===== */
+        body.light-theme {
+            --chocolate: #684627;
+            --roasted-peach: #E8A895;
+            --whole-wheat: #EFD2B0;
+            --milky-coffee: #B59272;
+            --cream: #FFE4B8;
+            --peony-pink: #E8A8B8;
+            --peony-dark-pink: #C97A8D;
+            --light-beige: #FFF8ED;
+            --border-light: rgba(104, 70, 39, 0.3);
+            --shadow-light: rgba(104, 70, 39, 0.1);
+            --shadow-medium: rgba(104, 70, 39, 0.2);
+            --bg-primary: #FFF8ED;
+            --bg-card: #FFFFFF;
+            --text-primary: #5C4A36;
+            --text-secondary: #7D6B57;
+            --accent-color: #684627;
+            --title-color: #684627;
+            --icon-color: #5C4A36;
+        }
+        
+        /* ===== ТЁМНАЯ ТЕМА ===== */
+        body.dark-theme {
+            --chocolate: #F4E4A6;
+            --roasted-peach: #98755B;
+            --whole-wheat: #584738;
+            --milky-coffee: #D8C9B0;
+            --cream: #3D1F12;
+            --peony-pink: #D4AF37;
+            --peony-dark-pink: #F4E4A6;
+            --light-beige: #2A1A0F;
+            --border-light: rgba(212, 175, 55, 0.3);
+            --shadow-light: rgba(0, 0, 0, 0.3);
+            --shadow-medium: rgba(0, 0, 0, 0.5);
+            --bg-primary: #2A1A0F;
+            --bg-card: #1E1712;
+            --text-primary: #F4E4A6;
+            --text-secondary: rgba(244, 228, 166, 0.8);
+            --accent-color: #F4E4A6;
+            --title-color: #F4E4A6;
+            --icon-color: #F4E4A6;
+        }
+        
+        /* ===== ОСНОВНОЙ КОНТЕЙНЕР ===== */
+        .app-container {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        /* ===== ФИКС ВИДИМОСТИ ПАРОЛЯ ПРИ ЗАГРУЗКЕ ===== */
+/* Гарантируем, что при загрузке показываются только точки */
+.password-text {
+    display: none !important;
+}
+
+.password-dots {
+    display: inline !important;
+}
+
+/* При активации видимости показываем текст и скрываем точки */
+.password-visible .password-text {
+    display: inline !important;
+}
+
+.password-visible .password-dots {
+    display: none !important;
+}
+        /* ===== ШАПКА ВЕРХНЕГО УРОВНЯ ===== */
+        .main-header {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-light);
+            background: var(--bg-card);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 15px var(--shadow-light);
+        }
+        
+        /* Кнопка назад */
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--chocolate);
+            cursor: pointer;
+            padding: 5px;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+        }
+        
+        .back-btn:hover {
+            opacity: 1;
+            background: rgba(104, 70, 39, 0.1);
+        }
+        
+        .dark-theme .back-btn:hover {
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        /* Название приложения */
+        .app-title {
+            font-size: 24px;
+            color: var(--chocolate);
+            font-weight: 400;
+            font-family: 'Georgia', serif;
+            letter-spacing: 1px;
+        }
+        
+        /* Пустой элемент для выравнивания */
+        .header-spacer {
+            width: 40px;
+            visibility: hidden;
+        }
+        
+        /* ===== ГЛАВНЫЙ КОНТЕНТ ===== */
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* Кастомный скроллбар */
+        .content-area::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .content-area::-webkit-scrollbar-track {
+            background: rgba(232, 168, 149, 0.1);
+            border-radius: 4px;
+            margin: 5px;
+        }
+        
+        .dark-theme .content-area::-webkit-scrollbar-track {
+            background: rgba(152, 117, 91, 0.1);
+        }
+        
+        .content-area::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--roasted-peach), var(--milky-coffee));
+            border-radius: 4px;
+            border: 2px solid var(--light-beige);
+        }
+        
+        .content-area::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--milky-coffee), var(--roasted-peach));
+        }
+        
+        /* ===== ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ ===== */
+        .profile-section {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Заголовок профиля */
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .profile-avatar-large {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--roasted-peach), var(--whole-wheat));
+            color: var(--chocolate);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            font-weight: 600;
+            margin: 0 auto 20px;
+            border: 3px solid var(--border-light);
+            box-shadow: 0 5px 20px var(--shadow-light);
+        }
+        
+        .profile-name {
+            font-size: 28px;
+            color: var(--chocolate);
+            margin-bottom: 10px;
+            font-family: 'Georgia', serif;
+            font-weight: 300;
+        }
+        
+        .profile-role {
+            font-size: 16px;
+            color: var(--milky-coffee);
+            background: rgba(232, 168, 149, 0.1);
+            padding: 6px 16px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        .dark-theme .profile-role {
+            background: rgba(152, 117, 91, 0.1);
+        }
+        
+        /* Карточки информации */
+        .profile-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 5px 20px var(--shadow-light);
+        }
+        
+        .card-title {
+            font-size: 20px;
+            color: var(--chocolate);
+            margin-bottom: 20px;
+            font-family: 'Georgia', serif;
+            font-weight: 300;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-title i {
+            color: var(--roasted-peach);
+            font-size: 22px;
+        }
+        
+        /* ===== ИНФОРМАЦИЯ О ПРОФИЛЕ ===== */
+        .info-grid {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            font-size: 15px;
+            color: var(--milky-coffee);
+            font-weight: 500;
+            min-width: 150px;
+        }
+        
+        .info-content {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            justify-content: space-between;
+        }
+        
+        .info-value {
+            font-size: 15px;
+            color: var(--chocolate);
+            font-weight: 500;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .login-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .login-flower {
+            color: var(--roasted-peach);
+            font-size: 16px;
+            margin-right: 5px;
+        }
+        
+        .password-display {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            flex: 1;
+        }
+        
+        .password-dots {
+            color: var(--milky-coffee);
+            letter-spacing: 2px;
+            font-weight: 600;
+            flex: 1;
+        }
+        
+        .password-text {
+            color: var(--chocolate);
+            font-weight: 500;
+            flex: 1;
+            display: none;
+        }
+        
+        /* Увеличенные кнопки карандашика и глаза */
+        .password-toggle {
+            background: none;
+            border: none;
+            color: var(--milky-coffee);
+            cursor: pointer;
+            padding: 8px;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            margin-left: auto;
+        }
+        
+        .password-toggle:hover {
+            opacity: 1;
+            background: rgba(104, 70, 39, 0.1);
+            color: var(--roasted-peach);
+        }
+        
+        .dark-theme .password-toggle:hover {
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .edit-btn {
+            background: none;
+            border: none;
+            color: var(--milky-coffee);
+            cursor: pointer;
+            padding: 8px;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            margin-left: auto;
+        }
+        
+        .edit-btn:hover {
+            opacity: 1;
+            background: rgba(104, 70, 39, 0.1);
+            color: var(--roasted-peach);
+        }
+        
+        .dark-theme .edit-btn:hover {
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        /* Редактируемое поле */
+        .editable-field {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+        
+        .edit-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            background: var(--bg-card);
+            color: var(--chocolate);
+            font-size: 15px;
+            transition: all 0.3s ease;
+            display: none;
+        }
+        
+        .edit-input:focus {
+            outline: none;
+            border-color: var(--roasted-peach);
+            box-shadow: 0 0 0 2px rgba(232, 168, 149, 0.2);
+        }
+        
+        /* Поля для ввода пароля (5 цифр) */
+        .password-edit-digits {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .password-edit-digit {
+            width: 50px;
+            height: 60px;
+            background: transparent;
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            font-size: 22px;
+            color: var(--text-primary);
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .password-edit-digit.active {
+            box-shadow: 0 0 0 2px var(--border-light);
+            transform: translateY(-2px);
+        }
+        
+        .password-edit-digit input {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            font-size: 22px;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            outline: none;
+        }
+        
+        .field-actions {
+            display: none;
+            gap: 8px;
+            margin-left: auto;
+        }
+        
+        .save-btn, .cancel-btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .save-btn {
+            background: var(--roasted-peach);
+            color: var(--light-beige);
+        }
+        
+        .save-btn:hover {
+            background: var(--milky-coffee);
+            transform: translateY(-1px);
+        }
+        
+        .cancel-btn {
+            background: rgba(104, 70, 39, 0.1);
+            color: var(--milky-coffee);
+        }
+        
+        .cancel-btn:hover {
+            background: rgba(104, 70, 39, 0.2);
+        }
+        
+        /* Поле в режиме редактирования */
+        .editing .static-value {
+            display: none;
+        }
+        
+        .editing .edit-input {
+            display: block;
+        }
+        
+        .editing .field-actions {
+            display: flex;
+        }
+        
+        .editing .edit-btn {
+            display: none;
+        }
+        
+        .editing .password-toggle {
+            display: none;
+        }
+        
+        /* Специальный стиль для логина */
+        .login-value {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        /* ===== СТАТИСТИКА ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-item {
+            background: rgba(232, 168, 149, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid var(--border-light);
+        }
+        
+        .dark-theme .stat-item {
+            background: rgba(152, 117, 91, 0.1);
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--chocolate);
+            margin-bottom: 5px;
+            font-family: 'Georgia', serif;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: var(--milky-coffee);
+            font-weight: 500;
+        }
+        
+        /* ===== ИСТОРИЯ ТЕСТОВ ===== */
+        .tests-history {
+            margin-top: 10px;
+        }
+        
+        .test-item {
+            background: rgba(232, 168, 149, 0.05);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .test-item:hover {
+            background: rgba(232, 168, 149, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px var(--shadow-light);
+        }
+        
+        .test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .test-date {
+            font-size: 14px;
+            color: var(--milky-coffee);
+        }
+        
+        .test-type {
+            font-size: 16px;
+            color: var(--chocolate);
+            font-weight: 500;
+        }
+        
+        .test-result {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .result-tag {
+            background: rgba(232, 168, 184, 0.1);
+            color: var(--peony-dark-pink);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            border: 1px solid rgba(201, 122, 141, 0.3);
+        }
+        
+        .no-tests {
+            text-align: center;
+            padding: 30px;
+            color: var(--milky-coffee);
+            font-style: italic;
+        }
+        
+        /* ===== НАСТРОЙКИ ===== */
+        .settings-group {
+            margin-bottom: 25px;
+        }
+        
+        .settings-subtitle {
+            font-size: 18px;
+            color: var(--chocolate);
+            margin-bottom: 15px;
+            font-family: 'Georgia', serif;
+            font-weight: 300;
+        }
+        
+        /* Переключатель темы */
+        .theme-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: rgba(232, 168, 149, 0.1);
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px var(--shadow-light);
+        }
+        
+        .dark-theme .theme-toggle {
+            background: rgba(152, 117, 91, 0.1);
+        }
+        
+        .theme-info {
+            flex: 1;
+        }
+        
+        .theme-label {
+            font-size: 16px;
+            color: var(--chocolate);
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .theme-description {
+            font-size: 14px;
+            color: var(--milky-coffee);
+        }
+        
+        .theme-preview {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            border: 2px solid var(--border-light);
+        }
+        
+        .theme-light {
+            background: linear-gradient(135deg, #FFF8ED 0%, #EFD2B0 100%);
+        }
+        
+        .theme-dark {
+            background: linear-gradient(135deg, #2A1A0F 0%, #584738 100%);
+        }
+        
+        .theme-preview-circle {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--chocolate);
+            top: 10px;
+            left: 10px;
+        }
+        
+        .theme-preview-bar {
+            position: absolute;
+            width: 30px;
+            height: 8px;
+            background: var(--roasted-peach);
+            border-radius: 4px;
+            bottom: 10px;
+            left: 15px;
+        }
+        
+        /* Переключатель уведомлений */
+        .toggle-group {
+            margin-bottom: 25px;
+        }
+        
+        .toggle-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: rgba(232, 168, 149, 0.1);
+            border-radius: 15px;
+            border: 1px solid var(--border-light);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px var(--shadow-light);
+        }
+        
+        .dark-theme .toggle-label {
+            background: rgba(152, 117, 91, 0.1);
+        }
+        
+        .toggle-text {
+            font-size: 16px;
+            color: var(--chocolate);
+            font-weight: 500;
+            flex: 1;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 34px;
+        }
+        
+        .toggle-checkbox {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(104, 70, 39, 0.2);
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .dark-theme .toggle-slider {
+            background-color: rgba(244, 228, 166, 0.2);
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: var(--light-beige);
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px var(--shadow-light);
+        }
+        
+        .dark-theme .toggle-slider:before {
+            background-color: var(--bg-card);
+        }
+        
+        .toggle-checkbox:checked + .toggle-slider {
+            background: linear-gradient(135deg, var(--roasted-peach), var(--whole-wheat));
+        }
+        
+        .toggle-checkbox:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        
+        .settings-description {
+            font-size: 14px;
+            color: var(--milky-coffee);
+            margin-top: 8px;
+            line-height: 1.4;
+            padding: 0 20px;
+        }
+        
+        /* ===== КНОПКА ВЫХОДА ===== */
+        .logout-section {
+            max-width: 600px;
+            margin: 30px auto 0;
+        }
+        
+        .logout-btn {
+            width: 100%;
+            background: var(--roasted-peach);
+            border: none;
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--chocolate);
+            font-size: 16px;
+            font-weight: 500;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(232, 168, 149, 0.3);
+        }
+        
+        .logout-btn:hover {
+            background: var(--milky-coffee);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(232, 168, 149, 0.4);
+        }
+        
+        .logout-icon {
+            font-size: 24px;
+        }
+        
+        /* ===== УВЕДОМЛЕНИЯ ===== */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: var(--bg-card);
+            border-radius: 10px;
+            padding: 15px 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+            border: 1px solid var(--border-light);
+            max-width: 400px;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification-icon {
+            font-size: 24px;
+            color: var(--peony-dark-pink);
+            flex-shrink: 0;
+        }
+        
+        .notification-text {
+            color: var(--chocolate);
+            font-size: 15px;
+            font-weight: 500;
+            flex: 1;
+            line-height: 1.4;
+        }
+        
+        /* ===== АДАПТИВНОСТЬ ===== */
+        @media (max-width: 768px) {
+            .main-header {
+                padding: 12px 15px;
+            }
+            
+            .app-title {
+                font-size: 20px;
+            }
+            
+            .content-area {
+                padding: 15px;
+            }
+            
+            .profile-avatar-large {
+                width: 80px;
+                height: 80px;
+                font-size: 32px;
+            }
+            
+            .profile-name {
+                font-size: 24px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-card {
+                padding: 20px;
+            }
+            
+            .info-label {
+                min-width: 120px;
+            }
+            
+            .notification {
+                top: 80px;
+                right: 15px;
+                max-width: 350px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .notification {
+                top: 70px;
+                right: 10px;
+                max-width: 300px;
+                padding: 12px 20px;
+            }
+            
+            .theme-toggle,
+            .toggle-label {
+                padding: 15px;
+            }
+            
+            .info-label {
+                min-width: 100px;
+                font-size: 14px;
+            }
+            
+            .editable-field {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .field-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+        
+        /* Анимации */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+/* ===== МОБИЛЬНАЯ ОПТИМИЗАЦИЯ ПРОФИЛЯ ===== */
+@media (max-width: 768px) {
+    /* Основные улучшения для профиля */
+    .profile-section {
+        width: 100%;
+        padding: 0 5px;
+    }
+    
+    .profile-card {
+        margin: 0 0 15px 0;
+        padding: 15px;
+        border-radius: 15px;
+    }
+    
+    /* Информационная сетка на мобильных */
+    .info-grid {
+        gap: 10px;
+    }
+    
+    .info-item {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 12px 0;
+        position: relative;
+    }
+    
+    .info-label {
+        min-width: auto;
+        width: 100%;
+        margin-bottom: 6px;
+        font-size: 14px;
+        color: var(--milky-coffee);
+        font-weight: 400;
+        opacity: 0.9;
+    }
+    
+    .info-content {
+        width: 100%;
+        position: relative;
+        min-height: 44px; /* Минимальная высота для лучшего тапа */
+        display: flex;
+        align-items: center;
+    }
+    
+    .info-value {
+        font-size: 16px;
+        padding: 10px 0;
+        font-weight: 500;
+        flex: 1;
+    }
+    
+    /* Редактируемые поля на мобильных */
+    .editable-field {
+        width: 100%;
+        flex-direction: column;
+        gap: 8px;
+        position: relative;
+    }
+    
+    /* Кнопки редактирования и просмотра пароля - ФИКС ПРАВИЛЬНОЙ ПОЗИЦИИ */
+    .edit-btn, .password-toggle {
+        position: static !important; /* Убираем absolute позиционирование */
+        margin-left: auto !important; /* Сдвигаем вправо */
+        transform: none !important; /* Убираем transform */
+        top: auto !important;
+        right: auto !important;
+        width: 40px !important;
+        height: 40px !important;
+        z-index: 10;
+        background: rgba(104, 70, 39, 0.05);
+        flex-shrink: 0; /* Не сжимается */
+    }
+    
+    /* Для пароля: глаз и карандашик рядом */
+    #passwordField .password-toggle {
+        margin-left: 5px !important; /* Отступ от карандашика */
+        order: 2; /* Порядок: после пароля, перед карандашиком */
+    }
+    
+    #passwordField .edit-btn {
+        order: 3; /* Карандашик последний */
+    }
+    
+    .password-display {
+        order: 1; /* Пароль первый */
+        display: flex;
+        align-items: center;
+        flex: 1;
+    }
+    
+    .dark-theme .edit-btn, 
+    .dark-theme .password-toggle {
+        background: rgba(244, 228, 166, 0.05);
+    }
+    
+    .edit-btn:hover, .password-toggle:hover {
+        background: rgba(104, 70, 39, 0.1);
+    }
+    
+    .dark-theme .edit-btn:hover,
+    .dark-theme .password-toggle:hover {
+        background: rgba(244, 228, 166, 0.1);
+    }
+    
+    /* Контейнер для действий в режиме редактирования */
+    .editing .field-actions {
+        width: 100%;
+        margin-top: 10px;
+        margin-left: 0;
+        display: flex !important;
+        flex-wrap: nowrap;
+        gap: 10px;
+    }
+    
+    .save-btn, .cancel-btn {
+        flex: 1;
+        min-height: 44px;
+        font-size: 15px;
+        padding: 12px;
+        border-radius: 10px;
+    }
+    
+    /* Поле ввода на мобильных */
+    .edit-input {
+        width: calc(100% - 80px); /* Учитываем обе кнопки (глаз + карандашик) */
+        min-height: 44px;
+        padding: 12px 15px;
+        font-size: 16px;
+        border-radius: 10px;
+    }
+    
+    /* Специальные стили для поля пароля */
+    .password-display {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 10px; /* Отступ между текстом и кнопками */
+    }
+    
+    .password-dots, .password-text {
+        font-size: 16px;
+        padding: 10px 0;
+        min-height: 24px;
+        display: flex;
+        align-items: center;
+        flex: 1; /* Занимает доступное пространство */
+    }
+    
+    /* Кнопки в строке пароля */
+    #passwordField .info-content {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    /* Редактирование пароля на мобильных */
+    .password-edit-digits {
+        width: 100%;
+        gap: 8px;
+        margin-top: 10px;
+        justify-content: space-between;
+    }
+    
+    .password-edit-digit {
+        flex: 1;
+        min-width: 0; /* Позволяет полям сжиматься */
+        height: 60px;
+        max-width: calc(20% - 7px); /* 5 полей с отступами */
+    }
+    
+    .password-edit-digit input {
+        font-size: 20px;
+    }
+    
+    /* Убираем статические значения в режиме редактирования */
+    .editing .static-value {
+        display: none;
+    }
+    
+    /* Статистика на мобильных */
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+    
+    .stat-item {
+        padding: 15px;
+        border-radius: 12px;
+    }
+    
+    .stat-value {
+        font-size: 22px;
+    }
+    
+    /* НАСТРОЙКИ НА МОБИЛЬНЫХ - ФИКС ТЕМЫ И ПЕРЕКЛЮЧАТЕЛЯ */
+    .settings-group {
+        margin-bottom: 20px;
+    }
+    
+    .settings-subtitle {
+        font-size: 17px;
+        margin-bottom: 12px;
+    }
+    
+    /* ПЕРЕКЛЮЧАТЕЛЬ ТЕМЫ - в одной линии с текстом */
+    .theme-toggle {
+        padding: 15px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-direction: row !important; /* Всегда горизонтально */
+        gap: 15px;
+    }
+    
+    .theme-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    
+    .theme-preview {
+        width: 50px;
+        height: 50px;
+        flex-shrink: 0;
+        order: 2; /* Превью справа */
+    }
+    
+    /* ПЕРЕКЛЮЧАТЕЛЬ УВЕДОМЛЕНИЙ - в одной линии с текстом */
+    .toggle-label {
+        padding: 15px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+    }
+    
+    .toggle-text {
+        flex: 1;
+    }
+    
+    .toggle-switch {
+        flex-shrink: 0;
+        order: 2; /* Переключатель справа */
+    }
+    
+    /* Кнопка выхода */
+    .logout-section {
+        margin: 20px auto 0;
+    }
+    
+    .logout-btn {
+        padding: 18px;
+        border-radius: 12px;
+        font-size: 15px;
+    }
+}
+
+/* ===== ДЛЯ ОЧЕНЬ МАЛЕНЬКИХ ЭКРАНОВ ===== */
+@media (max-width: 480px) {
+    .info-item {
+        padding: 10px 0;
+    }
+    
+    .info-content {
+        min-height: 40px;
+    }
+    
+    .edit-btn, .password-toggle {
+        width: 36px !important;
+        height: 36px !important;
+    }
+    
+    .edit-input {
+        width: calc(100% - 72px); /* 36px + 36px */
+        min-height: 40px;
+        padding: 10px 12px;
+        font-size: 15px;
+    }
+    
+    .password-edit-digits {
+        gap: 5px;
+    }
+    
+    .password-edit-digit {
+        height: 50px;
+        max-width: calc(20% - 4px);
+    }
+    
+    .password-edit-digit input {
+        font-size: 18px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Еще компактнее для очень маленьких экранов */
+    .theme-toggle,
+    .toggle-label {
+        padding: 12px;
+        gap: 12px;
+    }
+    
+    .theme-preview {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .toggle-switch {
+        width: 55px;
+        height: 30px;
+    }
+    
+    .toggle-slider:before {
+        height: 22px;
+        width: 22px;
+        left: 4px;
+        bottom: 4px;
+    }
+    
+    .toggle-checkbox:checked + .toggle-slider:before {
+        transform: translateX(25px);
+    }
+    
+    /* Карточка профиля на очень маленьких экранах */
+    .profile-avatar-large {
+        width: 70px;
+        height: 70px;
+        font-size: 28px;
+    }
+    
+    .profile-name {
+        font-size: 20px;
+    }
+    
+    .profile-role {
+        font-size: 14px;
+        padding: 5px 14px;
+    }
+    
+    .card-title {
+        font-size: 18px;
+    }
+}
+
+/* ===== ГОРИЗОНТАЛЬНАЯ ОРИЕНТАЦИЯ НА МОБИЛЬНЫХ ===== */
+@media (max-width: 768px) and (orientation: landscape) {
+    .profile-section {
+        max-width: 95%;
+        margin: 0 auto;
+    }
+    
+    .info-item {
+        flex-direction: row;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .info-label {
+        width: 130px;
+        min-width: 130px;
+        margin-bottom: 0;
+        margin-right: 0;
+    }
+    
+    .info-content {
+        min-height: auto;
+        flex: 1;
+    }
+    
+    /* В ландшафтной ориентации можно показывать кнопки более компактно */
+    .edit-btn, .password-toggle {
+        width: 36px !important;
+        height: 36px !important;
+        margin-left: 8px !important;
+    }
+    
+    .editing .field-actions {
+        width: auto;
+        margin-top: 0;
+        margin-left: auto;
+        flex-wrap: nowrap;
+    }
+    
+    .save-btn, .cancel-btn {
+        min-height: 38px;
+        padding: 8px 15px;
+        white-space: nowrap;
+    }
+}
+
+/* ===== ФИКС ДЛЯ КНОПОК ПРИ РЕДАКТИРОВАНИИ ===== */
+.editing .info-content {
+    flex-wrap: wrap;
+}
+
+/* Гарантируем, что кнопки не будут вылезать */
+.field-actions {
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+/* Улучшенный скроллинг на мобильных */
+@media (max-width: 768px) {
+    .content-area {
+        padding-bottom: 20px;
+        -webkit-overflow-scrolling: touch;
+        overflow-y: auto;
+    }
+    
+    .content-area::-webkit-scrollbar {
+        width: 4px;
+    }
+    
+    .content-area::-webkit-scrollbar-thumb {
+        min-height: 40px;
+    }
+}
+
+/* Исправление для текста настроек - не переносить на новую строку */
+@media (max-width: 768px) {
+    .settings-description {
+        padding: 0;
+        margin-top: 10px;
+        margin-bottom: 5px;
+        font-size: 13px;
+        line-height: 1.3;
+    }
+    
+    /* Для очень длинного текста переключателей */
+    .theme-label,
+    .toggle-text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+/* Анимация для плавного появления */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: slideInUp 0.4s ease-out forwards;
+}
+    </style>
+</head>
+<body class="light-theme">
+    <!-- Основной контейнер -->
+    <div class="app-container">
+        <!-- Шапка -->
+        <div class="main-header">
+            <button class="back-btn" onclick="goBack()">←</button>
+            <div class="app-title">Scentmé</div>
+            <div class="header-spacer"></div>
+        </div>
+        
+        <!-- Основной контент -->
+        <div class="content-area">
+            <div class="profile-section">
+                <!-- Заголовок профиля -->
+                <div class="profile-header fade-in">
+                    <div class="profile-avatar-large" id="profileAvatar">A</div>
+                    <h2 class="profile-name" id="profileName">Имя пользователя</h2>
+                    <div class="profile-role" id="profileRole">Пользователь</div>
+                </div>
+                
+                <!-- Информация о профиле -->
+                <div class="profile-card fade-in" style="animation-delay: 0.1s;">
+                    <h3 class="card-title"><i class="bi bi-person-circle"></i> Информация</h3>
+                    <div class="info-grid">
+                        <!-- Имя -->
+                        <div class="info-item">
+                            <div class="info-label">Имя</div>
+                            <div class="info-content">
+                                <div class="editable-field" id="displayNameField">
+                                    <span class="static-value" id="displayNameValue">Имя пользователя</span>
+                                    <input type="text" class="edit-input" id="displayNameInput" placeholder="Введите имя">
+                                    <div class="field-actions">
+                                        <button class="save-btn" onclick="saveField('displayName')">Сохранить</button>
+                                        <button class="cancel-btn" onclick="cancelEdit('displayName')">Отмена</button>
+                                    </div>
+                                    <button class="edit-btn" onclick="startEdit('displayName')">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Логин с цветочком -->
+                        <div class="info-item">
+                            <div class="info-label">Логин</div>
+                            <div class="info-content">
+                                <div class="editable-field" id="loginField">
+                                    <div class="static-value">
+                                        <div class="login-value">
+                                            <i class="bi bi-flower1 login-flower"></i>
+                                            <span id="loginValue">user123</span>
+                                        </div>
+                                    </div>
+                                    <input type="text" class="edit-input" id="loginInput" placeholder="Введите логин">
+                                    <div class="field-actions">
+                                        <button class="save-btn" onclick="saveField('login')">Сохранить</button>
+                                        <button class="cancel-btn" onclick="cancelEdit('login')">Отмена</button>
+                                    </div>
+                                    <button class="edit-btn" onclick="startEdit('login')">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Пароль -->
+                        <div class="info-item">
+                            <div class="info-label">Пароль</div>
+                            <div class="info-content">
+                                <div class="editable-field" id="passwordField">
+                                    <div class="static-value">
+                                        <div class="password-display">
+                                            <span class="password-dots" id="passwordDots">•••••</span>
+                                            <span class="password-text" id="passwordText"></span>
+                                            <button class="password-toggle" onclick="togglePasswordVisibility()">
+                                                <i class="bi bi-eye" id="passwordEyeIcon"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="password-edit-digits" id="passwordEditDigits">
+                                        <!-- 5 цифр для пароля -->
+                                    </div>
+                                    <div class="field-actions">
+                                        <button class="save-btn" onclick="saveField('password')">Сохранить</button>
+                                        <button class="cancel-btn" onclick="cancelEdit('password')">Отмена</button>
+                                    </div>
+                                    <button class="edit-btn" onclick="startEdit('password')">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Дата регистрации -->
+                        <div class="info-item">
+                            <div class="info-label">Дата регистрации</div>
+                            <div class="info-content">
+                                <span class="info-value" id="profileCreated">01.01.2024</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Статус -->
+                        <div class="info-item">
+                            <div class="info-label">Статус</div>
+                            <div class="info-content">
+                                <span class="info-value" id="profileStatus">Активен</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                                <!-- История тестов -->
+                <div class="profile-card fade-in" style="animation-delay: 0.3s;">
+                    <h3 class="card-title"><i class="bi bi-clock-history"></i> История тестов</h3>
+                    <div class="tests-history" id="testsHistory">
+                        <div class="no-tests">Тестов еще не пройдено</div>
+                    </div>
+                </div>
+                
+                <!-- Настройки -->
+                <div class="profile-card fade-in" style="animation-delay: 0.4s;">
+                    <h3 class="card-title"><i class="bi bi-gear"></i> Настройки</h3>
+                    
+                    <div class="settings-group">
+                        <h4 class="settings-subtitle">Тема</h4>
+                        <div class="theme-toggle" onclick="toggleTheme()">
+                            <div class="theme-info">
+                                <div class="theme-label" id="themeLabel">Светлая тема</div>
+                                <div class="theme-description" id="themeDescription">Яркие и тёплые цвета</div>
+                            </div>
+                            <div class="theme-preview" id="themePreview">
+                                <div class="theme-preview-circle"></div>
+                                <div class="theme-preview-bar"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <h4 class="settings-subtitle">Уведомления</h4>
+                        <div class="toggle-group">
+                            <label class="toggle-label">
+                                <span class="toggle-text">Присылать уведомления о новых статьях</span>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="notificationsToggle" class="toggle-checkbox">
+                                    <span class="toggle-slider"></span>
+                                </div>
+                            </label>
+                            <p class="settings-description">Получайте уведомления, когда выходят новые статьи на странице "Статьи"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Кнопка выхода -->
+            <div class="logout-section fade-in" style="animation-delay: 0.5s;">
+                <button class="logout-btn" onclick="logout()">
+                    <i class="bi bi-box-arrow-right logout-icon"></i>
+                    <span>Выйти из аккаунта</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Уведомление -->
+        <div class="notification" id="notification">
+            <div class="notification-icon" id="notificationIcon">ℹ</div>
+            <div class="notification-text" id="notificationText"></div>
+        </div>
+    </div>
+    
+    <script>
+        // ===== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ =====
+        let currentUser = null;
+        let currentTheme = 'light';
+        let originalValues = {};
+        let isPasswordVisible = false;
+        
+        // ===== ИНИЦИАЛИЗАЦИЯ =====
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeProfilePage();
+        });
+        
+        // ===== ОСНОВНЫЕ ФУНКЦИИ =====
+        function initializeProfilePage() {
+            // Загружаем данные пользователя
+            loadUserData();
+            
+            // Загружаем статистику
+            loadUserStats();
+            
+            // Загружаем историю тестов
+            loadTestsHistory();
+            
+            // Настраиваем переключатель уведомлений
+            loadNotificationSettings();
+            
+            // Настраиваем обработчики событий
+            setupEventListeners();
+        }
+        
+        function loadUserData() {
+            try {
+                // Получаем текущего пользователя из localStorage
+                const usersJson = localStorage.getItem('scentme_users');
+                const currentUserId = localStorage.getItem('current_user');
+                
+                if (!usersJson || !currentUserId) {
+                    console.log('Пользователь не авторизован, перенаправляем на вход');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1000);
+                    return;
+                }
+                
+                const users = JSON.parse(usersJson);
+                currentUser = users.find(u => u.id === currentUserId);
+                
+                if (!currentUser) {
+                    console.log('Пользователь не найден, перенаправляем на вход');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1000);
+                    return;
+                }
+                
+                // Применяем тему из профиля пользователя
+                if (currentUser.settings && currentUser.settings.theme) {
+                    currentTheme = currentUser.settings.theme;
+                } else {
+                    currentTheme = 'light'; // тема по умолчанию
+                    currentUser.settings = currentUser.settings || {};
+                    currentUser.settings.theme = currentTheme;
+                }
+                
+                applyTheme(currentTheme);
+                
+                // Сохраняем оригинальные значения
+                originalValues = {
+                    displayName: currentUser.displayName || '',
+                    login: currentUser.login || '',
+                    password: currentUser.security?.data || ''
+                };
+                
+                // Обновляем UI профиля
+                updateProfileUI();
+                
+            } catch (e) {
+                console.error('Ошибка загрузки данных пользователя:', e);
+                showNotification('Ошибка загрузки профиля', 'error');
+            }
+        }
+        
+        function applyTheme(theme) {
+            document.body.className = theme + '-theme';
+        }
+        
+        function updateProfileUI() {
+            if (!currentUser) return;
+            
+            // Аватар
+            const avatar = document.getElementById('profileAvatar');
+            if (avatar && currentUser.displayName) {
+                avatar.textContent = currentUser.displayName.charAt(0).toUpperCase();
+            }
+            
+            // Имя
+            const name = document.getElementById('profileName');
+            const displayNameValue = document.getElementById('displayNameValue');
+            if (name && displayNameValue) {
+                const displayName = currentUser.displayName || 'Пользователь';
+                name.textContent = displayName;
+                displayNameValue.textContent = displayName;
+            }
+            
+            // Роль
+            const role = document.getElementById('profileRole');
+            if (role) {
+                role.textContent = currentUser.isAdmin ? 'Администратор' : 'Пользователь';
+            }
+            
+            // Логин
+            const loginValue = document.getElementById('loginValue');
+            if (loginValue) {
+                loginValue.textContent = currentUser.login || 'не указан';
+            }
+            
+            // Пароль (сохраняем и отображаем)
+            const passwordText = document.getElementById('passwordText');
+            if (passwordText && currentUser.security?.data) {
+                passwordText.textContent = currentUser.security.data;
+            } else if (passwordText && !currentUser.security?.data) {
+                // Если пароль не установлен, показываем сообщение
+                passwordText.textContent = 'не установлен';
+            }
+            
+            // Дата регистрации
+            const created = document.getElementById('profileCreated');
+            if (created && currentUser.createdAt) {
+                const date = new Date(currentUser.createdAt);
+                created.textContent = date.toLocaleDateString('ru-RU');
+            }
+            
+            // Статус
+            const status = document.getElementById('profileStatus');
+            if (status) {
+                status.textContent = 'Активен';
+                status.style.color = 'var(--roasted-peach)';
+            }
+        }
+        
+        function loadUserStats() {
+            try {
+                // Тестов пройдено
+                const statTests = document.getElementById('statTests');
+                if (statTests) {
+                    const testsCount = currentUser.testsHistory ? currentUser.testsHistory.length : 0;
+                    statTests.textContent = testsCount;
+                }
+                
+                // Коллекция
+                const statCollection = document.getElementById('statCollection');
+                if (statCollection) {
+                    const collectionJson = localStorage.getItem('scentme_collection');
+                    if (collectionJson) {
+                        const collection = JSON.parse(collectionJson);
+                        const totalItems = collection.perfumes ? collection.perfumes.length : 0;
+                        statCollection.textContent = totalItems;
+                    } else {
+                        statCollection.textContent = '0';
+                    }
+                }
+                
+                // Дни с нами
+                const statDays = document.getElementById('statDays');
+                if (statDays && currentUser.createdAt) {
+                    const created = new Date(currentUser.createdAt);
+                    const now = new Date();
+                    const diffTime = Math.abs(now - created);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    statDays.textContent = diffDays;
+                }
+                
+                // Статьи прочитано
+                const statArticles = document.getElementById('statArticles');
+                if (statArticles) {
+                    const articlesRead = localStorage.getItem('scentme_articles_read') || '0';
+                    statArticles.textContent = articlesRead;
+                }
+                
+            } catch (e) {
+                console.error('Ошибка загрузки статистики:', e);
+            }
+        }
+        
+        function loadTestsHistory() {
+    try {
+        const historyContainer = document.getElementById('testsHistory');
+        historyContainer.innerHTML = '';
+        
+        if (!currentUser || !currentUser.testsHistory || currentUser.testsHistory.length === 0) {
+            historyContainer.innerHTML = `
+                <div class="no-tests">
+                    <p>Тестов еще не пройдено</p>
+                    <a href="start.html" style="
+                        display: inline-block;
+                        margin-top: 10px;
+                        padding: 8px 16px;
+                        background: var(--roasted-peach);
+                        color: white;
+                        border-radius: 8px;
+                        text-decoration: none;
+                        font-size: 14px;
+                    ">Пройти первый тест</a>
+                </div>
+            `;
+            return;
+        }
+        
+        // Сортируем тесты по дате (новые сначала)
+        const sortedTests = [...currentUser.testsHistory].sort((a, b) => {
+            return new Date(b.date) - new Date(a.date);
+        });
+        
+        sortedTests.forEach(test => {
+            const testItem = document.createElement('div');
+            testItem.className = 'test-item fade-in';
+            
+            const date = new Date(test.date);
+            const formattedDate = date.toLocaleDateString('ru-RU', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+            
+            const time = date.toLocaleTimeString('ru-RU', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            testItem.innerHTML = `
+                <div class="test-header">
+                    <div class="test-type">${test.type || 'Тест на подбор аромата'}</div>
+                    <div class="test-date">${formattedDate} ${time}</div>
+                </div>
+                <div class="test-result">${test.result || 'Результаты загружаются...'}</div>
+                <div style="margin-top: 10px;">
+                    <a href="results.html?test=${test.id}" style="
+                        font-size: 13px;
+                        color: var(--roasted-peach);
+                        text-decoration: none;
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 5px;
+                    ">
+                        <i class="bi bi-arrow-right-circle"></i>
+                        Посмотреть детали
+                    </a>
+                </div>
+            `;
+            
+            historyContainer.appendChild(testItem);
+        });
+        
+    } catch (e) {
+        console.error('Ошибка загрузки истории тестов:', e);
+        historyContainer.innerHTML = `
+            <div class="no-tests">
+                <p>Ошибка загрузки истории тестов</p>
+            </div>
+        `;
+    }
+}
+        
+        function loadTestResults(testId, containerId) {
+            try {
+                const resultsJson = localStorage.getItem(`scentme_test_${testId}`);
+                if (!resultsJson) {
+                    document.getElementById(containerId).innerHTML = '<span style="color: var(--milky-coffee); font-style: italic;">Результаты недоступны</span>';
+                    return;
+                }
+                
+                const results = JSON.parse(resultsJson);
+                const container = document.getElementById(containerId);
+                
+                if (results && results.recommendations && results.recommendations.length > 0) {
+                    let html = '';
+                    results.recommendations.slice(0, 3).forEach(rec => {
+                        html += `<div class="result-tag">${rec.name || 'Аромат'}</div>`;
+                    });
+                    
+                    if (results.recommendations.length > 3) {
+                        html += `<div class="result-tag">+${results.recommendations.length - 3} еще</div>`;
+                    }
+                    
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = '<span style="color: var(--milky-coffee); font-style: italic;">Результаты не найдены</span>';
+                }
+                
+            } catch (e) {
+                console.error('Ошибка загрузки результатов теста:', e);
+                document.getElementById(containerId).innerHTML = '<span style="color: var(--milky-coffee); font-style: italic;">Ошибка загрузки</span>';
+            }
+        }
+        
+        // ===== УПРАВЛЕНИЕ ВИДИМОСТЬЮ ПАРОЛЯ =====
+        // ===== УПРАВЛЕНИЕ ВИДИМОСТЬЮ ПАРОЛЯ =====
+function togglePasswordVisibility() {
+    const passwordField = document.getElementById('passwordField');
+    const eyeIcon = document.getElementById('passwordEyeIcon');
+    
+    isPasswordVisible = !isPasswordVisible;
+    
+    if (isPasswordVisible) {
+        // Показываем текст пароля
+        passwordField.classList.add('password-visible');
+        eyeIcon.className = 'bi bi-eye-slash';
+    } else {
+        // Показываем точки
+        passwordField.classList.remove('password-visible');
+        eyeIcon.className = 'bi bi-eye';
+    }
+}
+        
+        // ===== РЕДАКТИРОВАНИЕ ПОЛЕЙ =====
+        function startEdit(field) {
+            // Скрываем все другие открытые формы
+            document.querySelectorAll('.editable-field').forEach(fieldElement => {
+                fieldElement.classList.remove('editing');
+            });
+            
+            if (field === 'password') {
+                startEditPassword();
+            } else {
+                // Для имени и логина
+                const fieldElement = document.getElementById(`${field}Field`);
+                const input = document.getElementById(`${field}Input`);
+                
+                if (fieldElement && input) {
+                    // Сохраняем текущее значение
+                    input.value = originalValues[field] || '';
+                    fieldElement.classList.add('editing');
+                    input.focus();
+                    
+                    // Выделяем весь текст в поле
+                    input.select();
+                }
+            }
+        }
+        
+        function startEditPassword() {
+            const fieldElement = document.getElementById('passwordField');
+            const passwordEditDigits = document.getElementById('passwordEditDigits');
+            
+            // Очищаем и создаем поля для ввода пароля (5 цифр)
+            passwordEditDigits.innerHTML = '';
+            
+            for (let i = 0; i < 5; i++) {
+                const digitContainer = document.createElement('div');
+                digitContainer.className = 'password-edit-digit';
+                digitContainer.dataset.index = i;
+                
+                const input = document.createElement('input');
+                input.type = 'tel';
+                input.maxLength = 1;
+                input.pattern = '[0-9]';
+                input.dataset.index = i;
+                
+                // Обработка ввода
+                input.addEventListener('input', function(e) {
+                    if (this.value.length === 1 && /^\d$/.test(this.value)) {
+                        // Переход к следующему полю
+                        if (i < 4) {
+                            const nextInput = passwordEditDigits.querySelector(`[data-index="${i + 1}"] input`);
+                            if (nextInput) {
+                                nextInput.focus();
+                            }
+                        }
+                    }
+                });
+                
+                // Обработка удаления
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && this.value === '' && i > 0) {
+                        const prevInput = passwordEditDigits.querySelector(`[data-index="${i - 1}"] input`);
+                        if (prevInput) {
+                            prevInput.focus();
+                        }
+                    }
+                });
+                
+                // Фокус/блюр
+                input.addEventListener('focus', function() {
+                    digitContainer.classList.add('active');
+                });
+                
+                input.addEventListener('blur', function() {
+                    digitContainer.classList.remove('active');
+                });
+                
+                // Устанавливаем значение из сохраненного пароля
+                if (originalValues.password && originalValues.password[i]) {
+                    input.value = originalValues.password[i];
+                }
+                
+                digitContainer.appendChild(input);
+                passwordEditDigits.appendChild(digitContainer);
+            }
+            
+            fieldElement.classList.add('editing');
+            passwordEditDigits.style.display = 'flex';
+            
+            // Фокус на первое поле
+            setTimeout(() => {
+                const firstInput = passwordEditDigits.querySelector('[data-index="0"] input');
+                if (firstInput) {
+                    firstInput.focus();
+                }
+            }, 100);
+        }
+        
+        function saveField(field) {
+            if (field === 'password') {
+                savePassword();
+                return;
+            }
+            
+            const input = document.getElementById(`${field}Input`);
+            const fieldElement = document.getElementById(`${field}Field`);
+            
+            if (!input || !fieldElement) return;
+            
+            const newValue = input.value.trim();
+            
+            if (field === 'login') {
+                if (!newValue) {
+                    showNotification('Логин не может быть пустым', 'error');
+                    return;
+                }
+                
+                if (newValue.length < 3 || newValue.length > 20 || !/^[a-z0-9_]+$/.test(newValue)) {
+                    showNotification('Логин должен быть от 3 до 20 символов (латиница, цифры, подчёркивание)', 'error');
+                    return;
+                }
+                
+                // Проверка уникальности логина
+                const usersJson = localStorage.getItem('scentme_users');
+                if (usersJson) {
+                    const users = JSON.parse(usersJson);
+                    const existingUser = users.find(u => u.login === newValue && u.id !== currentUser.id);
+                    if (existingUser) {
+                        showNotification('Этот логин уже занят другим пользователем', 'error');
+                        return;
+                    }
+                }
+            }
+            
+            if (field === 'displayName') {
+                if (!newValue) {
+                    showNotification('Имя не может быть пустым', 'error');
+                    return;
+                }
+                
+                if (newValue.length > 25) {
+                    showNotification('Имя должно быть не более 25 символов', 'error');
+                    return;
+                }
+            }
+            
+            // Обновляем данные пользователя
+            if (field === 'displayName') {
+                currentUser.displayName = newValue;
+                // Обновляем аватар
+                const avatar = document.getElementById('profileAvatar');
+                if (avatar) {
+                    avatar.textContent = newValue.charAt(0).toUpperCase();
+                }
+                // Обновляем отображаемое имя
+                document.getElementById('profileName').textContent = newValue;
+                document.getElementById('displayNameValue').textContent = newValue;
+            } else if (field === 'login') {
+                currentUser.login = newValue;
+                document.getElementById('loginValue').textContent = newValue;
+            }
+            
+            // Сохраняем изменения
+            saveUserData();
+            
+            // Скрываем форму редактирования
+            fieldElement.classList.remove('editing');
+            
+            // Обновляем оригинальные значения
+            originalValues[field] = newValue;
+            
+            showNotification('Изменения сохранены', 'success');
+        }
+        
+        function savePassword() {
+            const passwordEditDigits = document.getElementById('passwordEditDigits');
+            const inputs = passwordEditDigits.querySelectorAll('input');
+            
+            let newPassword = '';
+            for (let i = 0; i < inputs.length; i++) {
+                if (!inputs[i].value || !/^\d$/.test(inputs[i].value)) {
+                    showNotification('Введите все 5 цифр пароля', 'error');
+                    inputs[i].focus();
+                    return;
+                }
+                newPassword += inputs[i].value;
+            }
+            
+            if (newPassword.length !== 5) {
+                showNotification('Пароль должен содержать ровно 5 цифр', 'error');
+                return;
+            }
+            
+            // Сохраняем пароль в структуре security
+            currentUser.security = currentUser.security || {};
+            currentUser.security.data = newPassword;
+            currentUser.security.type = 'password';
+            
+            if (saveUserData()) {
+                document.getElementById('passwordText').textContent = newPassword;
+                // Обновляем точки
+                const passwordDots = document.getElementById('passwordDots');
+                passwordDots.textContent = '•'.repeat(5);
+                
+                cancelEdit('password');
+                showNotification('Пароль успешно обновлён!', 'success');
+            } else {
+                showNotification('Ошибка сохранения пароля', 'error');
+            }
+        }
+        
+        function cancelEdit(field) {
+            const fieldElement = document.getElementById(`${field}Field`);
+            if (!fieldElement) return;
+            
+            if (field === 'password') {
+                // Скрываем поля для ввода пароля
+                const passwordEditDigits = document.getElementById('passwordEditDigits');
+                passwordEditDigits.style.display = 'none';
+                
+                // Очищаем поля
+                const inputs = passwordEditDigits.querySelectorAll('input');
+                inputs.forEach(input => input.value = '');
+                
+                // Скрываем пароль после отмены
+                isPasswordVisible = false;
+                document.getElementById('passwordDots').style.display = 'inline';
+                document.getElementById('passwordText').style.display = 'none';
+                document.getElementById('passwordEyeIcon').className = 'bi bi-eye';
+            } else {
+                // Для имени и логина
+                const input = document.getElementById(`${field}Input`);
+                if (input) {
+                    input.value = originalValues[field] || '';
+                }
+            }
+            
+            fieldElement.classList.remove('editing');
+        }
+        
+        function saveUserData() {
+            if (!currentUser) return;
+            
+            try {
+                const usersJson = localStorage.getItem('scentme_users');
+                let users = [];
+                
+                if (usersJson) {
+                    users = JSON.parse(usersJson);
+                }
+                
+                const index = users.findIndex(u => u.id === currentUser.id);
+                if (index !== -1) {
+                    users[index] = currentUser;
+                } else {
+                    users.push(currentUser);
+                }
+                
+                localStorage.setItem('scentme_users', JSON.stringify(users));
+                
+                return true;
+            } catch (e) {
+                console.error('Ошибка сохранения данных пользователя:', e);
+                return false;
+            }
+        }
+        
+        // ===== НАСТРОЙКИ УВЕДОМЛЕНИЙ =====
+        function loadNotificationSettings() {
+            const notificationsEnabled = localStorage.getItem('notifications_enabled') !== 'false';
+            const toggle = document.getElementById('notificationsToggle');
+            
+            if (toggle) {
+                toggle.checked = notificationsEnabled;
+                toggle.addEventListener('change', function() {
+                    localStorage.setItem('notifications_enabled', this.checked);
+                    showNotification(`Уведомления ${this.checked ? 'включены' : 'отключены'}`, 'success');
+                    
+                    if (this.checked && "Notification" in window && Notification.permission === "default") {
+                        setTimeout(() => {
+                            Notification.requestPermission();
+                        }, 1000);
+                }
+                });
+            }
+        }
+        
+        // ===== НАСТРОЙКИ ТЕМЫ =====
+        function toggleTheme() {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            applyTheme(currentTheme);
+            updateThemeUI();
+            
+            // Сохраняем тему в профиль пользователя
+            if (currentUser) {
+                currentUser.settings = currentUser.settings || {};
+                currentUser.settings.theme = currentTheme;
+                saveUserData();
+            }
+            
+            showNotification(`Тема изменена на ${currentTheme === 'light' ? 'светлую' : 'тёмную'}`, 'success');
+        }
+        
+        function updateThemeUI() {
+            const themeLabel = document.getElementById('themeLabel');
+            const themeDescription = document.getElementById('themeDescription');
+            const themePreview = document.getElementById('themePreview');
+            
+            if (currentTheme === 'light') {
+                themeLabel.textContent = 'Светлая тема';
+                themeDescription.textContent = 'Яркие и тёплые цвета';
+                themePreview.className = 'theme-preview theme-light';
+            } else {
+                themeLabel.textContent = 'Тёмная тема';
+                themeDescription.textContent = 'Глубокие и насыщенные цвета';
+                themePreview.className = 'theme-preview theme-dark';
+            }
+        }
+        
+        // ===== ДЕЙСТВИЯ ПОЛЬЗОВАТЕЛЯ =====
+        function goBack() {
+            const referrer = document.referrer;
+            
+            if (referrer && referrer.includes(window.location.origin) && 
+                !referrer.includes('login.html') && 
+                !referrer.includes('register.html')) {
+                window.history.back();
+            } else {
+                window.location.href = 'main.html';
+            }
+        }
+        
+        function logout() {
+            if (confirm('Вы уверены, что хотите выйти?')) {
+                localStorage.removeItem('current_user');
+                localStorage.removeItem('current_mode');
+                showNotification('Выход выполнен', 'success');
+                
+                setTimeout(() => {
+                    window.location.href = 'main.html';
+                }, 1000);
+            }
+        }
+        
+        // ===== УВЕДОМЛЕНИЯ =====
+        function showNotification(text, type = 'info') {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            const notificationIcon = document.getElementById('notificationIcon');
+            
+            notificationText.textContent = text;
+            
+            switch(type) {
+                case 'success':
+                    notificationIcon.textContent = '✓';
+                    notificationIcon.style.color = 'var(--peony-dark-pink)';
+                    break;
+                case 'error':
+                    notificationIcon.textContent = '✗';
+                    notificationIcon.style.color = 'var(--peony-dark-pink)';
+                    break;
+                case 'info':
+                default:
+                    notificationIcon.textContent = 'ℹ';
+                    notificationIcon.style.color = 'var(--milky-coffee)';
+                    break;
+            }
+            
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // ===== ДОПОЛНИТЕЛЬНЫЕ ФУНКЦИИ =====
+        function setupEventListeners() {
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    goBack();
+                }
+            });
+            
+            const elements = document.querySelectorAll('.fade-in');
+            elements.forEach((element, index) => {
+                element.style.animationDelay = `${index * 0.1}s`;
+            });
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    const editingField = document.querySelector('.editable-field.editing');
+                    if (editingField) {
+                        const fieldId = editingField.id;
+                        let field = '';
+                        if (fieldId.includes('Name')) field = 'displayName';
+                        else if (fieldId.includes('Login')) field = 'login';
+                        else if (fieldId.includes('Password')) field = 'password';
+                        
+                        if (field) {
+                            const saveBtn = editingField.querySelector('.save-btn');
+                            if (saveBtn) {
+                                saveBtn.click();
+                            }
+                        }
+                    }
+                }
+                
+                if (e.key === 'Escape') {
+                    const editingField = document.querySelector('.editable-field.editing');
+                    if (editingField) {
+                        const fieldId = editingField.id;
+                        let field = '';
+                        if (fieldId.includes('Name')) field = 'displayName';
+                        else if (fieldId.includes('Login')) field = 'login';
+                        else if (fieldId.includes('Password')) field = 'password';
+                        
+                        if (field) {
+                            const cancelBtn = editingField.querySelector('.cancel-btn');
+                            if (cancelBtn) {
+                                cancelBtn.click();
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Закрытие редактирования при клике вне поля
+            document.addEventListener('click', function(e) {
+                const editingField = document.querySelector('.editable-field.editing');
+                if (editingField && !editingField.contains(e.target)) {
+                    const fieldId = editingField.id;
+                    let field = '';
+                    if (fieldId.includes('Name')) field = 'displayName';
+                    else if (fieldId.includes('Login')) field = 'login';
+                    else if (fieldId.includes('Password')) field = 'password';
+                    
+                    if (field) {
+                        cancelEdit(field);
+                    }
+                }
+            });
+        }
+// ===== ЗАГРУЗКА РЕЗУЛЬТАТОВ ТЕСТА ПО ID =====
+function loadTestResultsById(testId) {
+    try {
+        const resultsJson = localStorage.getItem(`scentme_test_${testId}`);
+        if (!resultsJson) return null;
+        
+        return JSON.parse(resultsJson);
+    } catch (e) {
+        console.error('Ошибка загрузки результатов теста:', e);
+        return null;
+    }
+}
+// Синхронизация при обновлении тестов
+window.addEventListener('storage', function(e) {
+    if (e.key === 'scentme_tests_updated') {
+        console.log('🔄 Получено обновление тестов');
+        if (window.location.pathname.includes('profile.html')) {
+            // Перезагружаем историю тестов
+            loadTestsHistory();
+        } else if (window.location.pathname.includes('main.html')) {
+            // Обновляем активность
+            updateActivityWithLastTest();
+            updateStatsWithTests();
+            updateWelcomeWithTestInfo();
+        }
+    }
+});
+
+// Периодическая проверка обновлений
+setInterval(() => {
+    const lastUpdate = localStorage.getItem('scentme_tests_updated');
+    if (lastUpdate) {
+        const now = Date.now();
+        const updateTime = parseInt(lastUpdate);
+        
+        // Если обновление было менее 5 секунд назад, синхронизируем
+        if (now - updateTime < 5000) {
+            console.log('🔄 Периодическая синхронизация тестов');
+            if (window.location.pathname.includes('profile.html')) {
+                loadTestsHistory();
+            } else if (window.location.pathname.includes('main.html')) {
+                updateActivityWithLastTest();
+                updateStatsWithTests();
+            }
+        }
+    }
+}, 5000);
+// ===== ОБРАБОТКА ПЕРЕДАЧИ ТЕСТА В RESULTS.HTML =====
+document.addEventListener('DOMContentLoaded', function() {
+    // Проверяем параметр теста в URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const testId = urlParams.get('test');
+    
+    if (testId) {
+        // Если есть параметр теста, загружаем его результаты
+        const testResults = loadTestResultsById(testId);
+        if (testResults) {
+            // Загружаем результаты на страницу результатов
+            // (нужно будет добавить эту логику в results.html)
+            console.log('Загружаем тест:', testResults);
+            
+            // Показываем уведомление
+            showNotification(`Загружены результаты теста от ${new Date(testResults.date).toLocaleDateString()}`, 'info');
+        }
+    }
+});
+    </script>
+</body>
+</html>
