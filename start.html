@@ -1203,25 +1203,43 @@
     
     // ===== ОСНОВНЫЕ ФУНКЦИИ =====
     
-    function selectLevelHandler(level, event) {
-        quizData.level = level;
-        
-        // Сохраняем данные для передачи в ветки
-        const transferData = JSON.parse(localStorage.getItem('quizTransferData') || '{}');
-        transferData.level = level;
-        localStorage.setItem('quizTransferData', JSON.stringify(transferData));
-        
-        // Убираем выделение со всех карточек
-        document.querySelectorAll('.level-card').forEach(card => {
-            card.classList.remove('selected');
-        });
-        
-        // Выделяем выбранную карточку
-        event.currentTarget.classList.add('selected');
-        
-        // Активируем кнопку "Начать тест"
-        document.getElementById('startQuizBtn').disabled = false;
+    function selectLevelHandler(level) {
+    quizData.level = level;
+    
+    // Сохраняем данные для передачи в ветки
+    const transferData = JSON.parse(localStorage.getItem('quizTransferData') || '{}');
+    transferData.level = level;
+    localStorage.setItem('quizTransferData', JSON.stringify(transferData));
+    
+    // Убираем выделение со всех карточек
+    document.querySelectorAll('.level-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+    
+    // Получаем элемент, который был нажат
+    // Используем window.event для старых браузеров
+    const event = window.event || arguments.callee.caller.arguments[0];
+    let clickedElement;
+    
+    if (event && event.target) {
+        clickedElement = event.target.closest('.level-card');
     }
+    
+    // Выделяем выбранную карточку
+    if (clickedElement) {
+        clickedElement.classList.add('selected');
+    } else {
+        // Альтернативный способ: выделяем по содержимому
+        document.querySelectorAll('.level-card').forEach(card => {
+            if (card.innerHTML.includes(level)) {
+                card.classList.add('selected');
+            }
+        });
+    }
+    
+    // Активируем кнопку "Начать тест"
+    document.getElementById('startQuizBtn').disabled = false;
+}
     
     function startQuiz() {
         // Сброс данных
